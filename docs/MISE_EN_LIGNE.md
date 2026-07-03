@@ -78,6 +78,7 @@ Variables**), déplie **Environment Variables** et ajoute une à une :
 | `RESEND_API_KEY` | ⚪ ta clé Resend (voir étape 7), sinon laisse vide |
 | `CONTACT_EMAIL_TO` | ⚪ email où recevoir les messages (ex. `amaury@radyo.be`) |
 | `CONTACT_EMAIL_FROM` | ⚪ `onboarding@resend.dev` (par défaut) |
+| `NEXT_PUBLIC_SITE_URL` | 🔵 l'URL finale du site (ex. `https://jkstudio.be`) — pour le SEO / le partage |
 
 - Pour chaque variable : **Name**, **Value**, laisse les 3 environnements cochés
   (Production / Preview / Development) → **Add**.
@@ -135,10 +136,10 @@ Sans ça, les messages sont quand même **enregistrés** et visibles dans
 1. Vercel → ton projet → **Settings → Domains** → **Add** → saisis ton domaine
    (ex. `jkstudio.be`).
 2. Suis les instructions DNS de Vercel chez ton registrar (A / CNAME).
-3. 🔵 Mets à jour l'URL du site dans le code pour le SEO (balises de partage) :
-   fichier `app/layout.tsx`, ligne `metadataBase: new URL("https://jkstudio.be")`
-   → remplace par ton domaine, puis commit/push (Vercel redéploie tout seul).
-   *(Tu peux me demander de le faire.)*
+3. 🔵 Renseigne l'URL finale pour le SEO / le partage : Vercel → **Settings →
+   Environment Variables** → `NEXT_PUBLIC_SITE_URL` = `https://ton-domaine` →
+   **Redeploy**. (Le sitemap, le `robots.txt` et l'image de partage l'utilisent
+   automatiquement — aucun code à modifier.)
 
 ---
 

@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { themeInitScript } from "@/lib/theme";
 import { getAppearance } from "@/lib/content";
+import { SITE_URL } from "@/lib/site";
 
 const serif = Instrument_Serif({
   variable: "--font-serif",
@@ -28,7 +29,7 @@ const mono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jkstudio.be"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "JKStudio — Studio photo & vidéo, Bruxelles",
     template: "%s — JKStudio",
