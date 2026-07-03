@@ -14,7 +14,13 @@ const socialBtn: React.CSSProperties = {
   transition: "color .25s ease",
 };
 
-export function Footer() {
+export interface FooterContent {
+  copyright: string;
+  location: string;
+  socials: string[];
+}
+
+export function Footer({ footer }: { footer: FooterContent }) {
   const pathname = usePathname();
   const showCta = !pathname.startsWith("/contact");
 
@@ -81,19 +87,15 @@ export function Footer() {
           color: "var(--ink2)",
         }}
       >
-        <span>© JKStudio — 2026</span>
+        <span>{footer.copyright}</span>
         <span style={{ display: "flex", gap: 24 }}>
-          <button data-cursor="link" className="jk-link" style={socialBtn}>
-            Instagram
-          </button>
-          <button data-cursor="link" className="jk-link" style={socialBtn}>
-            Vimeo
-          </button>
-          <button data-cursor="link" className="jk-link" style={socialBtn}>
-            LinkedIn
-          </button>
+          {footer.socials.map((s) => (
+            <button key={s} data-cursor="link" className="jk-link" style={socialBtn}>
+              {s}
+            </button>
+          ))}
         </span>
-        <span>Bruxelles, BE — 50.85° N</span>
+        <span>{footer.location}</span>
       </div>
     </footer>
   );

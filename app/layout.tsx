@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Archivo, Space_Mono } from "next/font/google";
 import "./globals.css";
-import { Providers } from "@/components/Providers";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { themeInitScript } from "@/lib/theme";
 import { getAppearance } from "@/lib/content";
 
@@ -58,7 +58,7 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <Providers appearance={appearance}>{children}</Providers>
+        <ThemeProvider appearance={appearance}>{children}</ThemeProvider>
       </body>
     </html>
   );

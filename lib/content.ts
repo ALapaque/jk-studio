@@ -2,7 +2,10 @@
 // maquette). En Phase 2, ces getters liront la table `site_content` de
 // Supabase — l'interface reste identique pour que les pages ne changent pas.
 
+import "server-only";
 import { Appearance, DEFAULT_APPEARANCE } from "./theme";
+import { isSupabaseConfigured } from "./env";
+import { createPublicSupabase } from "./supabase/server";
 
 export interface Fact {
   k: string;
@@ -101,12 +104,47 @@ export const DEFAULT_CONTENT: SiteContent = {
   },
 };
 
+/** Clés attendues dans la table site_content. */
+export const CONTENT_KEYS = [
+  "hero",
+  "studio",
+  "about",
+  "contact",
+  "footer",
+] as const;
+
+async function readContentMap(): Promise<Record<string, unknown>> {
+  if (!isSupabaseConfigured()) return {};
+  try {
+    const sb = createPublicSupabase();
+    const { data, error } = await sb.from("site_content").select("key, value");
+    if (error) throw error;
+    const map: Record<string, unknown> = {};
+    for (const row of data ?? []) map[row.key] = row.value;
+    return map;
+  } catch (err) {
+    console.error("[content] lecture Supabase échouée, repli défauts:", err);
+    return {};
+  }
+}
+
+function merge<T extends object>(base: T, override: unknown): T {
+  if (!override || typeof override !== "object") return base;
+  return { ...base, ...(override as Partial<T>) };
+}
+
 export async function getSiteContent(): Promise<SiteContent> {
-  // Phase 2 : lecture Supabase (table site_content) avec repli sur DEFAULT_CONTENT.
-  return DEFAULT_CONTENT;
+  const map = await readContentMap();
+  return {
+    hero: merge(DEFAULT_CONTENT.hero, map.hero),
+    studio: merge(DEFAULT_CONTENT.studio, map.studio),
+    about: merge(DEFAULT_CONTENT.about, map.about),
+    contact: merge(DEFAULT_CONTENT.contact, map.contact),
+    footer: merge(DEFAULT_CONTENT.footer, map.footer),
+  };
 }
 
 export async function getAppearance(): Promise<Appearance> {
-  // Phase 2 : lecture Supabase. Pour l'instant, valeurs par défaut.
-  return DEFAULT_APPEARANCE;
+  const map = await readContentMap();
+  return merge(DEFAULT_APPEARANCE, map.appearance);
 }

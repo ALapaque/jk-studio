@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CATEGORIES } from "@/lib/demo-data";
+import { getCategories } from "@/lib/data";
 import { countLabel } from "@/lib/types";
 import { getSiteContent } from "@/lib/content";
 import { HeroCard } from "@/components/HeroCard";
@@ -18,8 +18,13 @@ const monoLabel: React.CSSProperties = {
   color: "var(--ink2)",
 };
 
+export const revalidate = 60;
+
 export default async function HomePage() {
-  const content = await getSiteContent();
+  const [content, categories] = await Promise.all([
+    getSiteContent(),
+    getCategories(),
+  ]);
   const sectionPad = "clamp(40px,5vw,70px) clamp(20px,4vw,56px)";
 
   return (
@@ -429,7 +434,7 @@ export default async function HomePage() {
           link={{ href: "/travaux", label: "Index complet →", transitionLabel: "Travaux" }}
         />
         <CategoryIndex
-          items={CATEGORIES.map((c) => ({
+          items={categories.map((c) => ({
             slug: c.slug,
             num: c.num,
             title: c.title,

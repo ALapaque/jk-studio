@@ -18,24 +18,38 @@ accueillir un back-office Supabase + une admin sur mesure.
 | Vidéo | Embeds YouTube / Vimeo (jamais de fichier stocké) |
 | Animations | moteur maison porté de la maquette (hooks/composants React) |
 
-## État — Phase 1 (site public) ✅
+## État
 
-- Toutes les routes publiques : `/`, `/travaux`, `/travaux/[categorie]`,
-  `/travaux/[categorie]/[serie]`, `/a-propos`, `/contact`, 404.
-- Design fidèle à la maquette (thème clair/sombre, curseur, parallaxe, reveals,
-  transitions, lightbox, grain).
-- Contenu servi par des **données de démonstration** (`lib/demo-data.ts`,
-  transcription de la maquette) — remplacées par Supabase en Phase 2.
+**Phase 1 — site public ✅** : routes `/`, `/travaux`, `/travaux/[categorie]`,
+`/travaux/[categorie]/[serie]`, `/a-propos`, `/contact`, 404. Design fidèle à la
+maquette (thème clair/sombre, curseur, parallaxe, reveals, transitions, lightbox,
+grain).
 
-Phases suivantes : **P2** Supabase + admin CMS complet · **P3** déploiement
-Vercel + finitions SEO.
+**Phase 2 — Supabase + admin CMS ✅** : base Postgres + RLS + stockage images,
+**admin complet** sur `/admin` (auth, catégories, séries, upload photos, vidéos
+YouTube/Vimeo, textes éditoriaux, apparence, messages), formulaire de contact
+(Supabase + email Resend). Le site fonctionne aussi **sans Supabase** (repli sur
+les données de démo).
+
+**Phase 3 — déploiement Vercel** : voir [`docs/DEPLOY_VERCEL.md`](docs/DEPLOY_VERCEL.md).
 
 ## Développement
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+cp .env.example .env.local     # puis remplir (voir docs/SUPABASE_SETUP.md)
+npm run dev                    # http://localhost:3000
+npm run seed                  # (optionnel) remplit Supabase avec la démo
 ```
+
+Sans `.env.local`, le site tourne sur les données de démonstration et l'admin
+affiche un message de configuration.
+
+### Guides
+
+- Mise en place Supabase : [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md)
+- Utilisation de l'admin : [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md)
+- Déploiement Vercel : [`docs/DEPLOY_VERCEL.md`](docs/DEPLOY_VERCEL.md)
 
 Build de production :
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { CATEGORIES } from "@/lib/demo-data";
+import { getCategories } from "@/lib/data";
 import { countLabel, Category } from "@/lib/types";
 import { TransitionLink } from "@/components/motion/TransitionLink";
 
@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   title: "Travaux",
   description: "Index des travaux photo & vidéo — 2024 → 2026.",
 };
+
+export const revalidate = 60;
 
 interface CardLayout {
   gridColumn: string;
@@ -116,7 +118,8 @@ function WorkCard({ cat, layout }: { cat: Category; layout: CardLayout }) {
   );
 }
 
-export default function TravauxPage() {
+export default async function TravauxPage() {
+  const categories = await getCategories();
   return (
     <main
       style={{
@@ -154,7 +157,7 @@ export default function TravauxPage() {
         Travaux.
       </h1>
       <div className="grid12" style={{ gap: "clamp(16px,2vw,28px)" }}>
-        {CATEGORIES.map((cat, i) => (
+        {categories.map((cat, i) => (
           <WorkCard key={cat.slug} cat={cat} layout={LAYOUTS[i] ?? LAYOUTS[0]} />
         ))}
       </div>

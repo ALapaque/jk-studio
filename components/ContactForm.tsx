@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { submitContact } from "@/app/(site)/contact/actions";
 
 const labelStyle: React.CSSProperties = {
   fontFamily: "var(--font-mono), monospace",
@@ -26,11 +27,19 @@ const fieldStyle: React.CSSProperties = {
 export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
   const [projType, setProjType] = useState(projectTypes[0] ?? "Autre");
   const [sent, setSent] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Phase 2 : cette soumission appellera une Server Action (insert Supabase).
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
+    if (pending) return;
+    setError(null);
+    setPending(true);
+    const formData = new FormData(e.currentTarget);
+    const res = await submitContact(formData);
+    setPending(false);
+    if (res.ok) setSent(true);
+    else setError(res.error ?? "Une erreur est survenue.");
   };
 
   if (sent) {
@@ -105,9 +114,10 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
           style={{ ...fieldStyle, lineHeight: 1.6, resize: "vertical" }}
         />
       </label>
-      <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
         <button
           type="submit"
+          disabled={pending}
           data-magnet="1"
           data-cursor="link"
           className="jk-btn-outline"
@@ -121,10 +131,25 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             color: "var(--ink)",
+            opacity: pending ? 0.6 : 1,
           }}
         >
-          Envoyer →
+          {pending ? "Envoi…" : "Envoyer →"}
         </button>
+        {error && (
+          <span
+            role="alert"
+            style={{
+              fontFamily: "var(--font-mono), monospace",
+              fontSize: 10,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "#c96f4a",
+            }}
+          >
+            {error}
+          </span>
+        )}
       </div>
     </form>
   );

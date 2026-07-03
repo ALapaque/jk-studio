@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CATEGORIES, getSeries } from "@/lib/demo-data";
+import { getCategories, getSeriesBySlug } from "@/lib/data";
 import { seriesMedia } from "@/lib/types";
 import { MediaGallery } from "@/components/MediaGallery";
 import { TransitionLink } from "@/components/motion/TransitionLink";
 
-export function generateStaticParams() {
-  return CATEGORIES.flatMap((c) =>
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const cats = await getCategories();
+  return cats.flatMap((c) =>
     c.series.map((s) => ({ categorie: c.slug, serie: s.slug })),
   );
 }
@@ -17,7 +20,7 @@ export async function generateMetadata({
   params: Promise<{ categorie: string; serie: string }>;
 }): Promise<Metadata> {
   const { categorie, serie } = await params;
-  const found = getSeries(categorie, serie);
+  const found = await getSeriesBySlug(categorie, serie);
   if (!found) return { title: "Série" };
   return {
     title: `${found.series.title} — ${found.category.title}`,
@@ -31,7 +34,7 @@ export default async function SeriesPage({
   params: Promise<{ categorie: string; serie: string }>;
 }) {
   const { categorie, serie } = await params;
-  const found = getSeries(categorie, serie);
+  const found = await getSeriesBySlug(categorie, serie);
   if (!found) notFound();
   const { category, series } = found;
 

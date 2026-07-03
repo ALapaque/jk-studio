@@ -1,12 +1,15 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CATEGORIES, getCategory } from "@/lib/demo-data";
+import { getCategories, getCategoryBySlug } from "@/lib/data";
 import { countLabel, Series } from "@/lib/types";
 import { TransitionLink } from "@/components/motion/TransitionLink";
 
-export function generateStaticParams() {
-  return CATEGORIES.map((c) => ({ categorie: c.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const cats = await getCategories();
+  return cats.map((c) => ({ categorie: c.slug }));
 }
 
 export async function generateMetadata({
@@ -15,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ categorie: string }>;
 }): Promise<Metadata> {
   const { categorie } = await params;
-  const cat = getCategory(categorie);
+  const cat = await getCategoryBySlug(categorie);
   if (!cat) return { title: "Catégorie" };
   return { title: cat.title, description: cat.description };
 }
@@ -34,12 +37,13 @@ export default async function CategoryPage({
   params: Promise<{ categorie: string }>;
 }) {
   const { categorie } = await params;
-  const cat = getCategory(categorie);
+  const categories = await getCategories();
+  const cat = categories.find((c) => c.slug === categorie);
   if (!cat) notFound();
 
-  const idx = CATEGORIES.indexOf(cat);
-  const prev = CATEGORIES[(idx - 1 + CATEGORIES.length) % CATEGORIES.length];
-  const next = CATEGORIES[(idx + 1) % CATEGORIES.length];
+  const idx = categories.indexOf(cat);
+  const prev = categories[(idx - 1 + categories.length) % categories.length];
+  const next = categories[(idx + 1) % categories.length];
   const meta = `${countLabel(cat)} · ${cat.location} · ${cat.period}`.toUpperCase();
 
   return (
