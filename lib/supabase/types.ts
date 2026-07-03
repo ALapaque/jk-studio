@@ -9,6 +9,7 @@ export interface CategoryRow {
   description: string;
   location: string;
   period: string;
+  cover_path: string | null;
   position: number;
   created_at: string;
 }
@@ -36,6 +37,8 @@ export interface PhotoRow {
   width: number | null;
   height: number | null;
   position: number;
+  featured: boolean;
+  featured_position: number;
   created_at: string;
 }
 

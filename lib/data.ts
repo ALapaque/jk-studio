@@ -83,9 +83,47 @@ function mapCategory(
     description: c.description,
     location: c.location,
     period: c.period,
-    coverSrc: series[0]?.coverSrc || "",
+    coverSrc: publicImageUrl(c.cover_path) || series[0]?.coverSrc || "",
     series,
   };
+}
+
+export interface HeroItem {
+  src: string;
+  href: string;
+  label: string;
+}
+
+/** Photos « à la une » pour les cartes flottantes de l'accueil (max 8). */
+export async function getHeroItems(): Promise<HeroItem[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const sb = createPublicSupabase();
+    const { data, error } = await sb
+      .from("photos")
+      .select(
+        "storage_path, featured_position, projects!inner(slug, published, categories!inner(slug, title))",
+      )
+      .eq("featured", true)
+      .eq("projects.published", true)
+      .order("featured_position")
+      .limit(8);
+    if (error) throw error;
+    return (data ?? []).map((row: Record<string, unknown>) => {
+      const proj = row.projects as {
+        slug: string;
+        categories: { slug: string; title: string };
+      };
+      return {
+        src: publicImageUrl(row.storage_path as string),
+        href: `/travaux/${proj.categories.slug}/${proj.slug}`,
+        label: proj.categories.title,
+      };
+    });
+  } catch (err) {
+    console.error("[data] getHeroItems échoué:", err);
+    return [];
+  }
 }
 
 let warned = false;

@@ -254,6 +254,42 @@ export async function setProjectCover(formData: FormData) {
   revalidateAll();
 }
 
+export async function setCategoryCover(formData: FormData) {
+  await assertUser();
+  const sb = createAdminSupabase();
+  const { error } = await sb
+    .from("categories")
+    .update({ cover_path: s(formData, "storage_path") })
+    .eq("id", s(formData, "category_id"));
+  if (error) throw new Error(error.message);
+  revalidateAll();
+}
+
+/** Marque/retire une photo « à la une » (cartes flottantes de l'accueil). */
+export async function toggleFeatured(formData: FormData) {
+  await assertUser();
+  const sb = createAdminSupabase();
+  const id = s(formData, "id");
+  const featured = formData.get("featured") === "true";
+  let featured_position = 0;
+  if (featured) {
+    const { data } = await sb
+      .from("photos")
+      .select("featured_position")
+      .eq("featured", true)
+      .order("featured_position", { ascending: false })
+      .limit(1);
+    featured_position =
+      ((data ?? [])[0]?.featured_position ?? -1) + 1;
+  }
+  const { error } = await sb
+    .from("photos")
+    .update({ featured, featured_position })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidateAll();
+}
+
 // ============================================================ VIDEOS
 
 export async function addVideo(formData: FormData) {

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllCategories } from "@/lib/admin";
-import { updateCategory } from "@/app/admin/actions";
+import { setCategoryCover, updateCategory } from "@/app/admin/actions";
+import { publicImageUrl } from "@/lib/supabase/storage";
 import { admin, Button, Card, Field, Input, PageTitle } from "@/components/admin/ui";
+import { CoverUploader } from "@/components/admin/CoverUploader";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +23,18 @@ export default async function EditCategoryPage({
         ← Catégories
       </Link>
       <PageTitle>Modifier — {cat.title}</PageTitle>
+
+      <Card style={{ marginBottom: 24 }}>
+        <Field label="Image de couverture">
+          <CoverUploader
+            ownerId={cat.id}
+            idField="category_id"
+            pathPrefix={`covers/cat-${cat.id}`}
+            action={setCategoryCover}
+            currentSrc={publicImageUrl(cat.cover_path) || undefined}
+          />
+        </Field>
+      </Card>
 
       <Card>
         <form action={updateCategory} style={{ display: "grid", gap: 14 }}>

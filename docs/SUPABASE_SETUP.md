@@ -26,8 +26,9 @@ Dans le projet : **Project Settings** (roue dentée) → **API**. Notez :
 ## 3. Créer le schéma (tables, RLS, stockage)
 
 1. Dans Supabase : menu **SQL Editor** → **New query**.
-2. Copier tout le contenu de [`supabase/migrations/0001_init.sql`](../supabase/migrations/0001_init.sql).
-3. Coller dans l'éditeur → **Run**.
+2. Exécute les fichiers de `supabase/migrations/` **dans l'ordre** (un par requête, **Run** à chaque fois) :
+   - [`0001_init.sql`](../supabase/migrations/0001_init.sql) — tables, RLS, stockage.
+   - [`0002_covers_hero.sql`](../supabase/migrations/0002_covers_hero.sql) — couvertures uploadables + photos « à la une ».
 
 Cela crée les tables (`categories`, `projects`, `photos`, `videos`, `messages`,
 `site_content`), active les **politiques RLS** (lecture publique du contenu

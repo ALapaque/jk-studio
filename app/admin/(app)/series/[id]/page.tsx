@@ -11,6 +11,7 @@ import {
   movePhoto,
   moveVideo,
   setProjectCover,
+  toggleFeatured,
   updatePhoto,
   updateProject,
 } from "@/app/admin/actions";
@@ -24,6 +25,7 @@ import {
 } from "@/components/admin/ui";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { PhotoUploader } from "@/components/admin/PhotoUploader";
+import { CoverUploader } from "@/components/admin/CoverUploader";
 
 export const dynamic = "force-dynamic";
 
@@ -110,6 +112,19 @@ export default async function EditSeriesPage({
         </form>
       </Card>
 
+      {/* ---- couverture ---- */}
+      <Card style={{ marginBottom: 24 }}>
+        <Field label="Image de couverture de la série" hint="Uploade une image, ou utilise « Couv. » sous une photo ci-dessous.">
+          <CoverUploader
+            ownerId={p.id}
+            idField="project_id"
+            pathPrefix={p.id}
+            action={setProjectCover}
+            currentSrc={publicImageUrl(p.cover_path) || undefined}
+          />
+        </Field>
+      </Card>
+
       {/* ---- photos ---- */}
       <Card style={{ marginBottom: 24 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -162,6 +177,20 @@ export default async function EditSeriesPage({
                   <ActionForm action={setProjectCover} hidden={{ project_id: p.id, storage_path: ph.storage_path }}>
                     <Button variant="ghost" style={{ padding: "5px 9px", width: "100%" }} disabled={isCover}>
                       {isCover ? "★ Couv." : "Couv."}
+                    </Button>
+                  </ActionForm>
+                  <ActionForm action={toggleFeatured} hidden={{ id: ph.id, featured: ph.featured ? "false" : "true" }}>
+                    <Button
+                      variant="ghost"
+                      style={{
+                        padding: "5px 9px",
+                        width: "100%",
+                        color: ph.featured ? admin.accent : admin.ink,
+                        borderColor: ph.featured ? admin.accent : admin.border,
+                      }}
+                      title="Mettre en avant dans le hero de l'accueil"
+                    >
+                      {ph.featured ? "★ À la une" : "☆ Hero"}
                     </Button>
                   </ActionForm>
                   <ActionForm action={deletePhoto} hidden={{ id: ph.id, storage_path: ph.storage_path }} confirm="Supprimer cette photo ?">
