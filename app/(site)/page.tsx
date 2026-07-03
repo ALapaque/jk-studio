@@ -1,30 +1,19 @@
-import Image from "next/image";
-import { getCategories, getHeroItems } from "@/lib/data";
+import { getCategories, getHeroItems, getSelection } from "@/lib/data";
 import { countLabel } from "@/lib/types";
 import { getSiteContent } from "@/lib/content";
 import { HeroCards } from "@/components/HeroCards";
+import { SelectionRows } from "@/components/SelectionRows";
 import { SectionHeader } from "@/components/SectionHeader";
 import { CategoryIndex } from "@/components/CategoryIndex";
-import { TransitionLink } from "@/components/motion/TransitionLink";
-
-const IMG = (id: string, w: number, h: number) =>
-  `https://images.unsplash.com/photo-${id}?q=80&w=${w}&h=${h}&fit=crop&auto=format`;
-
-const monoLabel: React.CSSProperties = {
-  fontFamily: "var(--font-mono), monospace",
-  fontSize: 9.5,
-  letterSpacing: "0.18em",
-  textTransform: "uppercase",
-  color: "var(--ink2)",
-};
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [content, categories, heroItems] = await Promise.all([
+  const [content, categories, heroItems, selection] = await Promise.all([
     getSiteContent(),
     getCategories(),
     getHeroItems(),
+    getSelection(),
   ]);
   const sectionPad = "clamp(40px,5vw,70px) clamp(20px,4vw,56px)";
 
@@ -208,135 +197,7 @@ export default async function HomePage() {
       {/* ===================== 02 SÉLECTION ===================== */}
       <section style={{ maxWidth: 1560, margin: "0 auto", padding: sectionPad }}>
         <SectionHeader num="02" title="Sélection 2026" marginBottom="clamp(44px,5.5vw,80px)" />
-
-        {/* Row 1 — Mariage */}
-        <div className="grid12" style={{ alignItems: "end", marginBottom: "clamp(80px,10vw,150px)" }}>
-          <TransitionLink
-            href="/travaux/mariage/salome-jan"
-            transitionLabel="Salomé & Jan"
-            data-cursor="view"
-            style={{ gridColumn: "1 / span 8", textAlign: "left" }}
-          >
-            <span
-              data-reveal="mask"
-              style={{
-                display: "block",
-                position: "relative",
-                aspectRatio: "3 / 2",
-                overflow: "hidden",
-                background: "var(--bg2)",
-                boxShadow: "0 0 110px var(--glow)",
-              }}
-            >
-              <Image
-                data-para="1"
-                data-sy="0.05"
-                data-s="1.12"
-                src={IMG("1529636798458-92182e662485", 1500, 1000)}
-                alt="Salomé et Jan — première danse"
-                fill
-                sizes="(max-width:760px) 100vw, 66vw"
-                style={{ objectFit: "cover", filter: "var(--pf)" }}
-              />
-              <span style={{ position: "absolute", top: 14, left: 16, fontFamily: "var(--font-mono), monospace", fontSize: 9, letterSpacing: "0.12em", color: "#fff", mixBlendMode: "difference" }}>
-                FIG. 01
-              </span>
-            </span>
-          </TransitionLink>
-          <div style={{ gridColumn: "9 / span 4", paddingBottom: 8 }}>
-            <div data-reveal="rise" style={monoLabel}>Mariage — Gand, 2026</div>
-            <div data-reveal="rise" data-delay="60" style={{ fontFamily: "var(--font-serif), serif", fontSize: "clamp(26px,2.6vw,38px)", color: "var(--ink)", marginTop: 10 }}>
-              Salomé &amp; Jan
-            </div>
-            <p data-reveal="rise" data-delay="110" style={{ margin: "12px 0 20px", fontFamily: "var(--font-serif), serif", fontStyle: "italic", fontSize: 17.5, lineHeight: 1.4, color: "var(--body)" }}>
-              Une journée entière, une averse parfaite.
-            </p>
-            <TransitionLink href="/travaux/mariage/salome-jan" transitionLabel="Salomé & Jan" data-cursor="link" data-reveal="rise" data-delay="160" style={{ fontFamily: "var(--font-mono), monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--accent)" }}>
-              VOIR LA SÉRIE →
-            </TransitionLink>
-          </div>
-        </div>
-
-        {/* Row 2 — Portrait (image d'abord dans le DOM → au-dessus du texte sur mobile) */}
-        <div className="grid12" style={{ alignItems: "start", marginBottom: "clamp(80px,10vw,150px)" }}>
-          <TransitionLink
-            href="/travaux/portrait/nora-soie"
-            transitionLabel="Nora — série soie"
-            data-cursor="view"
-            style={{ gridColumn: "6 / span 5", textAlign: "left" }}
-          >
-            <span
-              data-reveal="mask"
-              style={{ display: "block", position: "relative", aspectRatio: "3 / 4", overflow: "hidden", background: "var(--bg2)", boxShadow: "0 0 110px var(--glow)" }}
-            >
-              <Image
-                data-para="1"
-                data-sy="0.06"
-                data-s="1.12"
-                src={IMG("1544005313-94ddf0286df2", 1000, 1333)}
-                alt="Nora — série soie, portrait studio"
-                fill
-                sizes="(max-width:760px) 100vw, 42vw"
-                style={{ objectFit: "cover", filter: "var(--pf)" }}
-              />
-              <span style={{ position: "absolute", top: 14, left: 16, fontFamily: "var(--font-mono), monospace", fontSize: 9, letterSpacing: "0.12em", color: "#fff", mixBlendMode: "difference" }}>
-                FIG. 02
-              </span>
-            </span>
-          </TransitionLink>
-          <div style={{ gridColumn: "1 / span 4", paddingTop: "clamp(20px,4vw,70px)" }}>
-            <div data-reveal="rise" style={monoLabel}>Portrait — Studio, 2026</div>
-            <div data-reveal="rise" data-delay="60" style={{ fontFamily: "var(--font-serif), serif", fontSize: "clamp(26px,2.6vw,38px)", color: "var(--ink)", marginTop: 10 }}>
-              Nora — série soie
-            </div>
-            <p data-reveal="rise" data-delay="110" style={{ margin: "12px 0 20px", fontFamily: "var(--font-serif), serif", fontStyle: "italic", fontSize: 17.5, lineHeight: 1.4, color: "var(--body)" }}>
-              Série studio — soie, contre-jour, silence.
-            </p>
-            <TransitionLink href="/travaux/portrait/nora-soie" transitionLabel="Nora — série soie" data-cursor="link" data-reveal="rise" data-delay="160" style={{ fontFamily: "var(--font-mono), monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--accent)" }}>
-              VOIR LA SÉRIE →
-            </TransitionLink>
-          </div>
-        </div>
-
-        {/* Row 3 — Gaming large */}
-        <div className="grid12">
-          <TransitionLink
-            href="/travaux/gaming/lan-charleroi"
-            transitionLabel="LAN de Charleroi"
-            data-cursor="view"
-            style={{ gridColumn: "2 / span 10", textAlign: "left" }}
-          >
-            <span
-              data-reveal="mask"
-              style={{ display: "block", position: "relative", aspectRatio: "21 / 10", overflow: "hidden", background: "var(--bg2)", boxShadow: "0 0 110px var(--glow)" }}
-            >
-              <Image
-                data-para="1"
-                data-sy="0.05"
-                data-s="1.12"
-                src={IMG("1542751371-adc38448a05e", 1600, 762)}
-                alt="LAN de Charleroi — la finale"
-                fill
-                sizes="83vw"
-                style={{ objectFit: "cover", filter: "var(--pf)" }}
-              />
-              <span style={{ position: "absolute", top: 14, left: 16, fontFamily: "var(--font-mono), monospace", fontSize: 9, letterSpacing: "0.12em", color: "#fff", mixBlendMode: "difference" }}>
-                FIG. 03
-              </span>
-            </span>
-            <span data-reveal="rise" style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 12, alignItems: "baseline" }}>
-              <span style={{ fontFamily: "var(--font-serif), serif", fontSize: "clamp(22px,2.2vw,32px)", color: "var(--ink)" }}>
-                LAN de Charleroi{" "}
-                <em style={{ fontStyle: "italic", color: "var(--body)" }}>
-                  — trois nuits de finale, néon et sueur froide.
-                </em>
-              </span>
-              <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9.5, letterSpacing: "0.16em", color: "var(--ink2)", textTransform: "uppercase" }}>
-                Gaming — 2025
-              </span>
-            </span>
-          </TransitionLink>
-        </div>
+        <SelectionRows items={selection} />
       </section>
 
       {/* ===================== 03 CATÉGORIES ===================== */}

@@ -162,6 +162,52 @@ export async function getCategories(): Promise<Category[]> {
   }
 }
 
+export interface SelectionItem {
+  title: string;
+  description: string;
+  categoryTitle: string;
+  period: string;
+  href: string;
+  coverSrc: string;
+}
+
+/** Dernières séries publiées, pour la section « Sélection » de l'accueil. */
+export async function getSelection(limit = 3): Promise<SelectionItem[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const sb = createPublicSupabase();
+    const { data, error } = await sb
+      .from("projects")
+      .select(
+        "slug, title, description, period, cover_path, created_at, categories!inner(slug, title), photos(storage_path, position)",
+      )
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    if (error) throw error;
+    return (data ?? []).map((row: Record<string, unknown>) => {
+      const cat = row.categories as { slug: string; title: string };
+      const photos = [
+        ...((row.photos as { storage_path: string; position: number }[]) ?? []),
+      ].sort((a, b) => a.position - b.position);
+      return {
+        title: row.title as string,
+        description: (row.description as string) || "",
+        categoryTitle: cat.title,
+        period: (row.period as string) || "",
+        href: `/travaux/${cat.slug}/${row.slug}`,
+        coverSrc:
+          publicImageUrl(row.cover_path as string) ||
+          publicImageUrl(photos[0]?.storage_path) ||
+          "",
+      };
+    });
+  } catch (err) {
+    console.error("[data] getSelection échoué:", err);
+    return [];
+  }
+}
+
 export async function getCategoryBySlug(
   slug: string,
 ): Promise<Category | undefined> {
