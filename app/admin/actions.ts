@@ -183,23 +183,20 @@ export async function moveProject(formData: FormData) {
 
 // ============================================================ PHOTOS
 
-export async function uploadPhoto(formData: FormData) {
+// Le fichier est envoyé directement du navigateur vers Supabase Storage
+// (voir PhotoUploader) pour contourner la limite de taille des Server Actions /
+// des fonctions Vercel. Ici on n'enregistre que la fiche photo (petit payload).
+export async function savePhoto(formData: FormData) {
   await assertUser();
   const sb = createAdminSupabase();
   const projectId = s(formData, "project_id");
-  const file = formData.get("file") as File | null;
-  if (!projectId || !file || file.size === 0) throw new Error("Fichier requis");
+  const storagePath = s(formData, "storage_path");
+  if (!projectId || !storagePath) throw new Error("Données manquantes");
   const width = Number(formData.get("width")) || null;
   const height = Number(formData.get("height")) || null;
-  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-  const key = `${projectId}/${crypto.randomUUID()}.${ext}`;
-  const { error: upErr } = await sb.storage
-    .from(STORAGE_BUCKET)
-    .upload(key, file, { contentType: file.type, upsert: false });
-  if (upErr) throw new Error(upErr.message);
   const { error } = await sb.from("photos").insert({
     project_id: projectId,
-    storage_path: key,
+    storage_path: storagePath,
     alt: s(formData, "alt") || null,
     caption: s(formData, "caption") || null,
     width,
