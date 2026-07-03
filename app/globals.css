@@ -1,0 +1,213 @@
+/* ============================================================
+   JKStudio — styles de base
+   Le gros de la mise en page reste en styles inline (fidèles à
+   la maquette) ; ici on pose le reset, les variables de thème
+   par défaut, le curseur custom et les états interactifs (:hover
+   /:focus) qui, dans la maquette, étaient générés par support.js.
+   ============================================================ */
+
+:root {
+  /* Valeurs de repli (le thème réel est injecté sur <html> par le
+     script anti-FOUC / ThemeProvider). */
+  --bg: #0b0a09;
+  --bg2: #171512;
+  --ink: #f0ece3;
+  --ink2: #8f887b;
+  --body: #b9b2a3;
+  --line: #26221a;
+  --accent: #d6bc8c;
+  --glow: rgba(214, 188, 140, 0.16);
+  --wipe: #f0ece3;
+  --heroA: #191510;
+  --pf: contrast(1.05) saturate(0.85) brightness(0.95);
+  --grain-opacity: 0.055;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font-sans), "Archivo", system-ui, sans-serif;
+  overflow-x: hidden;
+  transition: background 0.5s ease, color 0.5s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #d6bc8c;
+  color: #0b0a09;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Curseur custom : on masque le curseur natif sur pointeurs fins. */
+@media (pointer: fine) {
+  [data-jk],
+  [data-jk] * {
+    cursor: none;
+  }
+  [data-jk] input,
+  [data-jk] textarea,
+  [data-jk] select {
+    cursor: text;
+  }
+}
+
+/* ---- états interactifs (remplacent les style-hover / style-focus) ---- */
+
+.jk-nav-link {
+  transition: opacity 0.25s ease;
+}
+.jk-nav-link:hover {
+  opacity: 1 !important;
+}
+
+.jk-link {
+  transition: color 0.25s ease;
+}
+.jk-link:hover {
+  color: var(--accent);
+}
+
+.jk-img-zoom {
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.jk-img-zoom:hover {
+  transform: scale(1.05);
+}
+
+.jk-row {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.jk-row-btn:hover .jk-row {
+  transform: translateX(18px);
+}
+
+.jk-cta {
+  transition: color 0.3s ease;
+}
+.jk-cta:hover {
+  color: var(--accent);
+}
+
+.jk-btn-outline {
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.jk-btn-outline:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.jk-field {
+  transition: border-color 0.3s ease;
+}
+.jk-field:focus {
+  border-bottom-color: var(--accent);
+}
+
+.jk-lb-ctrl {
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+.jk-lb-ctrl:hover {
+  border-color: #d6bc8c;
+  color: #f0ece3;
+}
+
+/* ---- grilles responsives (remplacent les vars CSS de applyLayout) ---- */
+
+/* Grille 12 colonnes : les enfants portent leur grid-column inline pour le
+   desktop ; en dessous de 760px tout passe en pleine largeur, empilé. */
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(14px, 2vw, 28px);
+}
+@media (max-width: 759px) {
+  .grid12 > * {
+    grid-column: 1 / -1 !important;
+    margin-top: 0 !important;
+  }
+}
+
+.two-col {
+  display: grid;
+  gap: clamp(32px, 6vw, 96px);
+}
+.two-col--studio {
+  grid-template-columns: 1.15fr 0.85fr;
+}
+.two-col--about,
+.two-col--contact {
+  gap: clamp(32px, 6vw, 110px);
+  align-items: start;
+}
+.two-col--about {
+  grid-template-columns: 0.9fr 1.1fr;
+}
+.two-col--contact {
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 759px) {
+  .two-col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Cartes flottantes du hero : nombre visible selon la largeur. */
+.hero-3,
+.hero-4,
+.hero-5,
+.hero-6,
+.hero-7,
+.hero-8 {
+  display: none;
+}
+@media (min-width: 760px) {
+  .hero-3,
+  .hero-4 {
+    display: block;
+  }
+}
+@media (min-width: 1280px) {
+  .hero-5,
+  .hero-6 {
+    display: block;
+  }
+}
+@media (min-width: 2100px) {
+  .hero-7,
+  .hero-8 {
+    display: block;
+  }
+}
+
+/* Accessibilité : coupe les animations lourdes si demandé. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
