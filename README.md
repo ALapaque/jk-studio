@@ -47,6 +47,7 @@ affiche un message de configuration.
 
 ### Guides
 
+- **Mise en ligne de A à Z** : [`docs/MISE_EN_LIGNE.md`](docs/MISE_EN_LIGNE.md) ← commence ici
 - Mise en place Supabase : [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md)
 - Utilisation de l'admin : [`docs/ADMIN_GUIDE.md`](docs/ADMIN_GUIDE.md)
 - Déploiement Vercel : [`docs/DEPLOY_VERCEL.md`](docs/DEPLOY_VERCEL.md)
