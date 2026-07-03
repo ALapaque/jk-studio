@@ -39,7 +39,7 @@ export default async function EditCategoryPage({
       <Card>
         <form action={updateCategory} style={{ display: "grid", gap: 14 }}>
           <input type="hidden" name="id" value={cat.id} />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="admin-2col">
             <Field label="Titre">
               <Input name="title" required defaultValue={cat.title} />
             </Field>
@@ -53,7 +53,7 @@ export default async function EditCategoryPage({
           <Field label="Description">
             <Input name="description" defaultValue={cat.description} />
           </Field>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="admin-2col">
             <Field label="Lieu">
               <Input name="location" defaultValue={cat.location} />
             </Field>

@@ -40,7 +40,7 @@ export default async function ContenuPage() {
             <Field label="Titre (une ligne par ligne affichée)">
               <Textarea name="titleLines" rows={2} defaultValue={c.hero.titleLines.join("\n")} />
             </Field>
-            <div style={two}>
+            <div className="admin-2col">
               <Field label="Coordonnées">
                 <Input name="coords" defaultValue={c.hero.coords} />
               </Field>
@@ -79,7 +79,7 @@ export default async function ContenuPage() {
             <Field label="Titre">
               <Input name="title" defaultValue={c.about.title} />
             </Field>
-            <div style={two}>
+            <div className="admin-2col">
               <Field label="Légende du portrait">
                 <Input name="portraitCaption" defaultValue={c.about.portraitCaption} />
               </Field>
@@ -110,7 +110,7 @@ export default async function ContenuPage() {
             <Field label="Accroche">
               <Textarea name="lead" rows={2} defaultValue={c.contact.lead} />
             </Field>
-            <div style={two}>
+            <div className="admin-2col">
               <Field label="Email">
                 <Input name="email" defaultValue={c.contact.email} />
               </Field>
@@ -132,7 +132,7 @@ export default async function ContenuPage() {
         <Card>
           <h2 style={sec}>Pied de page</h2>
           <form action={saveFooter} style={grid}>
-            <div style={two}>
+            <div className="admin-2col">
               <Field label="Copyright">
                 <Input name="copyright" defaultValue={c.footer.copyright} />
               </Field>
@@ -153,11 +153,6 @@ export default async function ContenuPage() {
 
 const sec: React.CSSProperties = { marginTop: 0, fontSize: 16, color: admin.ink };
 const grid: React.CSSProperties = { display: "grid", gap: 14 };
-const two: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: 14,
-};
 
 function Save() {
   return (

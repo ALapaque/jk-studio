@@ -51,7 +51,7 @@ export default async function EditSeriesPage({
       <Card style={{ marginBottom: 24 }}>
         <form action={updateProject} style={{ display: "grid", gap: 14 }}>
           <input type="hidden" name="id" value={p.id} />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="admin-2col">
             <Field label="Catégorie">
               <select
                 name="category_id"
@@ -84,7 +84,7 @@ export default async function EditSeriesPage({
           <Field label="Description">
             <Input name="description" defaultValue={p.description} />
           </Field>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="admin-2col">
             <Field label="Lieu">
               <Input name="location" defaultValue={p.location} />
             </Field>
@@ -143,6 +143,7 @@ export default async function EditSeriesPage({
                   display: "flex",
                   gap: 14,
                   alignItems: "center",
+                  flexWrap: "wrap",
                   border: `1px solid ${admin.border}`,
                   borderRadius: 8,
                   padding: 10,
@@ -233,6 +234,7 @@ export default async function EditSeriesPage({
                 display: "flex",
                 gap: 12,
                 alignItems: "center",
+                flexWrap: "wrap",
                 border: `1px solid ${admin.border}`,
                 borderRadius: 8,
                 padding: "10px 12px",

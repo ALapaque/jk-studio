@@ -29,7 +29,7 @@ export default async function SeriesPage() {
         {projects.map((p) => (
           <Card
             key={p.id}
-            style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 16px" }}
+            style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", padding: "12px 16px" }}
           >
             <div style={{ flex: 1 }}>
               <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -86,7 +86,7 @@ export default async function SeriesPage() {
           </p>
         ) : (
           <form action={createProject} style={{ display: "grid", gap: 14 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div className="admin-2col">
               <Field label="Catégorie">
                 <select
                   name="category_id"
@@ -116,7 +116,7 @@ export default async function SeriesPage() {
             <Field label="Description">
               <Input name="description" placeholder="Une journée entière, une averse parfaite." />
             </Field>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div className="admin-2col">
               <Field label="Lieu">
                 <Input name="location" placeholder="Gand" />
               </Field>

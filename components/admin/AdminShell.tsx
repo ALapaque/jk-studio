@@ -26,76 +26,56 @@ export function AdminShell({
     exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: admin.bg,
-        color: admin.ink,
-        display: "grid",
-        gridTemplateColumns: "240px 1fr",
-        fontFamily: admin.sans,
-      }}
-    >
-      <aside
-        style={{
-          borderRight: `1px solid ${admin.border}`,
-          padding: "24px 16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "var(--font-serif), serif",
-            fontStyle: "italic",
-            fontSize: 24,
-            padding: "0 8px 4px",
-          }}
-        >
-          JKStudio
-        </div>
-        <div
-          style={{
-            fontFamily: admin.mono,
-            fontSize: 9.5,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: admin.ink2,
-            padding: "0 8px 18px",
-          }}
-        >
-          Administration
-        </div>
-        {NAV.map((n) => (
-          <Link
-            key={n.href}
-            href={n.href}
+    <div className="admin-shell" style={{ fontFamily: admin.sans }}>
+      <aside className="admin-sidebar">
+        <div>
+          <div
             style={{
-              padding: "9px 12px",
-              borderRadius: 8,
-              fontSize: 14,
-              color: active(n.href, n.exact) ? "#1a1510" : admin.ink,
-              background: active(n.href, n.exact) ? admin.accent : "transparent",
+              fontFamily: "var(--font-serif), serif",
+              fontStyle: "italic",
+              fontSize: 22,
             }}
           >
-            {n.label}
-          </Link>
-        ))}
-        <div style={{ flex: 1 }} />
+            JKStudio
+          </div>
+          <div
+            style={{
+              fontFamily: admin.mono,
+              fontSize: 9.5,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: admin.ink2,
+              marginTop: 2,
+            }}
+          >
+            Administration
+          </div>
+        </div>
+
+        <nav className="admin-nav">
+          {NAV.map((n) => (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={active(n.href, n.exact) ? "active" : ""}
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="admin-spacer" />
+
         <a
           href="/"
           target="_blank"
           rel="noreferrer"
-          style={{ padding: "9px 12px", fontSize: 13, color: admin.ink2 }}
+          style={{ padding: "6px 12px", fontSize: 13, color: admin.ink2 }}
         >
           Voir le site ↗
         </a>
         {email && (
-          <div style={{ padding: "4px 12px", fontSize: 11.5, color: admin.ink2 }}>
+          <div style={{ padding: "0 12px", fontSize: 11.5, color: admin.ink2 }}>
             {email}
           </div>
         )}
@@ -122,7 +102,7 @@ export function AdminShell({
         </form>
       </aside>
 
-      <main style={{ padding: "36px 40px", maxWidth: 1100 }}>{children}</main>
+      <main className="admin-main">{children}</main>
     </div>
   );
 }

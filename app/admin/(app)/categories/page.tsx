@@ -23,6 +23,7 @@ export default async function CategoriesPage() {
               display: "flex",
               alignItems: "center",
               gap: 14,
+              flexWrap: "wrap",
               padding: "12px 16px",
             }}
           >
@@ -61,7 +62,7 @@ export default async function CategoriesPage() {
           Nouvelle catégorie
         </h2>
         <form action={createCategory} style={{ display: "grid", gap: 14 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="admin-2col">
             <Field label="Titre">
               <Input name="title" required placeholder="Portrait" />
             </Field>
@@ -75,7 +76,7 @@ export default async function CategoriesPage() {
           <Field label="Description">
             <Input name="description" placeholder="Visages, silences et lumière…" />
           </Field>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="admin-2col">
             <Field label="Lieu">
               <Input name="location" placeholder="Bruxelles & ailleurs" />
             </Field>
