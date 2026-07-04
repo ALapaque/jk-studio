@@ -65,9 +65,6 @@ export function MediaGallery({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, full, nav, close]);
 
-  const mediaW = full ? "96vw" : "min(86vw,1280px)";
-  const mediaH = full ? "86vh" : "72vh";
-
   return (
     <>
       {/* ---- masonry ---- */}
@@ -252,7 +249,7 @@ export function MediaGallery({
                     setFull((f) => !f);
                   }}
                   data-cursor="link"
-                  className="jk-lb-ctrl"
+                  className="jk-lb-ctrl jk-lb-fs"
                   style={ctrlText}
                 >
                   {full ? "Réduire ⤡" : "Plein écran ⤢"}
@@ -274,12 +271,13 @@ export function MediaGallery({
 
           {/* média */}
           <div
+            className="jk-lb-stage"
             style={{
               flex: 1,
               position: "relative",
               display: "grid",
               placeItems: "center",
-              padding: "0 clamp(56px,8vw,110px)",
+              padding: full ? 0 : undefined,
               minHeight: 0,
             }}
             onTouchStart={(e) => (touchX.current = e.touches[0]?.clientX ?? null)}
@@ -297,7 +295,7 @@ export function MediaGallery({
               }}
               data-cursor="link"
               aria-label="Photo précédente"
-              className="jk-lb-ctrl"
+              className="jk-lb-ctrl jk-lb-arrow"
               style={arrow("left")}
             >
               ←
@@ -321,9 +319,8 @@ export function MediaGallery({
                   onClick={() => setFull((f) => !f)}
                   data-cursor="view"
                   data-cursor-label={full ? "RÉDUIRE" : "PLEIN ÉCRAN"}
+                  className={full ? "jk-lb-img jk-lb-img-full" : "jk-lb-img"}
                   style={{
-                    maxWidth: mediaW,
-                    maxHeight: mediaH,
                     objectFit: "contain",
                     filter: "var(--pf)",
                     boxShadow: "0 0 130px var(--glow)",
@@ -333,11 +330,8 @@ export function MediaGallery({
                 />
               ) : (
                 <span
-                  style={{
-                    width: "min(86vw,1280px)",
-                    maxWidth: mediaW,
-                    boxShadow: "0 0 130px var(--glow)",
-                  }}
+                  className="jk-lb-video"
+                  style={{ boxShadow: "0 0 130px var(--glow)" }}
                 >
                   <VideoEmbed
                     provider={cur.provider}
@@ -356,7 +350,7 @@ export function MediaGallery({
               }}
               data-cursor="link"
               aria-label="Photo suivante"
-              className="jk-lb-ctrl"
+              className="jk-lb-ctrl jk-lb-arrow"
               style={arrow("right")}
             >
               →
@@ -476,6 +470,6 @@ const arrow = (side: "left" | "right"): React.CSSProperties => ({
   height: 46,
   color: "#f0ece3",
   fontSize: 16,
-  display: "grid",
-  placeItems: "center",
+  // display/place-items sont posés par la classe .jk-lb-arrow (pour que le
+  // media query mobile puisse la masquer — un display inline gagnerait sinon).
 });

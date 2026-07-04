@@ -287,6 +287,50 @@ button {
   color: #f0ece3;
 }
 
+/* ---- lightbox : dimensions responsives ---- */
+.jk-lb-stage {
+  padding: 0 clamp(56px, 8vw, 110px);
+}
+.jk-lb-arrow {
+  display: grid;
+  place-items: center;
+}
+.jk-lb-img {
+  max-width: min(86vw, 1280px);
+  max-height: 72vh;
+}
+.jk-lb-img-full {
+  max-width: 96vw;
+  max-height: 86vh;
+}
+.jk-lb-video {
+  width: min(86vw, 1280px);
+  max-width: min(86vw, 1280px);
+}
+@media (max-width: 760px) {
+  .jk-lb-stage {
+    padding: 0 10px;
+  }
+  .jk-lb-arrow {
+    display: none;
+  }
+  .jk-lb-fs {
+    display: none;
+  }
+  .jk-lb-img {
+    max-width: calc(100vw - 20px);
+    max-height: 64vh;
+  }
+  .jk-lb-img-full {
+    max-width: 100vw;
+    max-height: 82vh;
+  }
+  .jk-lb-video {
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
+  }
+}
+
 /* ---- grilles responsives (remplacent les vars CSS de applyLayout) ---- */
 
 /* Grille 12 colonnes : les enfants portent leur grid-column inline pour le
