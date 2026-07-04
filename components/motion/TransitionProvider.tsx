@@ -19,6 +19,27 @@ interface TransitionCtx {
 
 const Ctx = createContext<TransitionCtx | null>(null);
 
+const titleCase = (slug: string) =>
+  slug
+    .split("-")
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+    .join(" ");
+
+/** Déduit le mot du voile depuis l'URL de destination (retour navigateur). */
+function labelFromPath(path: string): string {
+  let p = path;
+  try {
+    p = decodeURIComponent(path);
+  } catch {}
+  const seg = p.split("/").filter(Boolean);
+  if (seg.length === 0) return "Accueil";
+  if (seg[0] === "travaux")
+    return seg.length === 1 ? "Travaux" : titleCase(seg[seg.length - 1]);
+  if (seg[0] === "a-propos") return "À propos";
+  if (seg[0] === "contact") return "Contact";
+  return titleCase(seg[seg.length - 1]);
+}
+
 export function TransitionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const ovRef = useRef<HTMLDivElement>(null);
@@ -83,16 +104,28 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
       const o = ovRef.current;
       if (!o || reduced || busy.current) return;
       busy.current = true;
-      if (labelRef.current) labelRef.current.textContent = "";
+      // mot de destination déduit de l'URL (déjà à jour au moment du popstate)
+      const label = labelFromPath(window.location.pathname);
+      if (labelRef.current) labelRef.current.textContent = label;
       if (fillRef.current) {
-        fillRef.current.textContent = "";
+        fillRef.current.textContent = label;
+        fillRef.current.style.transition = "none";
         fillRef.current.style.clipPath = "inset(0 100% 0 0)";
       }
       // couverture instantanée (cache le flash immédiat)
       o.style.transition = "none";
       o.style.transform = "translateY(0%)";
       void o.offsetWidth;
-      // retrait en douceur
+      // remplissage du mot
+      setTimeout(() => {
+        if (fillRef.current) {
+          fillRef.current.style.transition =
+            "clip-path .7s cubic-bezier(.65,0,.35,1)";
+          void fillRef.current.offsetWidth;
+          fillRef.current.style.clipPath = "inset(0 0% 0 0)";
+        }
+      }, 60);
+      // retrait en douceur une fois le mot rempli et la page montée
       setTimeout(() => {
         o.style.transition = "transform .6s cubic-bezier(.76,0,.24,1)";
         o.style.transform = "translateY(-101%)";
@@ -101,7 +134,7 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
           o.style.transform = "translateY(101%)";
           busy.current = false;
         }, 640);
-      }, 700);
+      }, 820);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
