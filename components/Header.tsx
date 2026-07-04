@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "./motion/TransitionLink";
 import { ThemeToggle } from "./ThemeToggle";
+import { MobileMenu } from "./MobileMenu";
 import type { Brand, NavContent } from "./SiteChrome";
 
 const navBtn = (active: boolean): React.CSSProperties => ({
@@ -22,8 +24,10 @@ export function Header({ brand, nav }: { brand: Brand; nav: NavContent }) {
   const isWork = pathname.startsWith("/travaux");
   const isAbout = pathname.startsWith("/a-propos");
   const isContact = pathname.startsWith("/contact");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
+    <>
     <header
       style={{
         position: "fixed",
@@ -63,13 +67,7 @@ export function Header({ brand, nav }: { brand: Brand; nav: NavContent }) {
           brand.name
         )}
       </TransitionLink>
-      <nav
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "clamp(11px,2.6vw,34px)",
-        }}
-      >
+      <nav className="jk-nav-inline">
         <TransitionLink
           href="/travaux"
           transitionLabel={nav.work}
@@ -99,6 +97,36 @@ export function Header({ brand, nav }: { brand: Brand; nav: NavContent }) {
         </TransitionLink>
         <ThemeToggle />
       </nav>
+
+      {/* burger — mobile uniquement (voir .jk-nav-toggle dans globals.css) */}
+      <button
+        type="button"
+        className="jk-nav-toggle"
+        onClick={() => setMenuOpen(true)}
+        aria-label="Ouvrir le menu"
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          padding: 6,
+          margin: -6,
+          color: "#ffffff",
+          flexDirection: "column",
+          gap: 6,
+          alignItems: "flex-end",
+        }}
+      >
+        <span style={{ display: "block", width: 26, height: 1.4, background: "#ffffff" }} />
+        <span style={{ display: "block", width: 18, height: 1.4, background: "#ffffff" }} />
+      </button>
     </header>
+
+    <MobileMenu
+      open={menuOpen}
+      onClose={() => setMenuOpen(false)}
+      brand={brand}
+      nav={nav}
+    />
+    </>
   );
 }

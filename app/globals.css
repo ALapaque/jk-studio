@@ -208,6 +208,25 @@ button {
   }
 }
 
+/* ---- navigation : liens inline (desktop) vs burger (mobile) ---- */
+/* (menu mobile plein écran) */
+.jk-nav-inline {
+  display: flex;
+  align-items: center;
+  gap: clamp(11px, 2.6vw, 34px);
+}
+.jk-nav-toggle {
+  display: none;
+}
+@media (max-width: 820px) {
+  .jk-nav-inline {
+    display: none;
+  }
+  .jk-nav-toggle {
+    display: inline-flex;
+  }
+}
+
 /* ---- états interactifs (remplacent les style-hover / style-focus) ---- */
 
 .jk-nav-link {
