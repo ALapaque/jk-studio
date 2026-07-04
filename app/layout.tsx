@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { themeInitScript } from "@/lib/theme";
 import { getAppearance, getSiteContent } from "@/lib/content";
+import { publicImageUrl } from "@/lib/supabase/storage";
 import { SITE_URL } from "@/lib/site";
 
 const serif = Instrument_Serif({
@@ -32,6 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { brand } = await getSiteContent();
   const name = brand.name || "JKStudio";
   const tagline = brand.tagline || "Studio photo & vidéo, Bruxelles";
+  const faviconUrl = publicImageUrl(brand.faviconPath);
   return {
     metadataBase: new URL(SITE_URL),
     title: {
@@ -40,6 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description:
       "Studio photo & vidéo à Bruxelles. Portraits, mariages, mode, culture gaming — une lumière honnête et des gens vrais.",
+    icons: { icon: faviconUrl || "/favicon.ico" },
     openGraph: {
       type: "website",
       locale: "fr_BE",

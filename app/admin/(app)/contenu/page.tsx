@@ -2,7 +2,13 @@ import { getSiteContent, type Fact } from "@/lib/content";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import {
   saveAbout,
+  saveAboutPortrait,
+  removeAboutPortrait,
   saveBrand,
+  saveBrandLogo,
+  removeBrandLogo,
+  saveBrandFavicon,
+  removeBrandFavicon,
   saveContact,
   saveFooter,
   saveHero,
@@ -16,7 +22,7 @@ import { PageTitle, Field, Input, Textarea } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogoUploader } from "@/components/admin/LogoUploader";
+import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
 
 export const dynamic = "force-dynamic";
 
@@ -57,10 +63,27 @@ export default async function ContenuPage() {
                 <h3 className="mb-4 text-base font-semibold text-foreground">Identité</h3>
                 <div className="mb-5 grid gap-2">
                   <span className="text-sm font-medium">Logo</span>
-                  <LogoUploader currentSrc={publicImageUrl(c.brand.logoPath) || undefined} />
-                  <span className="text-xs text-muted-foreground">
-                    Affiché dans l&apos;en-tête, le loader d&apos;intro, le voile de transition et le pied de page. Sans logo, le nom ci-dessous est utilisé.
-                  </span>
+                  <ContentImageUploader
+                    label="Logo"
+                    pathPrefix="brand"
+                    currentSrc={publicImageUrl(c.brand.logoPath) || undefined}
+                    save={saveBrandLogo}
+                    remove={removeBrandLogo}
+                    hint="Affiché dans l'en-tête, le loader d'intro, le voile de transition et le pied de page. Sans logo, le nom ci-dessous est utilisé. Idéalement un PNG/SVG transparent monochrome."
+                  />
+                </div>
+                <div className="mb-5 grid gap-2">
+                  <span className="text-sm font-medium">Favicon</span>
+                  <ContentImageUploader
+                    label="Favicon"
+                    pathPrefix="brand/favicon"
+                    currentSrc={publicImageUrl(c.brand.faviconPath) || undefined}
+                    save={saveBrandFavicon}
+                    remove={removeBrandFavicon}
+                    accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml"
+                    previewClassName="size-16"
+                    hint="Icône de l'onglet du navigateur. Image carrée (.png, .ico ou .svg), idéalement 512×512."
+                  />
                 </div>
                 <form action={saveBrand} className="grid gap-4">
                   <Field label="Nom de la marque">
@@ -175,6 +198,18 @@ export default async function ContenuPage() {
         <TabsContent value="about">
           <Card>
             <CardContent className="p-5">
+              <div className="mb-5 grid gap-2">
+                <span className="text-sm font-medium">Photo du portrait</span>
+                <ContentImageUploader
+                  label="Portrait"
+                  pathPrefix="about"
+                  currentSrc={publicImageUrl(c.about.portraitPath) || undefined}
+                  save={saveAboutPortrait}
+                  remove={removeAboutPortrait}
+                  previewClassName="h-24 w-20"
+                  hint="Affichée sur la page « À propos ». Sans image, une photo par défaut est utilisée."
+                />
+              </div>
               <form action={saveAbout} className="grid gap-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Eyebrow">
@@ -292,7 +327,7 @@ export default async function ContenuPage() {
                     <Field label="Eyebrow">
                       <Input name="eyebrow" defaultValue={c.works.eyebrow} />
                     </Field>
-                    <Field label="Titre">
+                    <Field label="Titre de la page" hint="Vide = utilise le nom du menu">
                       <Input name="title" defaultValue={c.works.title} />
                     </Field>
                   </div>

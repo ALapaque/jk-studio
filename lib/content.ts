@@ -18,6 +18,8 @@ export interface SiteContent {
     tagline: string;
     /** clé Storage du logo (ou URL), vide = pas de logo → on affiche le nom. */
     logoPath: string;
+    /** clé Storage du favicon (ou URL), vide = favicon par défaut. */
+    faviconPath: string;
   };
   nav: {
     work: string;
@@ -46,6 +48,8 @@ export interface SiteContent {
   about: {
     eyebrow: string;
     title: string;
+    /** clé Storage du portrait (ou URL), vide = image par défaut. */
+    portraitPath: string;
     portraitCaption: string;
     portraitYear: string;
     paragraphs: string[];
@@ -90,6 +94,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     name: "JKStudio",
     tagline: "Studio photo & vidéo — Bruxelles",
     logoPath: "",
+    faviconPath: "",
   },
   nav: {
     work: "Travaux",
@@ -123,6 +128,7 @@ export const DEFAULT_CONTENT: SiteContent = {
   about: {
     eyebrow: "À propos",
     title: "Derrière l’objectif.",
+    portraitPath: "",
     portraitCaption: "JK — autoportrait au 50 mm",
     portraitYear: "2025",
     paragraphs: [
@@ -156,7 +162,7 @@ export const DEFAULT_CONTENT: SiteContent = {
   },
   works: {
     eyebrow: "Index — photo & vidéo, 2024 → 2026",
-    title: "Travaux.",
+    title: "",
     backToIndex: "Index des travaux",
     categoryLabel: "Catégorie",
     prev: "Précédent",

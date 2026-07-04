@@ -1,12 +1,16 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getSiteContent } from "@/lib/content";
+import { publicImageUrl } from "@/lib/supabase/storage";
 import { TransitionLink } from "@/components/motion/TransitionLink";
 
-export const metadata: Metadata = {
-  title: "À propos",
-  description: "Derrière l’objectif — la démarche de JKStudio.",
-};
+const DEFAULT_PORTRAIT =
+  "https://images.unsplash.com/photo-1554048612-b6a482bc67e5?q=80&w=1000&h=1250&fit=crop&auto=format";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { nav } = await getSiteContent();
+  return { title: nav.about };
+}
 
 export default async function AboutPage() {
   const { about, nav } = await getSiteContent();
@@ -34,8 +38,8 @@ export default async function AboutPage() {
             }}
           >
             <Image
-              src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?q=80&w=1000&h=1250&fit=crop&auto=format"
-              alt="JK — autoportrait"
+              src={publicImageUrl(about.portraitPath) || DEFAULT_PORTRAIT}
+              alt={about.portraitCaption || "Portrait"}
               fill
               sizes="(max-width:760px) 100vw, 45vw"
               style={{ objectFit: "cover", filter: "var(--pf)" }}

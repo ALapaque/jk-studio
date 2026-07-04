@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { getSiteContent } from "@/lib/content";
 import { ContactForm } from "@/components/ContactForm";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Un portrait, un mariage, une campagne, un tournoi ? Écrivons-le en images.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { nav, contact } = await getSiteContent();
+  return {
+    title: nav.contact,
+    description: contact.lead,
+  };
+}
 
 export default async function ContactPage() {
   const { contact } = await getSiteContent();

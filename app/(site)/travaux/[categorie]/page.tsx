@@ -61,7 +61,7 @@ export default async function CategoryPage({
     >
       <TransitionLink
         href="/travaux"
-        transitionLabel={content.works.title}
+        transitionLabel={content.works.title || content.nav.work}
         data-cursor="link"
         className="jk-link"
         style={{

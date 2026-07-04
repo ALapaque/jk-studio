@@ -389,34 +389,38 @@ async function getContentValue(key: string): Promise<Record<string, unknown>> {
   return v && typeof v === "object" ? (v as Record<string, unknown>) : {};
 }
 
+/** Met à jour partiellement une clé site_content en préservant les autres champs. */
+async function patchContent(key: string, patch: Record<string, unknown>) {
+  const current = await getContentValue(key);
+  await upsertContent(key, { ...current, ...patch });
+}
+
 export async function saveBrand(formData: FormData) {
   await assertUser();
-  const current = await getContentValue("brand");
-  await upsertContent("brand", {
+  await patchContent("brand", {
     name: s(formData, "name"),
     tagline: s(formData, "tagline"),
-    logoPath: (current.logoPath as string) ?? "",
   });
 }
 
 export async function saveBrandLogo(formData: FormData) {
   await assertUser();
-  const current = await getContentValue("brand");
-  await upsertContent("brand", {
-    name: (current.name as string) ?? "JKStudio",
-    tagline: (current.tagline as string) ?? "",
-    logoPath: s(formData, "storage_path"),
-  });
+  await patchContent("brand", { logoPath: s(formData, "storage_path") });
 }
 
 export async function removeBrandLogo() {
   await assertUser();
-  const current = await getContentValue("brand");
-  await upsertContent("brand", {
-    name: (current.name as string) ?? "JKStudio",
-    tagline: (current.tagline as string) ?? "",
-    logoPath: "",
-  });
+  await patchContent("brand", { logoPath: "" });
+}
+
+export async function saveBrandFavicon(formData: FormData) {
+  await assertUser();
+  await patchContent("brand", { faviconPath: s(formData, "storage_path") });
+}
+
+export async function removeBrandFavicon() {
+  await assertUser();
+  await patchContent("brand", { faviconPath: "" });
 }
 
 export async function saveNav(formData: FormData) {
@@ -482,7 +486,7 @@ export async function saveStudio(formData: FormData) {
 
 export async function saveAbout(formData: FormData) {
   await assertUser();
-  await upsertContent("about", {
+  await patchContent("about", {
     eyebrow: s(formData, "eyebrow"),
     title: s(formData, "title"),
     portraitCaption: s(formData, "portraitCaption"),
@@ -492,6 +496,16 @@ export async function saveAbout(formData: FormData) {
     principles: lines(formData, "principles"),
     ctaLink: s(formData, "ctaLink"),
   });
+}
+
+export async function saveAboutPortrait(formData: FormData) {
+  await assertUser();
+  await patchContent("about", { portraitPath: s(formData, "storage_path") });
+}
+
+export async function removeAboutPortrait() {
+  await assertUser();
+  await patchContent("about", { portraitPath: "" });
 }
 
 export async function saveContact(formData: FormData) {

@@ -5,10 +5,13 @@ import { countLabel, Category } from "@/lib/types";
 import { getSiteContent } from "@/lib/content";
 import { TransitionLink } from "@/components/motion/TransitionLink";
 
-export const metadata: Metadata = {
-  title: "Travaux",
-  description: "Index des travaux photo & vidéo — 2024 → 2026.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { works, nav } = await getSiteContent();
+  return {
+    title: works.title || nav.work,
+    description: "Index des travaux photo & vidéo — 2024 → 2026.",
+  };
+}
 
 export const revalidate = 60;
 
@@ -158,7 +161,7 @@ export default async function TravauxPage() {
           letterSpacing: "-0.015em",
         }}
       >
-        {content.works.title}
+        {content.works.title || content.nav.work}
       </h1>
       <div className="grid12" style={{ gap: "clamp(16px,2vw,28px)" }}>
         {categories.map((cat, i) => (
