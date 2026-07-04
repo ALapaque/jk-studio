@@ -13,10 +13,15 @@ Légende : 🟢 = obligatoire · 🔵 = recommandé · ⚪ = optionnel.
 - ✅ Le code est développé, testé et poussé sur GitHub
   (`alapaque/jk-studio`, branche `claude/jkstudio-site-impl-5472b1`).
 - ✅ Ton projet Supabase existe, le schéma est en place, la base est **vide**.
-  > ⚠️ Nouvelle migration à appliquer : dans Supabase → **SQL Editor**, exécute
-  > [`supabase/migrations/0002_covers_hero.sql`](../supabase/migrations/0002_covers_hero.sql)
-  > (couvertures uploadables + photos « à la une »). Sans elle, ces deux
-  > nouveautés ne fonctionneront pas (le reste du site marche quand même).
+  > ⚠️ Nouvelles migrations à appliquer : dans Supabase → **SQL Editor**, exécute
+  > **dans l'ordre** :
+  > - [`supabase/migrations/0002_covers_hero.sql`](../supabase/migrations/0002_covers_hero.sql)
+  >   (couvertures uploadables + photos « à la une ») ;
+  > - [`supabase/migrations/0003_category_media.sql`](../supabase/migrations/0003_category_media.sql)
+  >   (photos/vidéos rattachées directement à une catégorie).
+  >
+  > Sans elles, ces nouveautés ne fonctionneront pas (le reste du site marche
+  > quand même).
 - ⬜ Il reste : sécuriser les clés → déployer sur Vercel → créer ton compte admin
   → remplir le site.
 

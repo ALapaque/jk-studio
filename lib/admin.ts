@@ -72,6 +72,25 @@ export async function getProjectFull(id: string): Promise<ProjectFull | null> {
   return p;
 }
 
+export type CategoryFull = CategoryRow & {
+  photos: PhotoRow[];
+  videos: VideoRow[];
+};
+
+export async function getCategoryFull(id: string): Promise<CategoryFull | null> {
+  const sb = createAdminSupabase();
+  const { data } = await sb
+    .from("categories")
+    .select("*, photos(*), videos(*)")
+    .eq("id", id)
+    .single();
+  if (!data) return null;
+  const c = data as unknown as CategoryFull;
+  c.photos = [...(c.photos ?? [])].sort((a, b) => a.position - b.position);
+  c.videos = [...(c.videos ?? [])].sort((a, b) => a.position - b.position);
+  return c;
+}
+
 export async function getMessages(): Promise<MessageRow[]> {
   const sb = createAdminSupabase();
   const { data } = await sb

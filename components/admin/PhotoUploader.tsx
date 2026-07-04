@@ -27,7 +27,13 @@ const slugExt = (name: string) =>
   (name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") ||
   "jpg";
 
-export function PhotoUploader({ projectId }: { projectId: string }) {
+export function PhotoUploader({
+  ownerId,
+  ownerField = "project_id",
+}: {
+  ownerId: string;
+  ownerField?: "project_id" | "category_id";
+}) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -44,14 +50,14 @@ export function PhotoUploader({ projectId }: { projectId: string }) {
       try {
         const { w, h } = await readDimensions(file);
         // 1) upload direct navigateur → Supabase Storage (session authentifiée)
-        const key = `${projectId}/${crypto.randomUUID()}.${slugExt(file.name)}`;
+        const key = `${ownerId}/${crypto.randomUUID()}.${slugExt(file.name)}`;
         const { error: upErr } = await sb.storage
           .from(STORAGE_BUCKET)
           .upload(key, file, { contentType: file.type || undefined, upsert: false });
         if (upErr) throw upErr;
         // 2) enregistrement de la fiche (petit payload) via Server Action
         const fd = new FormData();
-        fd.append("project_id", projectId);
+        fd.append(ownerField, ownerId);
         fd.append("storage_path", key);
         fd.append("width", String(w));
         fd.append("height", String(h));

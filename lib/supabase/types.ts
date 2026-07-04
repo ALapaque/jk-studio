@@ -30,7 +30,8 @@ export interface ProjectRow {
 
 export interface PhotoRow {
   id: string;
-  project_id: string;
+  project_id: string | null;
+  category_id: string | null;
   storage_path: string;
   alt: string | null;
   caption: string | null;
@@ -44,7 +45,8 @@ export interface PhotoRow {
 
 export interface VideoRow {
   id: string;
-  project_id: string;
+  project_id: string | null;
+  category_id: string | null;
   provider: "youtube" | "vimeo";
   video_id: string;
   title: string | null;

@@ -186,22 +186,32 @@ export async function moveProject(formData: FormData) {
 // Le fichier est envoyé directement du navigateur vers Supabase Storage
 // (voir PhotoUploader) pour contourner la limite de taille des Server Actions /
 // des fonctions Vercel. Ici on n'enregistre que la fiche photo (petit payload).
+/** Portée d'un média : soit une série (project_id), soit une catégorie. */
+function mediaScope(formData: FormData) {
+  const projectId = s(formData, "project_id");
+  const categoryId = s(formData, "category_id");
+  if (projectId) return { col: "project_id", val: projectId } as const;
+  if (categoryId) return { col: "category_id", val: categoryId } as const;
+  return null;
+}
+
 export async function savePhoto(formData: FormData) {
   await assertUser();
   const sb = createAdminSupabase();
-  const projectId = s(formData, "project_id");
+  const scope = mediaScope(formData);
   const storagePath = s(formData, "storage_path");
-  if (!projectId || !storagePath) throw new Error("Données manquantes");
+  if (!scope || !storagePath) throw new Error("Données manquantes");
   const width = Number(formData.get("width")) || null;
   const height = Number(formData.get("height")) || null;
   const { error } = await sb.from("photos").insert({
-    project_id: projectId,
+    project_id: scope.col === "project_id" ? scope.val : null,
+    category_id: scope.col === "category_id" ? scope.val : null,
     storage_path: storagePath,
     alt: s(formData, "alt") || null,
     caption: s(formData, "caption") || null,
     width,
     height,
-    position: await nextPosition("photos", { col: "project_id", val: projectId }),
+    position: await nextPosition("photos", scope),
   });
   if (error) throw new Error(error.message);
   revalidateAll();
@@ -236,10 +246,8 @@ export async function deletePhoto(formData: FormData) {
 
 export async function movePhoto(formData: FormData) {
   await assertUser();
-  await swap("photos", s(formData, "id"), s(formData, "dir"), {
-    col: "project_id",
-    val: s(formData, "project_id"),
-  });
+  const scope = mediaScope(formData);
+  if (scope) await swap("photos", s(formData, "id"), s(formData, "dir"), scope);
   revalidateAll();
 }
 
@@ -295,17 +303,18 @@ export async function toggleFeatured(formData: FormData) {
 export async function addVideo(formData: FormData) {
   await assertUser();
   const sb = createAdminSupabase();
-  const projectId = s(formData, "project_id");
+  const scope = mediaScope(formData);
   const url = s(formData, "url");
   const parsed = parseVideoUrl(url);
-  if (!projectId) throw new Error("Projet requis");
+  if (!scope) throw new Error("Projet ou catégorie requis");
   if (!parsed) throw new Error("URL YouTube ou Vimeo non reconnue");
   const { error } = await sb.from("videos").insert({
-    project_id: projectId,
+    project_id: scope.col === "project_id" ? scope.val : null,
+    category_id: scope.col === "category_id" ? scope.val : null,
     provider: parsed.provider,
     video_id: parsed.videoId,
     title: s(formData, "title") || null,
-    position: await nextPosition("videos", { col: "project_id", val: projectId }),
+    position: await nextPosition("videos", scope),
   });
   if (error) throw new Error(error.message);
   revalidateAll();
@@ -321,10 +330,8 @@ export async function deleteVideo(formData: FormData) {
 
 export async function moveVideo(formData: FormData) {
   await assertUser();
-  await swap("videos", s(formData, "id"), s(formData, "dir"), {
-    col: "project_id",
-    val: s(formData, "project_id"),
-  });
+  const scope = mediaScope(formData);
+  if (scope) await swap("videos", s(formData, "id"), s(formData, "dir"), scope);
   revalidateAll();
 }
 

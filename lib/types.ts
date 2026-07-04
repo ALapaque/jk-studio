@@ -49,6 +49,8 @@ export interface Category {
   period: string;
   coverSrc: string;
   series: Series[];
+  /** Photos/vidéos rattachées directement à la catégorie (hors séries). */
+  directMedia?: Media[];
 }
 
 /** Ordonne les médias d'une série (photos puis vidéos, ou selon position). */
@@ -70,6 +72,10 @@ export function countLabel(c: Category): string {
   for (const s of c.series) {
     nP += s.photos.length;
     nV += s.videos.length;
+  }
+  for (const m of c.directMedia ?? []) {
+    if (m.kind === "photo") nP += 1;
+    else nV += 1;
   }
   if (!nP) return `${nV} ${nV > 1 ? "films" : "film"}`;
   if (!nV) return `${nP} photos`;

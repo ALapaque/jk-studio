@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getAllCategories } from "@/lib/admin";
+import { getCategoryFull } from "@/lib/admin";
 import { setCategoryCover, updateCategory } from "@/app/admin/actions";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import { admin, Button, Card, Field, Input, PageTitle } from "@/components/admin/ui";
 import { CoverUploader } from "@/components/admin/CoverUploader";
+import { MediaManager } from "@/components/admin/MediaManager";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export default async function EditCategoryPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const cat = (await getAllCategories()).find((c) => c.id === id);
+  const cat = await getCategoryFull(id);
   if (!cat) notFound();
 
   return (
@@ -36,7 +37,7 @@ export default async function EditCategoryPage({
         </Field>
       </Card>
 
-      <Card>
+      <Card style={{ marginBottom: 24 }}>
         <form action={updateCategory} style={{ display: "grid", gap: 14 }}>
           <input type="hidden" name="id" value={cat.id} />
           <div className="admin-2col">
@@ -66,6 +67,29 @@ export default async function EditCategoryPage({
           </div>
         </form>
       </Card>
+
+      {/* ---- médias rattachés directement à la catégorie ---- */}
+      <div
+        style={{
+          fontFamily: admin.mono,
+          fontSize: 11,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: admin.ink2,
+          margin: "4px 2px 12px",
+        }}
+      >
+        Photos & vidéos de la catégorie (affichées directement sur la page catégorie)
+      </div>
+      <MediaManager
+        ownerId={cat.id}
+        ownerField="category_id"
+        photos={cat.photos}
+        videos={cat.videos}
+        coverPath={cat.cover_path}
+        setCover={setCategoryCover}
+        coverField="category_id"
+      />
     </div>
   );
 }

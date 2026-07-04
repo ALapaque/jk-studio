@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getCategories, getCategoryBySlug } from "@/lib/data";
 import { countLabel, Series } from "@/lib/types";
 import { TransitionLink } from "@/components/motion/TransitionLink";
+import { MediaGallery } from "@/components/MediaGallery";
 
 export const revalidate = 60;
 
@@ -112,6 +113,13 @@ export default async function CategoryPage({
           {meta}
         </span>
       </div>
+
+      {/* Galerie de photos rattachées directement à la catégorie */}
+      {cat.directMedia && cat.directMedia.length > 0 && (
+        <div style={{ marginBottom: "clamp(50px,7vw,90px)" }}>
+          <MediaGallery media={cat.directMedia} categoryTitle={cat.title} />
+        </div>
+      )}
 
       {/* Séries */}
       <div className="grid12" style={{ gap: "clamp(16px,2vw,28px)" }}>

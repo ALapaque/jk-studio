@@ -29,6 +29,7 @@ Dans le projet : **Project Settings** (roue dentée) → **API**. Notez :
 2. Exécute les fichiers de `supabase/migrations/` **dans l'ordre** (un par requête, **Run** à chaque fois) :
    - [`0001_init.sql`](../supabase/migrations/0001_init.sql) — tables, RLS, stockage.
    - [`0002_covers_hero.sql`](../supabase/migrations/0002_covers_hero.sql) — couvertures uploadables + photos « à la une ».
+   - [`0003_category_media.sql`](../supabase/migrations/0003_category_media.sql) — photos/vidéos rattachées directement à une catégorie (sans passer par une série).
 
 Cela crée les tables (`categories`, `projects`, `photos`, `videos`, `messages`,
 `site_content`), active les **politiques RLS** (lecture publique du contenu

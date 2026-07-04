@@ -3,7 +3,7 @@ import { isSupabaseConfigured } from "./env";
 import { createPublicSupabase } from "./supabase/server";
 import { publicImageUrl } from "./supabase/storage";
 import { CATEGORIES as DEMO } from "./demo-data";
-import { Category, Photo, Series, Video } from "./types";
+import { Category, Media, Photo, Series, Video } from "./types";
 import {
   CategoryRow,
   PhotoRow,
@@ -66,14 +66,31 @@ function mapSeries(p: ProjectWithMedia): Series {
 function mapCategory(
   c: CategoryRow,
   projects: ProjectWithMedia[],
+  directPhotos: PhotoRow[],
+  directVideos: VideoRow[],
   index: number,
 ): Category {
   const series = projects
     .filter((p) => p.category_id === c.id)
     .sort((a, b) => a.position - b.position)
     .map(mapSeries);
-  const nP = series.reduce((n, s) => n + s.photos.length, 0);
-  const nV = series.reduce((n, s) => n + s.videos.length, 0);
+  const directMedia: Media[] = [
+    ...directPhotos
+      .filter((p) => p.category_id === c.id)
+      .sort((a, b) => a.position - b.position)
+      .map((x) => ({ kind: "photo" as const, ...mapPhoto(x, c.period) })),
+    ...directVideos
+      .filter((v) => v.category_id === c.id)
+      .sort((a, b) => a.position - b.position)
+      .map((x) => ({ kind: "video" as const, ...mapVideo(x, c.period) })),
+  ];
+  const nP =
+    series.reduce((n, s) => n + s.photos.length, 0) +
+    directMedia.filter((m) => m.kind === "photo").length;
+  const nV =
+    series.reduce((n, s) => n + s.videos.length, 0) +
+    directMedia.filter((m) => m.kind === "video").length;
+  const firstDirectPhoto = directMedia.find((m) => m.kind === "photo");
   return {
     slug: c.slug,
     num: pad(index + 1),
@@ -83,8 +100,13 @@ function mapCategory(
     description: c.description,
     location: c.location,
     period: c.period,
-    coverSrc: publicImageUrl(c.cover_path) || series[0]?.coverSrc || "",
+    coverSrc:
+      publicImageUrl(c.cover_path) ||
+      series[0]?.coverSrc ||
+      firstDirectPhoto?.src ||
+      "",
     series,
+    directMedia,
   };
 }
 
@@ -102,24 +124,32 @@ export async function getHeroItems(): Promise<HeroItem[]> {
     const { data, error } = await sb
       .from("photos")
       .select(
-        "storage_path, featured_position, projects!inner(slug, published, categories!inner(slug, title))",
+        "storage_path, featured_position, project:projects(slug, published, categories(slug, title)), category:categories(slug, title)",
       )
       .eq("featured", true)
-      .eq("projects.published", true)
       .order("featured_position")
-      .limit(8);
+      .limit(24);
     if (error) throw error;
-    return (data ?? []).map((row: Record<string, unknown>) => {
-      const proj = row.projects as {
-        slug: string;
-        categories: { slug: string; title: string };
-      };
-      return {
-        src: publicImageUrl(row.storage_path as string),
-        href: `/travaux/${proj.categories.slug}/${proj.slug}`,
-        label: proj.categories.title,
-      };
-    });
+    const out: HeroItem[] = [];
+    for (const row of (data ?? []) as Record<string, unknown>[]) {
+      const src = publicImageUrl(row.storage_path as string);
+      const project = row.project as
+        | { slug: string; published: boolean; categories: { slug: string; title: string } }
+        | null;
+      const category = row.category as { slug: string; title: string } | null;
+      if (project) {
+        if (!project.published) continue; // série en brouillon → on ignore
+        out.push({
+          src,
+          href: `/travaux/${project.categories.slug}/${project.slug}`,
+          label: project.categories.title,
+        });
+      } else if (category) {
+        out.push({ src, href: `/travaux/${category.slug}`, label: category.title });
+      }
+      if (out.length >= 8) break;
+    }
+    return out;
   } catch (err) {
     console.error("[data] getHeroItems échoué:", err);
     return [];
@@ -136,19 +166,30 @@ export async function getCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) return fallback();
   try {
     const sb = createPublicSupabase();
-    const [{ data: cats, error: e1 }, { data: projs, error: e2 }] =
-      await Promise.all([
-        sb.from("categories").select("*").order("position"),
-        sb
-          .from("projects")
-          .select("*, photos(*), videos(*)")
-          .eq("published", true)
-          .order("position"),
-      ]);
+    const [
+      { data: cats, error: e1 },
+      { data: projs, error: e2 },
+      { data: dphotos, error: e3 },
+      { data: dvideos, error: e4 },
+    ] = await Promise.all([
+      sb.from("categories").select("*").order("position"),
+      sb
+        .from("projects")
+        .select("*, photos(*), videos(*)")
+        .eq("published", true)
+        .order("position"),
+      sb.from("photos").select("*").not("category_id", "is", null),
+      sb.from("videos").select("*").not("category_id", "is", null),
+    ]);
+    // Seules les catégories/séries sont critiques. Les médias directs (migration
+    // 0003) sont optionnels : s'ils échouent (colonne absente), on les ignore
+    // pour ne pas faire basculer tout le site sur les données de démo.
     if (e1 || e2) throw e1 || e2;
     const projects = (projs ?? []) as ProjectWithMedia[];
+    const directPhotos = e3 ? [] : ((dphotos ?? []) as PhotoRow[]);
+    const directVideos = e4 ? [] : ((dvideos ?? []) as VideoRow[]);
     return (cats ?? []).map((c, i) =>
-      mapCategory(c as CategoryRow, projects, i),
+      mapCategory(c as CategoryRow, projects, directPhotos, directVideos, i),
     );
   } catch (err) {
     if (!warned) {
