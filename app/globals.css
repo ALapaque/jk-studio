@@ -194,8 +194,9 @@ button {
   font-family: inherit;
 }
 
-/* Curseur custom : on masque le curseur natif sur pointeurs fins. */
-@media (pointer: fine) {
+/* Curseur custom : on masque le curseur natif uniquement sur les vraies
+   souris (pointeur fin + survol) — jamais sur tactile. */
+@media (hover: hover) and (pointer: fine) {
   [data-jk],
   [data-jk] * {
     cursor: none;

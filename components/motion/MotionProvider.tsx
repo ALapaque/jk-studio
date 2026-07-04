@@ -195,7 +195,9 @@ export function MotionProvider({
   useEffect(() => {
     const s = S.current;
     s.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    s.fine = window.matchMedia("(pointer:fine)").matches;
+    // Curseur custom réservé aux vraies souris (pointeur fin + survol).
+    // Exclut le tactile (hover: none), plus fiable que (pointer:fine) seul.
+    s.fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     s.rx = window.innerWidth / 2;
     s.ry = window.innerHeight / 2;
     s.lmx = s.rx;
@@ -251,10 +253,22 @@ export function MotionProvider({
       remeasure();
     };
 
+    // Coupe-circuit tactile : au premier toucher, on désactive définitivement
+    // le curseur custom (même si le device ment sur les media queries).
+    const onTouch = () => {
+      s.fine = false;
+      if (cursorRef.current) {
+        cursorRef.current.style.display = "none";
+        cursorRef.current.style.opacity = "0";
+      }
+      window.removeEventListener("touchstart", onTouch);
+    };
+
     window.addEventListener("error", onImgErr, true);
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseover", onOver);
     window.addEventListener("resize", onResize);
+    window.addEventListener("touchstart", onTouch, { passive: true });
     if (cursorRef.current && !s.fine)
       cursorRef.current.style.display = "none";
 
@@ -343,6 +357,7 @@ export function MotionProvider({
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseover", onOver);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("touchstart", onTouch);
       s.io?.disconnect();
     };
   }, [revealEl, setupScreen, remeasure]);
