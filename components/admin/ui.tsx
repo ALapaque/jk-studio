@@ -1,15 +1,33 @@
-// Primitives d'UI de l'admin (styles inline, utilisables en RSC ou client).
+// Primitives d'UI de l'admin — adossées à shadcn/ui + Tailwind (thème clair/
+// sombre via .admin-root). Les noms d'export sont conservés pour compatibilité
+// avec les pages existantes pendant la migration.
 import React from "react";
+import { cn } from "@/lib/utils";
+import { Button as ShButton, buttonVariants } from "@/components/ui/button";
+import { Input as ShInput } from "@/components/ui/input";
+import { Textarea as ShTextarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Card as ShCard,
+  CardContent,
+} from "@/components/ui/card";
+import type { VariantProps } from "class-variance-authority";
 
+/**
+ * Ancien objet de tokens — conservé uniquement pour ne pas casser les imports
+ * résiduels. Les nouvelles pages utilisent les classes Tailwind (text-foreground,
+ * text-muted-foreground, border-border, bg-card, text-destructive…).
+ * @deprecated privilégier les utilitaires Tailwind du thème.
+ */
 export const admin = {
-  bg: "#141210",
-  panel: "#1c1a16",
-  panel2: "#232019",
-  border: "#2c281f",
-  ink: "#e8e3d8",
-  ink2: "#928b7c",
-  accent: "#d6bc8c",
-  danger: "#c96f4a",
+  bg: "var(--background)",
+  panel: "var(--card)",
+  panel2: "var(--secondary)",
+  border: "var(--border)",
+  ink: "var(--foreground)",
+  ink2: "var(--muted-foreground)",
+  accent: "var(--primary)",
+  danger: "var(--destructive)",
   mono: "var(--font-mono), ui-monospace, monospace",
   sans: "var(--font-sans), system-ui, sans-serif",
 };
@@ -22,23 +40,11 @@ export function PageTitle({
   sub?: string;
 }) {
   return (
-    <div style={{ marginBottom: 28 }}>
-      <h1
-        style={{
-          margin: 0,
-          fontFamily: admin.sans,
-          fontSize: 24,
-          fontWeight: 600,
-          color: admin.ink,
-        }}
-      >
+    <div className="mb-7">
+      <h1 className="text-2xl font-semibold tracking-tight text-foreground">
         {children}
       </h1>
-      {sub && (
-        <p style={{ margin: "6px 0 0", color: admin.ink2, fontSize: 13.5 }}>
-          {sub}
-        </p>
-      )}
+      {sub && <p className="mt-1.5 text-sm text-muted-foreground">{sub}</p>}
     </div>
   );
 }
@@ -46,22 +52,16 @@ export function PageTitle({
 export function Card({
   children,
   style,
+  className,
 }: {
   children: React.ReactNode;
   style?: React.CSSProperties;
+  className?: string;
 }) {
   return (
-    <div
-      style={{
-        background: admin.panel,
-        border: `1px solid ${admin.border}`,
-        borderRadius: 10,
-        padding: 20,
-        ...style,
-      }}
-    >
-      {children}
-    </div>
+    <ShCard className={cn("gap-0 py-0", className)} style={style}>
+      <CardContent className="p-5">{children}</CardContent>
+    </ShCard>
   );
 }
 
@@ -75,88 +75,41 @@ export function Field({
   hint?: string;
 }) {
   return (
-    <label style={{ display: "grid", gap: 6 }}>
-      <span
-        style={{
-          fontFamily: admin.mono,
-          fontSize: 10.5,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color: admin.ink2,
-        }}
-      >
-        {label}
-      </span>
+    <div className="grid gap-2">
+      <Label>{label}</Label>
       {children}
-      {hint && (
-        <span style={{ fontSize: 11.5, color: admin.ink2 }}>{hint}</span>
-      )}
-    </label>
+      {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
+    </div>
   );
 }
 
-const baseControl: React.CSSProperties = {
-  width: "100%",
-  boxSizing: "border-box",
-  background: admin.bg,
-  border: `1px solid ${admin.border}`,
-  borderRadius: 8,
-  padding: "10px 12px",
-  color: admin.ink,
-  fontFamily: admin.sans,
-  fontSize: 14,
-  outline: "none",
+export function Input(props: React.ComponentProps<"input">) {
+  return <ShInput {...props} />;
+}
+
+export function Textarea(props: React.ComponentProps<"textarea">) {
+  return <ShTextarea {...props} />;
+}
+
+type OldVariant = "primary" | "ghost" | "danger";
+type ShVariant = VariantProps<typeof buttonVariants>["variant"];
+
+const VARIANT_MAP: Record<OldVariant, ShVariant> = {
+  primary: "default",
+  ghost: "outline",
+  danger: "destructive",
 };
-
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} style={{ ...baseControl, ...props.style }} />;
-}
-
-export function Textarea(
-  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-) {
-  return (
-    <textarea
-      {...props}
-      style={{ ...baseControl, resize: "vertical", lineHeight: 1.5, ...props.style }}
-    />
-  );
-}
 
 export function Button({
   variant = "primary",
-  style,
+  className,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "ghost" | "danger";
+}: Omit<React.ComponentProps<typeof ShButton>, "variant"> & {
+  variant?: OldVariant | ShVariant;
 }) {
-  const v: Record<string, React.CSSProperties> = {
-    primary: { background: admin.accent, color: "#1a1510", border: "none" },
-    ghost: {
-      background: "transparent",
-      color: admin.ink,
-      border: `1px solid ${admin.border}`,
-    },
-    danger: {
-      background: "transparent",
-      color: admin.danger,
-      border: `1px solid ${admin.danger}`,
-    },
-  };
-  return (
-    <button
-      {...props}
-      style={{
-        borderRadius: 8,
-        padding: "9px 16px",
-        fontFamily: admin.mono,
-        fontSize: 11,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
-        cursor: "pointer",
-        ...v[variant],
-        ...style,
-      }}
-    />
-  );
+  const mapped =
+    variant && variant in VARIANT_MAP
+      ? VARIANT_MAP[variant as OldVariant]
+      : (variant as ShVariant);
+  return <ShButton variant={mapped} className={className} {...props} />;
 }

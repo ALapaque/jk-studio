@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
 import { getAllCategories, getProjectFull } from "@/lib/admin";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import {
@@ -7,17 +8,14 @@ import {
   setProjectCover,
   updateProject,
 } from "@/app/admin/actions";
-import {
-  admin,
-  Button,
-  Card,
-  Field,
-  Input,
-  PageTitle,
-} from "@/components/admin/ui";
+import { PageTitle, Field, Input } from "@/components/admin/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { CoverUploader } from "@/components/admin/CoverUploader";
 import { MediaManager } from "@/components/admin/MediaManager";
+import { SelectField } from "@/components/admin/fields/SelectField";
+import { SwitchField } from "@/components/admin/fields/SwitchField";
 
 export const dynamic = "force-dynamic";
 
@@ -32,89 +30,88 @@ export default async function EditSeriesPage({
 
   return (
     <div>
-      <Link href="/admin/series" style={{ color: admin.ink2, fontSize: 13 }}>
-        ← Séries
+      <Link
+        href="/admin/series"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" /> Séries
       </Link>
-      <PageTitle sub={`${p.categories?.title ?? ""} · ${p.published ? "publiée" : "brouillon"}`}>
+      <PageTitle
+        sub={`${p.categories?.title ?? ""} · ${p.published ? "publiée" : "brouillon"}`}
+      >
         {p.title}
       </PageTitle>
 
       {/* ---- champs de la série ---- */}
-      <Card style={{ marginBottom: 24 }}>
-        <form action={updateProject} style={{ display: "grid", gap: 14 }}>
-          <input type="hidden" name="id" value={p.id} />
-          <div className="admin-2col">
-            <Field label="Catégorie">
-              <select
-                name="category_id"
-                defaultValue={p.category_id}
-                style={{
-                  width: "100%",
-                  boxSizing: "border-box",
-                  background: admin.bg,
-                  border: `1px solid ${admin.border}`,
-                  borderRadius: 8,
-                  padding: "10px 12px",
-                  color: admin.ink,
-                  fontSize: 14,
-                }}
-              >
-                {cats.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.title}
-                  </option>
-                ))}
-              </select>
+      <Card className="mb-6">
+        <CardContent className="p-5">
+          <form action={updateProject} className="grid gap-4">
+            <input type="hidden" name="id" value={p.id} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Catégorie">
+                <SelectField
+                  name="category_id"
+                  defaultValue={p.category_id ?? undefined}
+                  options={cats.map((c) => ({ value: c.id, label: c.title }))}
+                />
+              </Field>
+              <Field label="Titre">
+                <Input name="title" required defaultValue={p.title} />
+              </Field>
+            </div>
+            <Field label="Slug">
+              <Input name="slug" defaultValue={p.slug} />
             </Field>
-            <Field label="Titre">
-              <Input name="title" required defaultValue={p.title} />
+            <Field label="Description">
+              <Input name="description" defaultValue={p.description} />
             </Field>
-          </div>
-          <Field label="Slug">
-            <Input name="slug" defaultValue={p.slug} />
-          </Field>
-          <Field label="Description">
-            <Input name="description" defaultValue={p.description} />
-          </Field>
-          <div className="admin-2col">
-            <Field label="Lieu">
-              <Input name="location" defaultValue={p.location} />
-            </Field>
-            <Field label="Période">
-              <Input name="period" defaultValue={p.period} />
-            </Field>
-          </div>
-          <label style={{ display: "flex", gap: 10, alignItems: "center", color: admin.ink, fontSize: 14 }}>
-            <input type="checkbox" name="published" defaultChecked={p.published} />
-            Publiée (visible sur le site)
-          </label>
-          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <Button type="submit">Enregistrer</Button>
-            {p.published && (
-              <a
-                href={`/travaux/${p.categories?.slug}/${p.slug}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: admin.accent, fontSize: 13 }}
-              >
-                Voir sur le site ↗
-              </a>
-            )}
-          </div>
-        </form>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Lieu">
+                <Input name="location" defaultValue={p.location} />
+              </Field>
+              <Field label="Période">
+                <Input name="period" defaultValue={p.period} />
+              </Field>
+            </div>
+            <SwitchField
+              name="published"
+              label="Publiée"
+              hint="Visible sur le site public."
+              defaultChecked={p.published}
+            />
+            <div className="flex items-center gap-4">
+              <Button type="submit">Enregistrer</Button>
+              {p.published && (
+                <a
+                  href={`/travaux/${p.categories?.slug}/${p.slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                >
+                  Voir sur le site <ExternalLink className="size-3.5" />
+                </a>
+              )}
+            </div>
+          </form>
+        </CardContent>
       </Card>
 
       {/* ---- couverture ---- */}
-      <Card style={{ marginBottom: 24 }}>
-        <Field label="Image de couverture de la série" hint="Uploade une image, ou utilise « Couv. » sous une photo ci-dessous.">
-          <CoverUploader
-            ownerId={p.id}
-            idField="project_id"
-            pathPrefix={p.id}
-            action={setProjectCover}
-            currentSrc={publicImageUrl(p.cover_path) || undefined}
-          />
-        </Field>
+      <Card className="mb-6">
+        <CardContent className="p-5">
+          <Field
+            label="Image de couverture de la série"
+            hint="Uploade une image, ou utilise « Couv. » sous une photo ci-dessous."
+          >
+            <CoverUploader
+              ownerId={p.id}
+              idField="project_id"
+              pathPrefix={p.id}
+              action={setProjectCover}
+              currentSrc={publicImageUrl(p.cover_path) || undefined}
+            />
+          </Field>
+        </CardContent>
       </Card>
 
       {/* ---- médias ---- */}
@@ -129,14 +126,27 @@ export default async function EditSeriesPage({
       />
 
       {/* ---- zone dangereuse ---- */}
-      <Card style={{ borderColor: admin.danger }}>
-        <h2 style={{ marginTop: 0, fontSize: 15, color: admin.danger }}>Supprimer la série</h2>
-        <p style={{ color: admin.ink2, fontSize: 13, marginTop: 0 }}>
-          Supprime la série et toutes ses photos/vidéos. Irréversible.
-        </p>
-        <ActionForm action={deleteProject} hidden={{ id: p.id }} confirm={`Supprimer « ${p.title} » ?`}>
-          <Button variant="danger">Supprimer définitivement</Button>
-        </ActionForm>
+      <Card className="border-destructive/50">
+        <CardContent className="p-5">
+          <h2 className="text-base font-semibold text-destructive">
+            Supprimer la série
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Supprime la série et toutes ses photos/vidéos. Irréversible.
+          </p>
+          <div className="mt-4">
+            <ActionForm
+              action={deleteProject}
+              hidden={{ id: p.id }}
+              confirm={`Supprimer « ${p.title} » et tous ses médias ?`}
+              confirmLabel="Supprimer"
+            >
+              <Button variant="destructive">
+                <Trash2 className="size-4" /> Supprimer définitivement
+              </Button>
+            </ActionForm>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );

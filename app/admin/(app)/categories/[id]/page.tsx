@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { getCategoryFull } from "@/lib/admin";
 import { setCategoryCover, updateCategory } from "@/app/admin/actions";
 import { publicImageUrl } from "@/lib/supabase/storage";
-import { admin, Button, Card, Field, Input, PageTitle } from "@/components/admin/ui";
+import { PageTitle, Field, Input } from "@/components/admin/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { CoverUploader } from "@/components/admin/CoverUploader";
 import { MediaManager } from "@/components/admin/MediaManager";
 
@@ -20,65 +23,62 @@ export default async function EditCategoryPage({
 
   return (
     <div>
-      <Link href="/admin/categories" style={{ color: admin.ink2, fontSize: 13 }}>
-        ← Catégories
+      <Link
+        href="/admin/categories"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" /> Catégories
       </Link>
       <PageTitle>Modifier — {cat.title}</PageTitle>
 
-      <Card style={{ marginBottom: 24 }}>
-        <Field label="Image de couverture">
-          <CoverUploader
-            ownerId={cat.id}
-            idField="category_id"
-            pathPrefix={`covers/cat-${cat.id}`}
-            action={setCategoryCover}
-            currentSrc={publicImageUrl(cat.cover_path) || undefined}
-          />
-        </Field>
+      <Card className="mb-6">
+        <CardContent className="p-5">
+          <Field label="Image de couverture">
+            <CoverUploader
+              ownerId={cat.id}
+              idField="category_id"
+              pathPrefix={`covers/cat-${cat.id}`}
+              action={setCategoryCover}
+              currentSrc={publicImageUrl(cat.cover_path) || undefined}
+            />
+          </Field>
+        </CardContent>
       </Card>
 
-      <Card style={{ marginBottom: 24 }}>
-        <form action={updateCategory} style={{ display: "grid", gap: 14 }}>
-          <input type="hidden" name="id" value={cat.id} />
-          <div className="admin-2col">
-            <Field label="Titre">
-              <Input name="title" required defaultValue={cat.title} />
+      <Card className="mb-6">
+        <CardContent className="p-5">
+          <form action={updateCategory} className="grid gap-4">
+            <input type="hidden" name="id" value={cat.id} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Titre">
+                <Input name="title" required defaultValue={cat.title} />
+              </Field>
+              <Field label="Slug">
+                <Input name="slug" defaultValue={cat.slug} />
+              </Field>
+            </div>
+            <Field label="Sous-titre">
+              <Input name="subtitle" defaultValue={cat.subtitle ?? ""} />
             </Field>
-            <Field label="Slug">
-              <Input name="slug" defaultValue={cat.slug} />
+            <Field label="Description">
+              <Input name="description" defaultValue={cat.description} />
             </Field>
-          </div>
-          <Field label="Sous-titre">
-            <Input name="subtitle" defaultValue={cat.subtitle ?? ""} />
-          </Field>
-          <Field label="Description">
-            <Input name="description" defaultValue={cat.description} />
-          </Field>
-          <div className="admin-2col">
-            <Field label="Lieu">
-              <Input name="location" defaultValue={cat.location} />
-            </Field>
-            <Field label="Période">
-              <Input name="period" defaultValue={cat.period} />
-            </Field>
-          </div>
-          <div>
-            <Button type="submit">Enregistrer</Button>
-          </div>
-        </form>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Lieu">
+                <Input name="location" defaultValue={cat.location} />
+              </Field>
+              <Field label="Période">
+                <Input name="period" defaultValue={cat.period} />
+              </Field>
+            </div>
+            <div>
+              <Button type="submit">Enregistrer</Button>
+            </div>
+          </form>
+        </CardContent>
       </Card>
 
-      {/* ---- médias rattachés directement à la catégorie ---- */}
-      <div
-        style={{
-          fontFamily: admin.mono,
-          fontSize: 11,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: admin.ink2,
-          margin: "4px 2px 12px",
-        }}
-      >
+      <div className="mb-3 mt-2 px-0.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
         Photos & vidéos de la catégorie (affichées directement sur la page catégorie)
       </div>
       <MediaManager

@@ -1,58 +1,105 @@
+import { Mail, MailOpen, Trash2 } from "lucide-react";
 import { getMessages } from "@/lib/admin";
 import { deleteMessage, toggleMessageRead } from "@/app/admin/actions";
-import { admin, Button, Card, PageTitle } from "@/components/admin/ui";
+import { PageTitle } from "@/components/admin/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { ActionForm } from "@/components/admin/ActionForm";
+import { Stagger, StaggerItem } from "@/components/admin/motion-primitives";
 
 export const dynamic = "force-dynamic";
 
 export default async function MessagesPage() {
   const messages = await getMessages();
+  const unread = messages.filter((m) => !m.read).length;
 
   return (
     <div>
-      <PageTitle sub="Messages reçus via le formulaire de contact.">
+      <PageTitle
+        sub={
+          unread > 0
+            ? `${unread} message${unread > 1 ? "s" : ""} non lu${unread > 1 ? "s" : ""}.`
+            : "Messages reçus via le formulaire de contact."
+        }
+      >
         Messages
       </PageTitle>
 
-      <div style={{ display: "grid", gap: 12 }}>
+      <Stagger className="grid gap-3">
         {messages.map((m) => (
-          <Card
-            key={m.id}
-            style={{
-              padding: 16,
-              borderColor: m.read ? admin.border : admin.accent,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "baseline" }}>
-              <div>
-                <strong style={{ color: admin.ink }}>{m.name}</strong>{" "}
-                <a href={`mailto:${m.email}`} style={{ color: admin.accent, fontSize: 13 }}>
-                  {m.email}
-                </a>
-              </div>
-              <span style={{ color: admin.ink2, fontSize: 12, fontFamily: admin.mono }}>
-                {m.project_type ?? "—"} · {new Date(m.created_at).toLocaleDateString("fr-BE")}
-              </span>
-            </div>
-            <p style={{ color: admin.ink, fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", margin: "10px 0 14px" }}>
-              {m.body}
-            </p>
-            <div style={{ display: "flex", gap: 10 }}>
-              <ActionForm action={toggleMessageRead} hidden={{ id: m.id, read: m.read ? "false" : "true" }}>
-                <Button variant="ghost">
-                  {m.read ? "Marquer non lu" : "Marquer lu"}
-                </Button>
-              </ActionForm>
-              <ActionForm action={deleteMessage} hidden={{ id: m.id }} confirm="Supprimer ce message ?">
-                <Button variant="danger">Supprimer</Button>
-              </ActionForm>
-            </div>
-          </Card>
+          <StaggerItem key={m.id}>
+            <Card
+              className={
+                m.read
+                  ? "transition-colors"
+                  : "border-primary/40 transition-colors"
+              }
+            >
+              <CardContent className="p-5">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    {!m.read && <span className="size-2 rounded-full bg-primary" />}
+                    <strong className="text-foreground">{m.name}</strong>
+                    <a
+                      href={`mailto:${m.email}`}
+                      className="text-sm text-primary underline-offset-4 hover:underline"
+                    >
+                      {m.email}
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {m.project_type && (
+                      <Badge variant="secondary">{m.project_type}</Badge>
+                    )}
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {new Date(m.created_at).toLocaleDateString("fr-BE")}
+                    </span>
+                  </div>
+                </div>
+                <p className="my-3.5 whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
+                  {m.body}
+                </p>
+                <div className="flex gap-2">
+                  <ActionForm
+                    action={toggleMessageRead}
+                    hidden={{ id: m.id, read: m.read ? "false" : "true" }}
+                  >
+                    <Button variant="outline" size="sm">
+                      {m.read ? (
+                        <>
+                          <Mail className="size-3.5" /> Marquer non lu
+                        </>
+                      ) : (
+                        <>
+                          <MailOpen className="size-3.5" /> Marquer lu
+                        </>
+                      )}
+                    </Button>
+                  </ActionForm>
+                  <ActionForm
+                    action={deleteMessage}
+                    hidden={{ id: m.id }}
+                    confirm="Supprimer définitivement ce message ?"
+                    confirmLabel="Supprimer"
+                  >
+                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                      <Trash2 className="size-3.5" /> Supprimer
+                    </Button>
+                  </ActionForm>
+                </div>
+              </CardContent>
+            </Card>
+          </StaggerItem>
         ))}
         {messages.length === 0 && (
-          <p style={{ color: admin.ink2 }}>Aucun message pour l’instant.</p>
+          <Card>
+            <CardContent className="p-8 text-center text-sm text-muted-foreground">
+              Aucun message pour l&apos;instant.
+            </CardContent>
+          </Card>
         )}
-      </div>
+      </Stagger>
     </div>
   );
 }
