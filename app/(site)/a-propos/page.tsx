@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const { about } = await getSiteContent();
+  const { about, nav } = await getSiteContent();
 
   return (
     <main
@@ -50,7 +50,7 @@ export default async function AboutPage() {
         {/* texte */}
         <div>
           <div data-reveal="rise" style={{ fontFamily: "var(--font-mono), monospace", fontSize: 10.5, letterSpacing: "0.26em", textTransform: "uppercase", color: "var(--ink2)", marginBottom: 18 }}>
-            À propos
+            {about.eyebrow}
           </div>
           <h1
             data-reveal="rise"
@@ -128,7 +128,7 @@ export default async function AboutPage() {
 
           <TransitionLink
             href="/contact"
-            transitionLabel="Contact"
+            transitionLabel={nav.contact}
             data-cursor="link"
             data-reveal="rise"
             style={{
@@ -139,7 +139,7 @@ export default async function AboutPage() {
               textTransform: "uppercase",
             }}
           >
-            Discutons de votre projet →
+            {about.ctaLink}
           </TransitionLink>
         </div>
       </div>

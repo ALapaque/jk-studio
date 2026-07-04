@@ -4,10 +4,11 @@
    remplit puis le voile glisse vers le haut. Porté de componentDidMount(). */
 
 import { useEffect, useRef, useState } from "react";
+import type { Brand } from "../SiteChrome";
 
 let PLAYED = false; // survit aux navigations client dans la même session
 
-export function IntroLoader() {
+export function IntroLoader({ brand }: { brand: Brand }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
   const [done, setDone] = useState(false);
@@ -71,32 +72,45 @@ export function IntroLoader() {
             color: "var(--ink)",
           }}
         >
-          <span style={{ opacity: 0.16 }}>JKStudio</span>
-          <span
-            ref={fillRef}
-            aria-hidden
+          {brand.logoSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={brand.logoSrc}
+              alt={brand.name}
+              style={{ height: "clamp(48px,8vw,110px)", width: "auto", display: "block" }}
+            />
+          ) : (
+            <>
+              <span style={{ opacity: 0.16 }}>{brand.name}</span>
+              <span
+                ref={fillRef}
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  clipPath: "inset(0 100% 0 0)",
+                  transition: "clip-path 1.5s cubic-bezier(.65,0,.35,1)",
+                }}
+              >
+                {brand.name}
+              </span>
+            </>
+          )}
+        </div>
+        {brand.tagline && (
+          <div
             style={{
-              position: "absolute",
-              inset: 0,
-              clipPath: "inset(0 100% 0 0)",
-              transition: "clip-path 1.5s cubic-bezier(.65,0,.35,1)",
+              marginTop: 26,
+              fontFamily: "var(--font-mono), monospace",
+              fontSize: 10,
+              letterSpacing: "0.3em",
+              textTransform: "uppercase",
+              color: "var(--ink2)",
             }}
           >
-            JKStudio
-          </span>
-        </div>
-        <div
-          style={{
-            marginTop: 26,
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: 10,
-            letterSpacing: "0.3em",
-            textTransform: "uppercase",
-            color: "var(--ink2)",
-          }}
-        >
-          Studio photo &amp; vidéo — Bruxelles
-        </div>
+            {brand.tagline}
+          </div>
+        )}
       </div>
     </div>
   );

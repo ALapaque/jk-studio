@@ -13,11 +13,29 @@ export interface Fact {
 }
 
 export interface SiteContent {
+  brand: {
+    name: string;
+    tagline: string;
+    /** clé Storage du logo (ou URL), vide = pas de logo → on affiche le nom. */
+    logoPath: string;
+  };
+  nav: {
+    work: string;
+    about: string;
+    contact: string;
+  };
   hero: {
     eyebrow: string;
     titleLines: string[];
     coords: string;
     categoriesLine: string;
+    scrollHint: string;
+  };
+  home: {
+    studioTitle: string;
+    selectionTitle: string;
+    categoriesTitle: string;
+    categoriesLink: string;
   };
   studio: {
     lead: string;
@@ -26,14 +44,17 @@ export interface SiteContent {
     facts: Fact[];
   };
   about: {
+    eyebrow: string;
     title: string;
     portraitCaption: string;
     portraitYear: string;
     paragraphs: string[];
     facts: Fact[];
     principles: string[];
+    ctaLink: string;
   };
   contact: {
+    eyebrow: string;
     title: string;
     lead: string;
     email: string;
@@ -41,19 +62,52 @@ export interface SiteContent {
     response: string;
     projectTypes: string[];
   };
+  works: {
+    eyebrow: string;
+    title: string;
+    backToIndex: string;
+    categoryLabel: string;
+    prev: string;
+    next: string;
+  };
   footer: {
+    ctaEyebrow: string;
+    ctaLine1: string;
+    ctaLine2: string;
     copyright: string;
     location: string;
     socials: string[];
   };
+  notFound: {
+    eyebrow: string;
+    title: string;
+    cta: string;
+  };
 }
 
 export const DEFAULT_CONTENT: SiteContent = {
+  brand: {
+    name: "JKStudio",
+    tagline: "Studio photo & vidéo — Bruxelles",
+    logoPath: "",
+  },
+  nav: {
+    work: "Travaux",
+    about: "À propos",
+    contact: "Contact",
+  },
   hero: {
     eyebrow: "Studio photo & vidéo — Bruxelles",
     titleLines: ["Entrez", "dans l’image."],
     coords: "50.8467° N — 4.3499° E",
     categoriesLine: "Portrait · Mariage · Mode · Gaming · Vidéo",
+    scrollHint: "((défiler))",
+  },
+  home: {
+    studioTitle: "Le studio",
+    selectionTitle: "Sélection 2026",
+    categoriesTitle: "Catégories",
+    categoriesLink: "Index complet →",
   },
   studio: {
     lead: "Je photographie ce qui ne se rejoue pas — ",
@@ -67,6 +121,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     ],
   },
   about: {
+    eyebrow: "À propos",
     title: "Derrière l’objectif.",
     portraitCaption: "JK — autoportrait au 50 mm",
     portraitYear: "2025",
@@ -84,8 +139,10 @@ export const DEFAULT_CONTENT: SiteContent = {
       "Lumière honnête — peu d’artifices, beaucoup d’attention.",
       "Livrer des images qui durent — pas des tendances.",
     ],
+    ctaLink: "Discutons de votre projet →",
   },
   contact: {
+    eyebrow: "Contact",
     title: "Écrivons-le en images.",
     lead: "Un portrait, un mariage, une campagne, un tournoi ? Racontez-moi le projet en quelques lignes.",
     email: "hello@jkstudio.be",
@@ -97,20 +154,41 @@ export const DEFAULT_CONTENT: SiteContent = {
     response: "Réponse sous 48 h — devis gratuit",
     projectTypes: ["Portrait", "Mariage", "Mode", "Gaming", "Vidéo", "Autre"],
   },
+  works: {
+    eyebrow: "Index — photo & vidéo, 2024 → 2026",
+    title: "Travaux.",
+    backToIndex: "Index des travaux",
+    categoryLabel: "Catégorie",
+    prev: "Précédent",
+    next: "Suivant",
+  },
   footer: {
+    ctaEyebrow: "Un projet en tête ?",
+    ctaLine1: "Écrivons-le",
+    ctaLine2: "en images.",
     copyright: "© JKStudio — 2026",
     location: "Bruxelles, BE — 50.85° N",
     socials: ["Instagram", "Vimeo", "LinkedIn"],
+  },
+  notFound: {
+    eyebrow: "Erreur 404",
+    title: "Hors champ.",
+    cta: "Retour à l’accueil →",
   },
 };
 
 /** Clés attendues dans la table site_content. */
 export const CONTENT_KEYS = [
+  "brand",
+  "nav",
   "hero",
+  "home",
   "studio",
   "about",
   "contact",
+  "works",
   "footer",
+  "notFound",
 ] as const;
 
 async function readContentMap(): Promise<Record<string, unknown>> {
@@ -136,11 +214,16 @@ function merge<T extends object>(base: T, override: unknown): T {
 export async function getSiteContent(): Promise<SiteContent> {
   const map = await readContentMap();
   return {
+    brand: merge(DEFAULT_CONTENT.brand, map.brand),
+    nav: merge(DEFAULT_CONTENT.nav, map.nav),
     hero: merge(DEFAULT_CONTENT.hero, map.hero),
+    home: merge(DEFAULT_CONTENT.home, map.home),
     studio: merge(DEFAULT_CONTENT.studio, map.studio),
     about: merge(DEFAULT_CONTENT.about, map.about),
     contact: merge(DEFAULT_CONTENT.contact, map.contact),
+    works: merge(DEFAULT_CONTENT.works, map.works),
     footer: merge(DEFAULT_CONTENT.footer, map.footer),
+    notFound: merge(DEFAULT_CONTENT.notFound, map.notFound),
   };
 }
 

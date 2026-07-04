@@ -1,6 +1,8 @@
 import { TransitionLink } from "@/components/motion/TransitionLink";
+import { getSiteContent } from "@/lib/content";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const { notFound } = await getSiteContent();
   return (
     <main
       style={{
@@ -22,7 +24,7 @@ export default function NotFound() {
             marginBottom: 20,
           }}
         >
-          Erreur 404
+          {notFound.eyebrow}
         </div>
         <h1
           style={{
@@ -35,7 +37,7 @@ export default function NotFound() {
             letterSpacing: "-0.015em",
           }}
         >
-          Hors champ.
+          {notFound.title}
         </h1>
         <TransitionLink
           href="/"
@@ -50,7 +52,7 @@ export default function NotFound() {
             color: "var(--accent)",
           }}
         >
-          Retour à l’accueil →
+          {notFound.cta}
         </TransitionLink>
       </div>
     </main>

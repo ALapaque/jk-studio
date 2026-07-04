@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getCategories } from "@/lib/data";
 import { countLabel, Category } from "@/lib/types";
+import { getSiteContent } from "@/lib/content";
 import { TransitionLink } from "@/components/motion/TransitionLink";
 
 export const metadata: Metadata = {
@@ -119,7 +120,10 @@ function WorkCard({ cat, layout }: { cat: Category; layout: CardLayout }) {
 }
 
 export default async function TravauxPage() {
-  const categories = await getCategories();
+  const [categories, content] = await Promise.all([
+    getCategories(),
+    getSiteContent(),
+  ]);
   return (
     <main
       style={{
@@ -139,7 +143,7 @@ export default async function TravauxPage() {
           marginBottom: 18,
         }}
       >
-        Index — photo &amp; vidéo, 2024 → 2026
+        {content.works.eyebrow}
       </div>
       <h1
         data-reveal="rise"
@@ -154,7 +158,7 @@ export default async function TravauxPage() {
           letterSpacing: "-0.015em",
         }}
       >
-        Travaux.
+        {content.works.title}
       </h1>
       <div className="grid12" style={{ gap: "clamp(16px,2vw,28px)" }}>
         {categories.map((cat, i) => (

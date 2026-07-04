@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "./motion/TransitionLink";
+import type { Brand } from "./SiteChrome";
 
 const socialBtn: React.CSSProperties = {
   background: "none",
@@ -15,12 +16,23 @@ const socialBtn: React.CSSProperties = {
 };
 
 export interface FooterContent {
+  ctaEyebrow: string;
+  ctaLine1: string;
+  ctaLine2: string;
   copyright: string;
   location: string;
   socials: string[];
 }
 
-export function Footer({ footer }: { footer: FooterContent }) {
+export function Footer({
+  footer,
+  brand,
+  contactLabel,
+}: {
+  footer: FooterContent;
+  brand: Brand;
+  contactLabel: string;
+}) {
   const pathname = usePathname();
   const showCta = !pathname.startsWith("/contact");
 
@@ -45,11 +57,11 @@ export function Footer({ footer }: { footer: FooterContent }) {
               marginBottom: 26,
             }}
           >
-            Un projet en tête ?
+            {footer.ctaEyebrow}
           </div>
           <TransitionLink
             href="/contact"
-            transitionLabel="Contact"
+            transitionLabel={contactLabel}
             data-cursor="link"
             data-magnet="1"
             data-reveal="rise"
@@ -66,9 +78,9 @@ export function Footer({ footer }: { footer: FooterContent }) {
               color: "var(--ink)",
             }}
           >
-            Écrivons-le
+            {footer.ctaLine1}
             <br />
-            en images.
+            {footer.ctaLine2}
           </TransitionLink>
         </div>
       )}
@@ -87,7 +99,17 @@ export function Footer({ footer }: { footer: FooterContent }) {
           color: "var(--ink2)",
         }}
       >
-        <span>{footer.copyright}</span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+          {brand.logoSrc && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={brand.logoSrc}
+              alt={brand.name}
+              style={{ height: 16, width: "auto", opacity: 0.7 }}
+            />
+          )}
+          {footer.copyright}
+        </span>
         <span style={{ display: "flex", gap: 24 }}>
           {footer.socials.map((s) => (
             <button key={s} data-cursor="link" className="jk-link" style={socialBtn}>

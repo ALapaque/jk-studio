@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCategories, getSeriesBySlug } from "@/lib/data";
+import { getSiteContent } from "@/lib/content";
 import { seriesMedia } from "@/lib/types";
 import { MediaGallery } from "@/components/MediaGallery";
 import { TransitionLink } from "@/components/motion/TransitionLink";
@@ -34,7 +35,10 @@ export default async function SeriesPage({
   params: Promise<{ categorie: string; serie: string }>;
 }) {
   const { categorie, serie } = await params;
-  const found = await getSeriesBySlug(categorie, serie);
+  const [found, content] = await Promise.all([
+    getSeriesBySlug(categorie, serie),
+    getSiteContent(),
+  ]);
   if (!found) notFound();
   const { category, series } = found;
 
@@ -135,7 +139,7 @@ export default async function SeriesPage({
         >
           <TransitionLink href={`/travaux/${category.slug}/${prev.slug}`} transitionLabel={prev.title} data-cursor="link" style={{ textAlign: "left", color: "var(--ink)" }}>
             <span style={{ display: "block", fontFamily: "var(--font-mono), monospace", fontSize: 9.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink2)", marginBottom: 10 }}>
-              ← Précédent
+              ← {content.works.prev}
             </span>
             <span className="jk-link" style={{ fontFamily: "var(--font-serif), serif", fontSize: "clamp(26px,3.2vw,44px)", lineHeight: 1 }}>
               {prev.title}
@@ -143,7 +147,7 @@ export default async function SeriesPage({
           </TransitionLink>
           <TransitionLink href={`/travaux/${category.slug}/${next.slug}`} transitionLabel={next.title} data-cursor="link" style={{ textAlign: "right", color: "var(--ink)" }}>
             <span style={{ display: "block", fontFamily: "var(--font-mono), monospace", fontSize: 9.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink2)", marginBottom: 10 }}>
-              Suivant →
+              {content.works.next} →
             </span>
             <span className="jk-link" style={{ fontFamily: "var(--font-serif), serif", fontSize: "clamp(26px,3.2vw,44px)", lineHeight: 1 }}>
               {next.title}

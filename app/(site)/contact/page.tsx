@@ -22,7 +22,7 @@ export default async function ContactPage() {
         {/* infos */}
         <div>
           <div data-reveal="rise" style={{ fontFamily: "var(--font-mono), monospace", fontSize: 10.5, letterSpacing: "0.26em", textTransform: "uppercase", color: "var(--ink2)", marginBottom: 18 }}>
-            Contact
+            {contact.eyebrow}
           </div>
           <h1
             data-reveal="rise"

@@ -40,7 +40,13 @@ function labelFromPath(path: string): string {
   return titleCase(seg[seg.length - 1]);
 }
 
-export function TransitionProvider({ children }: { children: React.ReactNode }) {
+export function TransitionProvider({
+  children,
+  brand,
+}: {
+  children: React.ReactNode;
+  brand: { name: string; logoSrc: string };
+}) {
   const router = useRouter();
   const ovRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
@@ -176,7 +182,16 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
                 marginBottom: 20,
               }}
             >
-              JKStudio
+              {brand.logoSrc ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={brand.logoSrc}
+                  alt={brand.name}
+                  style={{ height: 16, width: "auto", display: "inline-block" }}
+                />
+              ) : (
+                brand.name
+              )}
             </div>
             <div
               style={{

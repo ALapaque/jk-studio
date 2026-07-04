@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCategories, getCategoryBySlug } from "@/lib/data";
+import { getSiteContent } from "@/lib/content";
 import { countLabel, Series } from "@/lib/types";
 import { TransitionLink } from "@/components/motion/TransitionLink";
 import { MediaGallery } from "@/components/MediaGallery";
@@ -38,7 +39,10 @@ export default async function CategoryPage({
   params: Promise<{ categorie: string }>;
 }) {
   const { categorie } = await params;
-  const categories = await getCategories();
+  const [categories, content] = await Promise.all([
+    getCategories(),
+    getSiteContent(),
+  ]);
   const cat = categories.find((c) => c.slug === categorie);
   if (!cat) notFound();
 
@@ -57,7 +61,7 @@ export default async function CategoryPage({
     >
       <TransitionLink
         href="/travaux"
-        transitionLabel="Travaux"
+        transitionLabel={content.works.title}
         data-cursor="link"
         className="jk-link"
         style={{
@@ -68,7 +72,7 @@ export default async function CategoryPage({
           textTransform: "uppercase",
         }}
       >
-        ← Index des travaux
+        ← {content.works.backToIndex}
       </TransitionLink>
 
       <div style={{ display: "flex", alignItems: "baseline", gap: 14, margin: "clamp(26px,3vw,40px) 0 10px" }}>
@@ -76,7 +80,7 @@ export default async function CategoryPage({
           ({cat.num})
         </span>
         <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: 10.5, letterSpacing: "0.22em", textTransform: "uppercase", color: "var(--ink2)" }}>
-          Catégorie
+          {content.works.categoryLabel}
         </span>
         <span style={{ flex: 1, height: 1, background: "var(--line)", alignSelf: "center" }} />
       </div>
@@ -187,7 +191,7 @@ export default async function CategoryPage({
       >
         <TransitionLink href={`/travaux/${prev.slug}`} transitionLabel={prev.title} data-cursor="link" style={{ textAlign: "left", color: "var(--ink)" }}>
           <span style={{ display: "block", fontFamily: "var(--font-mono), monospace", fontSize: 9.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink2)", marginBottom: 10 }}>
-            ← Précédent
+            ← {content.works.prev}
           </span>
           <span className="jk-link" style={{ fontFamily: "var(--font-serif), serif", fontSize: "clamp(30px,3.6vw,52px)", lineHeight: 1 }}>
             {prev.title}
@@ -195,7 +199,7 @@ export default async function CategoryPage({
         </TransitionLink>
         <TransitionLink href={`/travaux/${next.slug}`} transitionLabel={next.title} data-cursor="link" style={{ textAlign: "right", color: "var(--ink)" }}>
           <span style={{ display: "block", fontFamily: "var(--font-mono), monospace", fontSize: 9.5, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink2)", marginBottom: 10 }}>
-            Suivant →
+            {content.works.next} →
           </span>
           <span className="jk-link" style={{ fontFamily: "var(--font-serif), serif", fontSize: "clamp(30px,3.6vw,52px)", lineHeight: 1 }}>
             {next.title}

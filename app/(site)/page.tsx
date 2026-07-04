@@ -115,7 +115,7 @@ export default async function HomePage() {
               color: "var(--ink2)",
             }}
           >
-            <span>((défiler))</span>
+            <span>{content.hero.scrollHint}</span>
             <span style={{ textAlign: "center" }}>{content.hero.categoriesLine}</span>
             <span>{content.hero.coords}</span>
           </div>
@@ -130,7 +130,7 @@ export default async function HomePage() {
           padding: "clamp(90px,12vw,170px) clamp(20px,4vw,56px) clamp(40px,5vw,70px)",
         }}
       >
-        <SectionHeader num="01" title="Le studio" />
+        <SectionHeader num="01" title={content.home.studioTitle} />
         <div className="two-col two-col--studio">
           <p
             data-reveal="rise"
@@ -196,7 +196,7 @@ export default async function HomePage() {
 
       {/* ===================== 02 SÉLECTION ===================== */}
       <section style={{ maxWidth: 1560, margin: "0 auto", padding: sectionPad }}>
-        <SectionHeader num="02" title="Sélection 2026" marginBottom="clamp(44px,5.5vw,80px)" />
+        <SectionHeader num="02" title={content.home.selectionTitle} marginBottom="clamp(44px,5.5vw,80px)" />
         <SelectionRows items={selection} />
       </section>
 
@@ -204,9 +204,9 @@ export default async function HomePage() {
       <section style={{ maxWidth: 1560, margin: "0 auto", padding: "clamp(60px,8vw,120px) clamp(20px,4vw,56px) 0" }}>
         <SectionHeader
           num="03"
-          title="Catégories"
+          title={content.home.categoriesTitle}
           marginBottom="clamp(28px,3.5vw,48px)"
-          link={{ href: "/travaux", label: "Index complet →", transitionLabel: "Travaux" }}
+          link={{ href: "/travaux", label: content.home.categoriesLink, transitionLabel: content.nav.work }}
         />
         <CategoryIndex
           items={categories.map((c) => ({

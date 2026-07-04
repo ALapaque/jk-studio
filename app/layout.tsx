@@ -3,7 +3,7 @@ import { Instrument_Serif, Archivo, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { themeInitScript } from "@/lib/theme";
-import { getAppearance } from "@/lib/content";
+import { getAppearance, getSiteContent } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
 
 const serif = Instrument_Serif({
@@ -28,20 +28,25 @@ const mono = Space_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "JKStudio — Studio photo & vidéo, Bruxelles",
-    template: "%s — JKStudio",
-  },
-  description:
-    "Studio photo & vidéo à Bruxelles. Portraits, mariages, mode, culture gaming — une lumière honnête et des gens vrais.",
-  openGraph: {
-    type: "website",
-    locale: "fr_BE",
-    siteName: "JKStudio",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { brand } = await getSiteContent();
+  const name = brand.name || "JKStudio";
+  const tagline = brand.tagline || "Studio photo & vidéo, Bruxelles";
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `${name} — ${tagline}`,
+      template: `%s — ${name}`,
+    },
+    description:
+      "Studio photo & vidéo à Bruxelles. Portraits, mariages, mode, culture gaming — une lumière honnête et des gens vrais.",
+    openGraph: {
+      type: "website",
+      locale: "fr_BE",
+      siteName: name,
+    },
+  };
+}
 
 export default async function RootLayout({
   children,

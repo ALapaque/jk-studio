@@ -378,6 +378,56 @@ async function upsertContent(key: string, value: unknown) {
   revalidateAll();
 }
 
+async function getContentValue(key: string): Promise<Record<string, unknown>> {
+  const sb = createAdminSupabase();
+  const { data } = await sb
+    .from("site_content")
+    .select("value")
+    .eq("key", key)
+    .maybeSingle();
+  const v = (data as { value?: unknown } | null)?.value;
+  return v && typeof v === "object" ? (v as Record<string, unknown>) : {};
+}
+
+export async function saveBrand(formData: FormData) {
+  await assertUser();
+  const current = await getContentValue("brand");
+  await upsertContent("brand", {
+    name: s(formData, "name"),
+    tagline: s(formData, "tagline"),
+    logoPath: (current.logoPath as string) ?? "",
+  });
+}
+
+export async function saveBrandLogo(formData: FormData) {
+  await assertUser();
+  const current = await getContentValue("brand");
+  await upsertContent("brand", {
+    name: (current.name as string) ?? "JKStudio",
+    tagline: (current.tagline as string) ?? "",
+    logoPath: s(formData, "storage_path"),
+  });
+}
+
+export async function removeBrandLogo() {
+  await assertUser();
+  const current = await getContentValue("brand");
+  await upsertContent("brand", {
+    name: (current.name as string) ?? "JKStudio",
+    tagline: (current.tagline as string) ?? "",
+    logoPath: "",
+  });
+}
+
+export async function saveNav(formData: FormData) {
+  await assertUser();
+  await upsertContent("nav", {
+    work: s(formData, "work"),
+    about: s(formData, "about"),
+    contact: s(formData, "contact"),
+  });
+}
+
 export async function saveHero(formData: FormData) {
   await assertUser();
   await upsertContent("hero", {
@@ -385,6 +435,38 @@ export async function saveHero(formData: FormData) {
     titleLines: lines(formData, "titleLines"),
     coords: s(formData, "coords"),
     categoriesLine: s(formData, "categoriesLine"),
+    scrollHint: s(formData, "scrollHint"),
+  });
+}
+
+export async function saveHome(formData: FormData) {
+  await assertUser();
+  await upsertContent("home", {
+    studioTitle: s(formData, "studioTitle"),
+    selectionTitle: s(formData, "selectionTitle"),
+    categoriesTitle: s(formData, "categoriesTitle"),
+    categoriesLink: s(formData, "categoriesLink"),
+  });
+}
+
+export async function saveWorks(formData: FormData) {
+  await assertUser();
+  await upsertContent("works", {
+    eyebrow: s(formData, "eyebrow"),
+    title: s(formData, "title"),
+    backToIndex: s(formData, "backToIndex"),
+    categoryLabel: s(formData, "categoryLabel"),
+    prev: s(formData, "prev"),
+    next: s(formData, "next"),
+  });
+}
+
+export async function saveNotFound(formData: FormData) {
+  await assertUser();
+  await upsertContent("notFound", {
+    eyebrow: s(formData, "eyebrow"),
+    title: s(formData, "title"),
+    cta: s(formData, "cta"),
   });
 }
 
@@ -401,18 +483,21 @@ export async function saveStudio(formData: FormData) {
 export async function saveAbout(formData: FormData) {
   await assertUser();
   await upsertContent("about", {
+    eyebrow: s(formData, "eyebrow"),
     title: s(formData, "title"),
     portraitCaption: s(formData, "portraitCaption"),
     portraitYear: s(formData, "portraitYear"),
     paragraphs: lines(formData, "paragraphs"),
     facts: facts(formData, "facts"),
     principles: lines(formData, "principles"),
+    ctaLink: s(formData, "ctaLink"),
   });
 }
 
 export async function saveContact(formData: FormData) {
   await assertUser();
   await upsertContent("contact", {
+    eyebrow: s(formData, "eyebrow"),
     title: s(formData, "title"),
     lead: s(formData, "lead"),
     email: s(formData, "email"),
@@ -425,6 +510,9 @@ export async function saveContact(formData: FormData) {
 export async function saveFooter(formData: FormData) {
   await assertUser();
   await upsertContent("footer", {
+    ctaEyebrow: s(formData, "ctaEyebrow"),
+    ctaLine1: s(formData, "ctaLine1"),
+    ctaLine2: s(formData, "ctaLine2"),
     copyright: s(formData, "copyright"),
     location: s(formData, "location"),
     socials: lines(formData, "socials"),

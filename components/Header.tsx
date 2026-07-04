@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "./motion/TransitionLink";
 import { ThemeToggle } from "./ThemeToggle";
+import type { Brand, NavContent } from "./SiteChrome";
 
 const navBtn = (active: boolean): React.CSSProperties => ({
   background: "none",
@@ -16,7 +17,7 @@ const navBtn = (active: boolean): React.CSSProperties => ({
   textTransform: "uppercase",
 });
 
-export function Header() {
+export function Header({ brand, nav }: { brand: Brand; nav: NavContent }) {
   const pathname = usePathname();
   const isWork = pathname.startsWith("/travaux");
   const isAbout = pathname.startsWith("/a-propos");
@@ -43,13 +44,24 @@ export function Header() {
         transitionLabel="Accueil"
         data-cursor="link"
         style={{
+          display: "inline-flex",
+          alignItems: "center",
           color: "#ffffff",
           fontFamily: "var(--font-serif), serif",
           fontSize: 23,
           letterSpacing: "0.01em",
         }}
       >
-        JKStudio
+        {brand.logoSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={brand.logoSrc}
+            alt={brand.name}
+            style={{ height: 28, width: "auto", display: "block" }}
+          />
+        ) : (
+          brand.name
+        )}
       </TransitionLink>
       <nav
         style={{
@@ -60,30 +72,30 @@ export function Header() {
       >
         <TransitionLink
           href="/travaux"
-          transitionLabel="Travaux"
+          transitionLabel={nav.work}
           data-cursor="link"
           className="jk-nav-link"
           style={navBtn(isWork)}
         >
-          Travaux
+          {nav.work}
         </TransitionLink>
         <TransitionLink
           href="/a-propos"
-          transitionLabel="À propos"
+          transitionLabel={nav.about}
           data-cursor="link"
           className="jk-nav-link"
           style={navBtn(isAbout)}
         >
-          À propos
+          {nav.about}
         </TransitionLink>
         <TransitionLink
           href="/contact"
-          transitionLabel="Contact"
+          transitionLabel={nav.contact}
           data-cursor="link"
           className="jk-nav-link"
           style={navBtn(isContact)}
         >
-          Contact
+          {nav.contact}
         </TransitionLink>
         <ThemeToggle />
       </nav>
