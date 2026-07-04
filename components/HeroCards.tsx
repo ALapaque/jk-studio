@@ -85,20 +85,20 @@ const SLOTS: Slot[] = [
 /** Cartes flottantes du hero. Utilise les photos « à la une » si présentes,
  *  sinon le contenu de démonstration (jamais vide). */
 export function HeroCards({ items }: { items: HeroItem[] }) {
-  const useDemo = items.length === 0;
-  const count = useDemo ? SLOTS.length : Math.min(items.length, SLOTS.length);
-
+  // Chaque emplacement utilise une photo « à la une » si disponible, sinon il
+  // retombe sur son contenu de démonstration. Ainsi le hero reste toujours
+  // complet : une donnée manquante ou partielle ne vide jamais toute la section.
   return (
     <>
-      {SLOTS.slice(0, count).map((slot, i) => {
+      {SLOTS.map((slot, i) => {
         const it = items[i];
-        const src = useDemo ? slot.demo.src : it.src;
-        const label = useDemo ? slot.demo.label : it.label;
-        const href = useDemo ? slot.demo.href : it.href;
-        const tag = useDemo
-          ? slot.demo.tag
-          : `${it.label.toUpperCase()} — ${pad(i + 1)}`;
-        const tagRight = useDemo ? slot.demo.tagRight : undefined;
+        const src = it?.src || slot.demo.src;
+        const label = it?.label || slot.demo.label;
+        const href = it?.href || slot.demo.href;
+        const tag = it?.label
+          ? `${it.label.toUpperCase()} — ${pad(i + 1)}`
+          : slot.demo.tag;
+        const tagRight = it ? undefined : slot.demo.tagRight;
         return (
           <HeroCard
             key={i}

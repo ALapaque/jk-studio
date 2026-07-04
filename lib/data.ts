@@ -132,20 +132,27 @@ export async function getHeroItems(): Promise<HeroItem[]> {
     if (error) throw error;
     const out: HeroItem[] = [];
     for (const row of (data ?? []) as Record<string, unknown>[]) {
-      const src = publicImageUrl(row.storage_path as string);
-      const project = row.project as
-        | { slug: string; published: boolean; categories: { slug: string; title: string } }
-        | null;
-      const category = row.category as { slug: string; title: string } | null;
-      if (project) {
-        if (!project.published) continue; // série en brouillon → on ignore
-        out.push({
-          src,
-          href: `/travaux/${project.categories.slug}/${project.slug}`,
-          label: project.categories.title,
-        });
-      } else if (category) {
-        out.push({ src, href: `/travaux/${category.slug}`, label: category.title });
+      // Une ligne mal formée ne doit jamais faire tomber tout le hero sur la
+      // démo : on l'ignore et on passe à la suivante.
+      try {
+        const src = publicImageUrl(row.storage_path as string);
+        if (!src) continue;
+        const project = row.project as
+          | { slug: string; published: boolean; categories: { slug: string; title: string } | null }
+          | null;
+        const category = row.category as { slug: string; title: string } | null;
+        if (project && project.categories) {
+          if (!project.published) continue; // série en brouillon → on ignore
+          out.push({
+            src,
+            href: `/travaux/${project.categories.slug}/${project.slug}`,
+            label: project.categories.title,
+          });
+        } else if (category) {
+          out.push({ src, href: `/travaux/${category.slug}`, label: category.title });
+        }
+      } catch {
+        continue;
       }
       if (out.length >= 8) break;
     }
