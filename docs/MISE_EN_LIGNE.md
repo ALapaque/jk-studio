@@ -182,6 +182,9 @@ Ordre conseillé. Tout se fait dans `TON-URL/admin` (guide détaillé :
 - [ ] `RLS` actives (créées par la migration) — les brouillons n'apparaissent pas
       côté public.
 - [ ] Compte admin créé ; **Enable Sign Ups** décoché.
+- [ ] **Supabase → Authentication → URL Configuration** : **Site URL** = ton domaine de
+      prod (pas `localhost:3000`) + **Redirect URLs** contient `https://<domaine>/**`.
+      Sinon les liens dans les emails d'auth pointent vers `localhost:3000`.
 - [ ] Bucket `portfolio` en lecture publique (créé par la migration).
 - [ ] Les 3 variables d'env présentes en **Production** sur Vercel.
 - [ ] `metadataBase` = ton domaine final (si domaine perso).

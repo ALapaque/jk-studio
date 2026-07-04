@@ -52,6 +52,23 @@ C'est le seul compte qui pourra accéder à `/admin`.
 > Providers → Email** → décocher *Enable Sign Ups* (on ne crée les comptes qu'à
 > la main). La connexion par **lien magique** reste possible pour ce compte.
 
+### 4.b — Configurer les URLs d'authentification (⚠️ liens des emails)
+
+Par défaut, Supabase met **Site URL = `http://localhost:3000`**. Résultat : les liens
+dans les emails d'auth (lien magique, confirmation de compte, réinitialisation de mot
+de passe) pointent vers `localhost:3000` au lieu du vrai site.
+
+**Authentication → URL Configuration :**
+
+- **Site URL** = l'URL de production (ex. `https://jkstudio.be`, ou l'URL Vercel
+  `https://mon-projet.vercel.app`).
+- **Redirect URLs** — ajouter :
+  - `https://<domaine-de-prod>/**`
+  - `http://localhost:3000/**` (pour garder le dev local)
+
+Sans ce réglage, seuls les **liens dans les emails** sont affectés ; la connexion par
+**mot de passe** fonctionne quand même.
+
 ## 5. Variables d'environnement locales
 
 À la racine du projet, copier `.env.example` en **`.env.local`** et remplir :
