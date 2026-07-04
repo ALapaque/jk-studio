@@ -4,7 +4,13 @@
    le voile monte, le mot de la destination se remplit (clip-path), on
    navigue sous le voile, puis il se retire. */
 
-import { createContext, useCallback, useContext, useRef } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import { useRouter } from "next/navigation";
 
 interface TransitionCtx {
@@ -64,6 +70,42 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
     },
     [router],
   );
+
+  // Précédent / Suivant du navigateur (popstate) : App Router re-rend la page et
+  // MotionProvider relance les révélations, ce qui « clignote » sans voile.
+  // On couvre instantanément puis on retire le voile en douceur une fois la
+  // nouvelle page montée et les révélations relancées.
+  useEffect(() => {
+    const onPop = () => {
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const o = ovRef.current;
+      if (!o || reduced || busy.current) return;
+      busy.current = true;
+      if (labelRef.current) labelRef.current.textContent = "";
+      if (fillRef.current) {
+        fillRef.current.textContent = "";
+        fillRef.current.style.clipPath = "inset(0 100% 0 0)";
+      }
+      // couverture instantanée (cache le flash immédiat)
+      o.style.transition = "none";
+      o.style.transform = "translateY(0%)";
+      void o.offsetWidth;
+      // retrait en douceur
+      setTimeout(() => {
+        o.style.transition = "transform .6s cubic-bezier(.76,0,.24,1)";
+        o.style.transform = "translateY(-101%)";
+        setTimeout(() => {
+          o.style.transition = "none";
+          o.style.transform = "translateY(101%)";
+          busy.current = false;
+        }, 640);
+      }, 700);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   return (
     <Ctx.Provider value={{ navigate }}>
