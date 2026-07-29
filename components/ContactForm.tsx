@@ -65,6 +65,23 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
   return (
     <form onSubmit={onSubmit} data-reveal="rise" style={{ display: "grid", gap: 26 }}>
       <input type="hidden" name="projet_type" value={projType} />
+
+      {/* Honeypot. Caché à l'œil ET aux lecteurs d'écran (aria-hidden +
+          tabIndex -1) pour qu'aucun utilisateur légitime ne puisse le remplir
+          par erreur, alors qu'un bot qui parcourt le DOM le remplira.
+          `display:none` plutôt qu'un décalage hors écran : plus simple, et les
+          bots qui évaluent le style sont rares. `autoComplete="off"` évite
+          qu'un gestionnaire de mots de passe le remplisse tout seul. */}
+      <div aria-hidden style={{ display: "none" }}>
+        <label htmlFor="societe">Société</label>
+        <input
+          id="societe"
+          type="text"
+          name="societe"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
       <label style={{ display: "grid", gap: 9 }}>
         <span style={labelStyle}>Nom *</span>
         <input required name="nom" placeholder="Votre nom" className="jk-field" style={fieldStyle} />

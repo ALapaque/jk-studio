@@ -59,6 +59,20 @@ export interface SiteContent {
      *  capitales, exactement comme dans la maquette. */
     clients: { name: string; logoPath?: string }[];
   };
+  /** Page Tirages / Albums (Lot 6).
+   *
+   *  Stockée en base comme le bandeau de preuve sociale : les formats et
+   *  supports évoluent, et le photographe doit pouvoir les corriger depuis
+   *  l'admin sans redéploiement. Pas de prix — le §9 exclut explicitement
+   *  tout tunnel e-commerce en v1. */
+  prints: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    cta: string;
+    /** Un format = un intitulé et sa spécification (dimensions, pages...). */
+    formats: { name: string; spec: string }[];
+  };
   about: {
     eyebrow: string;
     title: string;
@@ -149,6 +163,19 @@ export const DEFAULT_CONTENT: SiteContent = {
     // autorisation dès l'activation du bandeau.
     clients: [],
   },
+  prints: {
+    eyebrow: "Tirages & albums",
+    title: "Une série mérite autre chose qu'un écran",
+    lead: "Papier coton, reliure à plat, séquence pensée avec vous. Trois formats, rien de plus.",
+    cta: "Demander un devis",
+    // Valeurs de la maquette, à confirmer par le photographe. Modifiables
+    // depuis l'admin — d'où leur présence ici plutôt qu'en dur dans la page.
+    formats: [
+      { name: "Album fine art", spec: "30 × 30 — 40 pages" },
+      { name: "Livre de série", spec: "21 × 28 — 24 pages" },
+      { name: "Tirage encadré", spec: "40 × 50 — chêne clair" },
+    ],
+  },
   about: {
     eyebrow: "À propos",
     title: "Derrière l’objectif.",
@@ -215,6 +242,7 @@ export const CONTENT_KEYS = [
   "home",
   "studio",
   "proof",
+  "prints",
   "about",
   "contact",
   "works",
@@ -251,6 +279,7 @@ export async function getSiteContent(): Promise<SiteContent> {
     home: merge(DEFAULT_CONTENT.home, map.home),
     studio: merge(DEFAULT_CONTENT.studio, map.studio),
     proof: merge(DEFAULT_CONTENT.proof, map.proof),
+    prints: merge(DEFAULT_CONTENT.prints, map.prints),
     about: merge(DEFAULT_CONTENT.about, map.about),
     contact: merge(DEFAULT_CONTENT.contact, map.contact),
     works: merge(DEFAULT_CONTENT.works, map.works),
