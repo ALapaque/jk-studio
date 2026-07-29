@@ -45,6 +45,20 @@ export interface SiteContent {
     paragraph: string;
     facts: Fact[];
   };
+  /** Bandeau de preuve sociale de l'accueil.
+   *
+   *  Stocké en base et NON dans une variable d'environnement : le §8 impose
+   *  qu'il soit desactivable « sans redeploiement ». Les autorisations d'usage
+   *  des marques n'etant pas toutes confirmees, `enabled` vaut false par
+   *  defaut — le bandeau n'apparait que sur decision explicite. */
+  proof: {
+    enabled: boolean;
+    label: string;
+    /** Noms des clients. `logoPath` optionnel : un SVG monochrome herite de
+     *  currentColor et suit donc le theme. Sans logo, le nom s'affiche en
+     *  capitales, exactement comme dans la maquette. */
+    clients: { name: string; logoPath?: string }[];
+  };
   about: {
     eyebrow: string;
     title: string;
@@ -125,6 +139,16 @@ export const DEFAULT_CONTENT: SiteContent = {
       { k: "Langues", v: "FR · EN · NL" },
     ],
   },
+  proof: {
+    // Désactivé par défaut : les autorisations d'usage des marques ne sont pas
+    // toutes confirmées. S'active depuis l'admin, sans redéploiement.
+    enabled: false,
+    label: "Ils m'ont confié leurs images",
+    // Volontairement vide : écrire ici les noms de la maquette (Deloitte,
+    // Fuse, Bozar, Kanal, C12) reviendrait à afficher des marques sans
+    // autorisation dès l'activation du bandeau.
+    clients: [],
+  },
   about: {
     eyebrow: "À propos",
     title: "Derrière l’objectif.",
@@ -190,6 +214,7 @@ export const CONTENT_KEYS = [
   "hero",
   "home",
   "studio",
+  "proof",
   "about",
   "contact",
   "works",
@@ -225,6 +250,7 @@ export async function getSiteContent(): Promise<SiteContent> {
     hero: merge(DEFAULT_CONTENT.hero, map.hero),
     home: merge(DEFAULT_CONTENT.home, map.home),
     studio: merge(DEFAULT_CONTENT.studio, map.studio),
+    proof: merge(DEFAULT_CONTENT.proof, map.proof),
     about: merge(DEFAULT_CONTENT.about, map.about),
     contact: merge(DEFAULT_CONTENT.contact, map.contact),
     works: merge(DEFAULT_CONTENT.works, map.works),

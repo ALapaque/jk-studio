@@ -141,6 +141,25 @@
   scroll-snap-align: start;
 }
 
+/* Vignette : zoom 1.04 de l'image dans son cadre, 900ms (maquette). Le cadre
+   porte l'overflow, l'image porte la transformation. */
+.jk-zoom {
+  transition: transform var(--jk-dur-zoom) var(--jk-ease);
+}
+
+a:hover .jk-zoom {
+  transform: scale(var(--jk-zoom));
+}
+
+/* Ligne de catégorie : passage au laiton au survol, 400ms (maquette). */
+.jk-cat-row {
+  transition: color var(--jk-dur-hover) ease;
+}
+
+.jk-cat-row:hover {
+  color: var(--jk-brass);
+}
+
 /* « Tout neutralisé sous prefers-reduced-motion » (maquette, écran 00).
    Le §7 l'exige aussi pour le snap : la page doit redevenir un scroll
    classique parfaitement lisible, sans accrochage ni défilement animé. */
@@ -157,5 +176,14 @@
 
   .jk-screen {
     scroll-snap-align: none;
+  }
+
+  .jk-zoom,
+  .jk-cat-row {
+    transition: none;
+  }
+
+  a:hover .jk-zoom {
+    transform: none;
   }
 }
