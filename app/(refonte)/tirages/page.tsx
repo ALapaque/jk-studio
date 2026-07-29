@@ -119,8 +119,7 @@ export default async function TiragesPage() {
         <div>
           <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
             {prints.formats.map((f, i) => (
-              <li
-                key={f.name}
+              <li key={f.name}
                 style={{
                   display: "flex",
                   flexWrap: "wrap",
@@ -134,16 +133,17 @@ export default async function TiragesPage() {
                       : undefined,
                 }}
               >
-                <span
-                  style={{
-                    width: 30,
-                    fontSize: 10,
-                    letterSpacing: "0.2em",
-                    color: "var(--jk-brass)",
-                  }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <Reveal delay={Math.min(i, 5) * 80}>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: "0.2em",
+                      color: "var(--jk-brass)",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </Reveal>
                 <span
                   style={{
                     flex: 1,

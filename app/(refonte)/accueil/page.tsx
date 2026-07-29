@@ -7,6 +7,7 @@ import { publicImageUrl } from "@/lib/supabase/storage";
 import { Caption } from "@/components/jk/Caption";
 import { Reveal } from "@/components/jk/Reveal";
 import { ProofBand } from "@/components/jk/ProofBand";
+import { Parallax } from "@/components/jk/Parallax";
 
 export const revalidate = 60;
 
@@ -70,16 +71,18 @@ export default async function AccueilRefontePage() {
         }}
       >
         {heroPhoto && (
-          <Image
-            src={heroPhoto.src}
-            alt={heroPhoto.alt}
-            fill
-            sizes="100vw"
-            priority
-            placeholder={heroPhoto.blurDataURL ? "blur" : "empty"}
-            blurDataURL={heroPhoto.blurDataURL || undefined}
-            style={{ objectFit: "cover" }}
-          />
+          <Parallax>
+            <Image
+              src={heroPhoto.src}
+              alt={heroPhoto.alt}
+              fill
+              sizes="100vw"
+              priority
+              placeholder={heroPhoto.blurDataURL ? "blur" : "empty"}
+              blurDataURL={heroPhoto.blurDataURL || undefined}
+              style={{ objectFit: "cover" }}
+            />
+          </Parallax>
         )}
         <span
           aria-hidden
@@ -306,11 +309,13 @@ export default async function AccueilRefontePage() {
               padding: 0,
             }}
           >
-            {selection.map(({ cat, serie }) => {
+            {selection.map(({ cat, serie }, i) => {
               const photo = serie.photos[0];
               return (
                 <li key={`${cat.slug}/${serie.slug}`}>
-                  <Reveal as="div">
+                  {/* Décalage plafonné : au-delà de 6 vignettes l'attente
+                      deviendrait perceptible et la page paraîtrait lente. */}
+                  <Reveal as="div" delay={Math.min(i, 5) * 80}>
                     <Link
                       href={`/travaux/${cat.slug}/${serie.slug}/histoire`}
                       style={{ display: "grid", gap: 16, color: "inherit" }}
@@ -384,6 +389,7 @@ export default async function AccueilRefontePage() {
               (c.directMedia?.filter((m) => m.kind === "photo").length ?? 0);
             return (
               <li key={c.slug}>
+                <Reveal as="div" delay={Math.min(i, 5) * 80}>
                 <Link
                   href={`/travaux/${c.slug}`}
                   className="jk-cat-row"
@@ -432,6 +438,7 @@ export default async function AccueilRefontePage() {
                     {n} {c.unit}
                   </span>
                 </Link>
+                </Reveal>
               </li>
             );
           })}

@@ -6,6 +6,7 @@ import { getCategories, getSeriesBySlug } from "@/lib/data";
 import { Caption } from "@/components/jk/Caption";
 import { Reveal } from "@/components/jk/Reveal";
 import { SeriesScroller } from "@/components/jk/SeriesScroller";
+import { Parallax } from "@/components/jk/Parallax";
 
 export const revalidate = 60;
 
@@ -91,15 +92,17 @@ export default async function SeriesStoryPage({
             être marquée `priority` et ne reçoit pas de `srcset`. Elle se
             chargeait donc tard, alors que c'est le visuel d'ouverture. */}
         {series.coverSrc && (
-          <Image
-            src={series.coverSrc}
-            alt=""
-            aria-hidden
-            fill
-            sizes="100vw"
-            priority
-            style={{ objectFit: "cover" }}
-          />
+          <Parallax>
+            <Image
+              src={series.coverSrc}
+              alt=""
+              aria-hidden
+              fill
+              sizes="100vw"
+              priority
+              style={{ objectFit: "cover" }}
+            />
+          </Parallax>
         )}
         <span
           aria-hidden

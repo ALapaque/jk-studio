@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Reveal } from "./Reveal";
 
 /** Ligne de série dans l'index portfolio.
  *
@@ -21,6 +22,7 @@ export function IndexRow({
   location,
   period,
   previewSrc,
+  delay = 0,
 }: {
   href: string;
   num: string;
@@ -28,6 +30,7 @@ export function IndexRow({
   location: string;
   period: string;
   previewSrc?: string;
+  delay?: number;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -37,6 +40,7 @@ export function IndexRow({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      <Reveal as="div" delay={delay}>
       <Link
         href={href}
         className="jk-cat-row"
@@ -98,6 +102,7 @@ export function IndexRow({
           </span>
         )}
       </Link>
+      </Reveal>
 
       {previewSrc && hovered && (
         <span

@@ -89,6 +89,7 @@ export default async function SeriesIndexPage() {
                   location={s.location}
                   period={s.period}
                   previewSrc={s.coverSrc || s.photos[0]?.src}
+                  delay={Math.min(i, 5) * 70}
                 />
               ))}
               {c.series.length === 0 && (
