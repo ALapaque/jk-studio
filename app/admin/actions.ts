@@ -157,6 +157,10 @@ export async function updateProject(formData: FormData) {
       location: s(formData, "location"),
       period: s(formData, "period"),
       published: formData.get("published") === "on",
+      // Métadonnées de série (0004). `shot_at` est une date : une chaîne vide
+      // doit repartir en NULL, sinon Postgres rejette la valeur.
+      shot_at: s(formData, "shot_at") || null,
+      intro: s(formData, "intro") || null,
     })
     .eq("id", id);
   if (error) throw new Error(error.message);
@@ -225,9 +229,56 @@ export async function updatePhoto(formData: FormData) {
     .update({
       alt: s(formData, "alt") || null,
       caption: s(formData, "caption") || null,
+      // Légende éditoriale (0004) : « <subject> — <LOCATION> ».
+      subject: s(formData, "subject") || null,
+      location: s(formData, "location") || null,
     })
     .eq("id", s(formData, "id"));
   if (error) throw new Error(error.message);
+  revalidateAll();
+}
+
+/** Réordonne les photos d'une série depuis le montage narratif (drag & drop).
+ *  `ids` est la liste ordonnée des identifiants ; les positions sont
+ *  réécrites en 0…n-1.
+ *
+ *  Les identifiants reçus sont confrontés à ceux réellement rattachés au
+ *  parent avant écriture : un id étranger au scope est ignoré plutôt
+ *  qu'écrit, et un envoi incomplet (onglet obsolète, requête tronquée) est
+ *  rejeté — sans quoi les photos absentes de la liste garderaient une
+ *  position en collision avec les nouvelles. */
+export async function reorderPhotos(formData: FormData) {
+  await assertUser();
+  const scope = mediaScope(formData);
+  if (!scope) throw new Error("Données manquantes");
+
+  const ids = String(formData.get("ids") ?? "")
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean);
+  if (!ids.length) return;
+
+  const sb = createAdminSupabase();
+  const { data, error: readError } = await sb
+    .from("photos")
+    .select("id")
+    .eq(scope.col, scope.val);
+  if (readError) throw new Error(readError.message);
+
+  const owned = new Set((data ?? []).map((r) => (r as { id: string }).id));
+  const ordered = ids.filter((id) => owned.has(id));
+  if (ordered.length !== owned.size) {
+    throw new Error("Ordre incomplet — recharge la page et réessaie.");
+  }
+
+  const results = await Promise.all(
+    ordered.map((id, i) =>
+      sb.from("photos").update({ position: i }).eq("id", id),
+    ),
+  );
+  const failed = results.find((r) => r.error);
+  if (failed?.error) throw new Error(failed.error.message);
+
   revalidateAll();
 }
 

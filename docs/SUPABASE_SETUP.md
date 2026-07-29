@@ -30,6 +30,25 @@ Dans le projet : **Project Settings** (roue dentée) → **API**. Notez :
    - [`0001_init.sql`](../supabase/migrations/0001_init.sql) — tables, RLS, stockage.
    - [`0002_covers_hero.sql`](../supabase/migrations/0002_covers_hero.sql) — couvertures uploadables + photos « à la une ».
    - [`0003_category_media.sql`](../supabase/migrations/0003_category_media.sql) — photos/vidéos rattachées directement à une catégorie (sans passer par une série).
+   - [`0004_series_captions.sql`](../supabase/migrations/0004_series_captions.sql) — légendes éditoriales (`subject` / `location`), `orientation`, LQIP, et métadonnées de série (`shot_at`, `intro`).
+
+### Backfill de la migration 0004
+
+`0004` n'ajoute que des colonnes **nullables** : le site rend exactement comme
+avant tant qu'elles sont vides. Pour calculer l'orientation et les LQIP des
+photos déjà en ligne :
+
+```bash
+npm run backfill:0004 -- --dry   # simulation, aucune écriture
+npm run backfill:0004            # écrit en base
+```
+
+Le script est idempotent (il ne traite que les photos non renseignées) et
+relançable après interruption. Il ne remplit **pas** `subject` / `location` :
+les légendes sont une saisie humaine, via l'admin (Lot 2).
+
+Pour annuler la migration : [`0004_series_captions.rollback.sql`](../supabase/migrations/0004_series_captions.rollback.sql)
+(⚠️ supprime les légendes saisies — exporter avant, voir l'en-tête du fichier).
 
 Cela crée les tables (`categories`, `projects`, `photos`, `videos`, `messages`,
 `site_content`), active les **politiques RLS** (lecture publique du contenu
