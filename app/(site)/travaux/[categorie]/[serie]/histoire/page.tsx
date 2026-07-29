@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCategories, getSeriesBySlug } from "@/lib/data";
 import { Caption } from "@/components/jk/Caption";
+import { Reveal } from "@/components/jk/Reveal";
 import { SeriesScroller } from "@/components/jk/SeriesScroller";
 
 export const revalidate = 60;
@@ -64,6 +65,14 @@ export default async function SeriesStoryPage({
       }}
       className="jk-scroller"
     >
+      {/* `.jk-reveal` démarre à opacity:0 et c'est l'IntersectionObserver qui
+          le révèle. Sans JavaScript, les légendes resteraient donc invisibles
+          alors que la page est rendue côté serveur : ce repli les affiche
+          d'emblée, sans transition. */}
+      <noscript>
+        <style>{`.jk-reveal{opacity:1;transform:none;transition:none}`}</style>
+      </noscript>
+
       {/* ---- écran d'ouverture ---- */}
       <section
         style={{
@@ -97,7 +106,8 @@ export default async function SeriesStoryPage({
               "linear-gradient(to bottom, rgba(14,12,10,.58) 0%, rgba(14,12,10,.12) 40%, rgba(14,12,10,.78) 100%)",
           }}
         />
-        <div
+        <Reveal
+          as="div"
           style={{
             position: "relative",
             padding: "0 var(--jk-gap-page) 110px",
@@ -149,7 +159,7 @@ export default async function SeriesStoryPage({
               {photos.length} image{photos.length > 1 ? "s" : ""}
             </span>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ---- le défilé ---- */}

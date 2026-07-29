@@ -24,8 +24,6 @@ export interface CaptionProps {
   tone?: "default" | "onImage";
   className?: string;
   style?: CSSProperties;
-  /** Piloté par l'IntersectionObserver du défilé : déclenche `.jk-reveal`. */
-  "data-visible"?: string;
 }
 
 /** Légende éditoriale : « <sujet> — <LIEU> ».
@@ -45,7 +43,6 @@ export function Caption({
   tone = "default",
   className,
   style,
-  ...rest
 }: CaptionProps) {
   const s = subject?.trim() || "";
   const l = location?.trim() || "";
@@ -58,7 +55,6 @@ export function Caption({
     <span
       className={["jk-caption", className].filter(Boolean).join(" ")}
       style={{ gap: `${v.gap}px`, ...style }}
-      {...rest}
     >
       {s && (
         <span
