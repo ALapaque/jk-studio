@@ -44,7 +44,12 @@ export default async function RefonteLayout({
       }}
     >
       <JsonLd content={content} />
-      <Nav brandName={content.brand.name} items={items} />
+      <Nav
+        brandName={content.brand.name}
+        items={items}
+        menuLabel={content.nav.menu}
+        closeLabel={content.nav.close}
+      />
       {children}
       <Footer content={content} />
     </div>
