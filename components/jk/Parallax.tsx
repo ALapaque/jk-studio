@@ -28,12 +28,17 @@ import type { ReactNode } from "react";
  *  strictement immobile, comme l'exige la maquette pour toute animation. */
 export function Parallax({
   children,
-  /** Amplitude, en fraction de la hauteur du cadre. 0.12 = ±6 % autour du
-   *  centre. Au-delà de ~0.2 l'effet devient voyant et trahit le sujet. */
-  amplitude = 0.12,
-  /** Débord de l'enfant, en % — doit rester supérieur à l'amplitude pour
-   *  qu'aucun bord ne se découvre en fin de course. */
-  overscan = 14,
+  /** Amplitude, en fraction de la hauteur du cadre : la translation va
+   *  jusqu'à ±(amplitude × hauteur). */
+  amplitude = 0.2,
+  /** Débord de l'enfant, en % de la hauteur du cadre.
+   *
+   *  Par défaut il est DÉRIVÉ de l'amplitude, et c'est délibéré : le débord
+   *  doit couvrir la course complète des deux côtés, sinon un bord vide se
+   *  découvre en fin de course. Le laisser réglable indépendamment invitait
+   *  à désynchroniser les deux — c'était le cas de la première version, dont
+   *  la course (±12 %) dépassait la marge disponible (7 %). */
+  overscan,
   className,
 }: {
   children: ReactNode;
@@ -41,6 +46,8 @@ export function Parallax({
   overscan?: number;
   className?: string;
 }) {
+  // Course des deux côtés, plus une marge de sécurité pour les arrondis.
+  const span = overscan ?? amplitude * 200 + 4;
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -104,8 +111,8 @@ export function Parallax({
         position: "absolute",
         left: 0,
         right: 0,
-        top: `-${overscan / 2}%`,
-        height: `${100 + overscan}%`,
+        top: `-${span / 2}%`,
+        height: `${100 + span}%`,
         willChange: "transform",
       }}
     >
