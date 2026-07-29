@@ -136,6 +136,24 @@
   transform: none;
 }
 
+/* ============================================================
+   Accessibilité — focus visible sur tout élément interactif (§10).
+
+   `:focus-visible` et non `:focus` : le contour n'apparaît qu'au clavier,
+   pas au clic souris, donc sans coût visuel pour la navigation au pointeur.
+   Le laiton est doublé d'un liseré sombre pour rester perceptible aussi bien
+   sur une photo claire que sur un fond sombre — un contour d'une seule
+   couleur disparaît sur l'une ou sur l'autre.
+   ============================================================ */
+.jk-scroller :focus-visible,
+[class*="jk-"] :focus-visible,
+a.jk-cat-row:focus-visible {
+  outline: 2px solid var(--jk-brass);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(14, 12, 10, 0.55);
+  border-radius: 2px;
+}
+
 /* Défilé plein écran — chaque section s'aligne en haut du viewport. */
 .jk-screen {
   scroll-snap-align: start;
