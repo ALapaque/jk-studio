@@ -1,5 +1,8 @@
 // Types de la base — maintenus à la main, alignés sur
-// supabase/migrations/0001_init.sql.
+// supabase/migrations/0001_init.sql … 0004_series_captions.sql.
+
+/** Orientation calculée à l'upload (enum `public.photo_orientation`). */
+export type PhotoOrientation = "portrait" | "landscape";
 
 export interface CategoryRow {
   id: string;
@@ -26,6 +29,10 @@ export interface ProjectRow {
   position: number;
   published: boolean;
   created_at: string;
+  /** Date de prise de vue, pour un tri chronologique fiable (0004). */
+  shot_at: string | null;
+  /** Chapô éditorial affiché à l'ouverture du défilé (0004). */
+  intro: string | null;
 }
 
 export interface PhotoRow {
@@ -41,6 +48,14 @@ export interface PhotoRow {
   featured: boolean;
   featured_position: number;
   created_at: string;
+  /** Partie italique de la légende éditoriale (0004). */
+  subject: string | null;
+  /** Partie en capitales de la légende éditoriale (0004). */
+  location: string | null;
+  /** Calculée à l'upload : pilote le cadrage cover/contain (0004). */
+  orientation: PhotoOrientation | null;
+  /** LQIP pour `blurDataURL` de next/image (0004). */
+  blur_data_url: string | null;
 }
 
 export interface VideoRow {

@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Maquettes Claude Design conservées telles quelles pour référence
+    // (prototypes HTML/JS, pas du code applicatif) — les linter n'a pas de
+    // sens et masque les vraies erreurs du projet.
+    "legacy/**",
   ]),
 ]);
 
