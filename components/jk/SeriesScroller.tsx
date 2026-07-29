@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { Photo } from "@/lib/types";
 import { Caption } from "./Caption";
+import { Reveal } from "./Reveal";
 
 /** Défilé plein écran d'une série : un écran par photo.
  *
@@ -217,20 +218,32 @@ export function SeriesScroller({
               />
             )}
 
-            <Caption
-              subject={p.subject}
-              location={p.place}
-              variant="fullscreen"
-              tone={portrait ? "default" : "onImage"}
-              className="jk-reveal"
-              data-visible={current >= i ? "true" : undefined}
+            {/* Le positionnement est porté par ce conteneur, la translation
+                de révélation par <Reveal> : deux éléments distincts, donc
+                aucun conflit entre le centrage et le `transform` animé.
+                Le centrage se fait en flex, sans transform, exprès. */}
+            <span
               style={{
                 position: "absolute",
-                left: portrait ? "50%" : "var(--jk-gap-page)",
+                left: portrait ? 0 : "var(--jk-gap-page)",
+                right: portrait ? 0 : undefined,
                 bottom: portrait ? 74 : 56,
-                transform: portrait ? "translateX(-50%)" : undefined,
+                display: "flex",
+                justifyContent: portrait ? "center" : "flex-start",
+                pointerEvents: "none",
               }}
-            />
+            >
+              {/* La légende s'observe elle-même : elle se révèle à SON entrée
+                  dans le viewport, pas selon l'index de l'écran courant. */}
+              <Reveal>
+                <Caption
+                  subject={p.subject}
+                  location={p.place}
+                  variant="fullscreen"
+                  tone={portrait ? "default" : "onImage"}
+                />
+              </Reveal>
+            </span>
           </section>
         );
       })}
