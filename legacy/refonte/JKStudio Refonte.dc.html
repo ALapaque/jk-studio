@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #090807; }
+  a { color: #B8925A; text-decoration: none; }
+  a:hover { color: #EFE9E1; }
+  image-slot { display: block; }
+</style>
+</helmet>
+
+<div style="{{ themeStyle }}"><div style="background:#090807;padding:72px;display:flex;flex-direction:column;gap:110px;align-items:flex-start;width:max-content;font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased">
+
+<!-- ============ 00 DIRECTION ARTISTIQUE ============ -->
+<section data-screen-label="00" style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#6E655B">
+    <span style="color:var(--brass,#B8925A)">(00)</span><span>Direction artistique</span>
+  </div>
+  <div style="width:1440px;background:var(--bg,#0E0C0A);color:var(--fg,#EFE9E1);padding:80px 96px;display:flex;flex-direction:column;gap:72px">
+
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--rule,rgba(239,233,225,.14));padding-bottom:28px">
+      <div style="font-family:'Instrument Serif',serif;font-size:52px;line-height:1;letter-spacing:-.01em;max-width:660px">Portfolio-vitrine immersif et cinématographique</div>
+      <div style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A);text-align:right;line-height:2">JKStudio<br>Bruxelles — 2026</div>
+    </div>
+
+    <!-- palettes -->
+    <div style="display:flex;gap:64px">
+      <div style="flex:1;display:flex;flex-direction:column;gap:20px">
+        <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Thème sombre — par défaut</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#0E0C0A;border:1px solid rgba(239,233,225,.14)"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#0E0C0A<br>bg</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#141210;border:1px solid rgba(239,233,225,.1)"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#141210<br>surface</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#EFE9E1"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#EFE9E1<br>texte</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#9A938A"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#9A938A<br>texte sourd</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#B8925A"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#B8925A<br>laiton</div></div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:20px">
+        <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Thème clair</div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#F2ECE2;border:1px solid rgba(239,233,225,.14)"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#F2ECE2<br>bg</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#E7DFD2"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#E7DFD2<br>surface</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#171310"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#171310<br>encre</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#6B6259"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#6B6259<br>texte sourd</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px"><div style="height:96px;background:#8A6634"></div><div style="font-size:9px;letter-spacing:.14em;color:#9A938A">#8A6634<br>laiton AA</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- type + captions -->
+    <div style="display:flex;gap:64px;border-top:1px solid var(--rule,rgba(239,233,225,.14));padding-top:56px">
+      <div style="flex:1;display:flex;flex-direction:column;gap:32px">
+        <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Échelle typographique</div>
+        <div style="display:flex;flex-direction:column;gap:26px">
+          <div style="display:flex;align-items:baseline;gap:24px"><span style="font-size:9px;letter-spacing:.14em;color:#6E655B;width:96px;flex:none">Display / 88</span><span style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.92;letter-spacing:-.02em">Nuit de mars</span></div>
+          <div style="display:flex;align-items:baseline;gap:24px"><span style="font-size:9px;letter-spacing:.14em;color:#6E655B;width:96px;flex:none">Série / 52</span><span style="font-family:'Instrument Serif',serif;font-size:52px;line-height:1">Élodie &amp; Marc</span></div>
+          <div style="display:flex;align-items:baseline;gap:24px"><span style="font-size:9px;letter-spacing:.14em;color:#6E655B;width:96px;flex:none">Corps / 21</span><span style="font-family:'Instrument Serif',serif;font-size:21px;line-height:1.6;color:var(--fg,#EFE9E1)">Une lumière honnête et des gens vrais.</span></div>
+          <div style="display:flex;align-items:baseline;gap:24px"><span style="font-size:9px;letter-spacing:.14em;color:#6E655B;width:96px;flex:none">Label / 10</span><span style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--fg,#EFE9E1)">Nightlife — 26 photos</span></div>
+        </div>
+        <div style="font-size:10px;letter-spacing:.14em;color:#6E655B;line-height:1.8">Instrument Serif — titres, légendes, corps court.<br>IBM Plex Sans — nav, labels, numérotation, métadonnées.</div>
+      </div>
+
+      <div style="width:1px;background:var(--rule,rgba(239,233,225,.14))"></div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:32px">
+        <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Système de légende — 3 tailles</div>
+        <div style="display:flex;flex-direction:column;gap:34px">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:9px;letter-spacing:.14em;color:#6E655B">S — vignette</span>
+            <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Hamza</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">Bruxelles</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:9px;letter-spacing:.14em;color:#6E655B">M — plein écran</span>
+            <div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px">Hamza</span><span style="color:var(--brass,#B8925A);font-size:20px">—</span><span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">Bruxelles</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:9px;letter-spacing:.14em;color:#6E655B">L — hero</span>
+            <div style="display:flex;align-items:baseline;gap:16px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:40px">Hamza</span><span style="color:var(--brass,#B8925A);font-size:28px">—</span><span style="font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Bruxelles</span></div>
+          </div>
+        </div>
+        <div style="font-size:10px;letter-spacing:.14em;color:#6E655B;line-height:1.8">Construite depuis les métadonnées : <span style="color:var(--brass,#B8925A)">sujet</span> en serif italique, <span style="color:var(--brass,#B8925A)">lieu</span> en capitales espacées.</div>
+      </div>
+    </div>
+
+    <!-- tokens + motion -->
+    <div style="display:flex;gap:64px;border-top:1px solid var(--rule,rgba(239,233,225,.14));padding-top:56px">
+      <div style="flex:1.2;display:flex;flex-direction:column;gap:22px">
+        <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Tokens CSS</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 40px;font-size:11px;letter-spacing:.02em;color:var(--dim,#9A938A);line-height:1.9">
+          <span>--jk-bg<span style="color:#6E655B"> · 0E0C0A / F2ECE2</span></span>
+          <span>--jk-surface<span style="color:#6E655B"> · 141210 / E7DFD2</span></span>
+          <span>--jk-ink<span style="color:#6E655B"> · EFE9E1 / 171310</span></span>
+          <span>--jk-ink-mute<span style="color:#6E655B"> · 9A938A / 6B6259</span></span>
+          <span>--jk-brass<span style="color:#6E655B"> · B8925A / 8A6634</span></span>
+          <span>--jk-rule<span style="color:#6E655B"> · ink @ 14%</span></span>
+          <span>--jk-serif<span style="color:#6E655B"> · Instrument Serif</span></span>
+          <span>--jk-sans<span style="color:#6E655B"> · IBM Plex Sans</span></span>
+          <span>--jk-track-label<span style="color:#6E655B"> · .26em</span></span>
+          <span>--jk-track-place<span style="color:#6E655B"> · .22em</span></span>
+          <span>--jk-ease<span style="color:#6E655B"> · cubic-bezier(.16,1,.3,1)</span></span>
+          <span>--jk-dur-caption<span style="color:#6E655B"> · 600ms</span></span>
+        </div>
+      </div>
+      <div style="width:1px;background:var(--rule,rgba(239,233,225,.14))"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:22px">
+        <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Motion</div>
+        <div style="font-size:12px;color:var(--dim,#9A938A);line-height:2.1">
+          Légende : fondu + 10px, 600ms, ease sortant.<br>
+          Vignette : zoom 1.04 de l'image dans son cadre, 900ms.<br>
+          Défilé : scroll-snap <span style="color:var(--fg,#EFE9E1)">proximity</span>, 100dvh.<br>
+          Nav : backdrop-filter blur(14px) après 40px de scroll.<br>
+          Tout neutralisé sous prefers-reduced-motion.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 ACCUEIL ============ -->
+<section data-screen-label="01" style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#6E655B">
+    <span style="color:var(--brass,#B8925A)">(01)</span><span>Accueil — desktop</span>
+  </div>
+  <div style="width:1440px;background:var(--bg,#0E0C0A);color:var(--fg,#EFE9E1);display:flex;flex-direction:column">
+
+    <!-- hero -->
+    <div style="position:relative;height:860px;background:#151013">
+      <image-slot id="jk-hero" shape="rect" fit="cover" placeholder="NIGHTLIFE — plan large, néons, foule / vertical du club"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(14,12,10,.62) 0%,rgba(14,12,10,0) 34%,rgba(14,12,10,0) 58%,rgba(14,12,10,.72) 100%);pointer-events:none"></div>
+      <div style="position:absolute;top:0;left:0;right:0;padding:30px 56px;display:flex;align-items:center;justify-content:space-between;pointer-events:none">
+        <span style="font-size:13px;letter-spacing:.34em;text-transform:uppercase">JKStudio</span>
+        <div style="display:flex;gap:38px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.78)">
+          <span style="color:var(--fg,#EFE9E1);border-bottom:1px solid var(--brass,#B8925A);padding-bottom:3px">Portfolio</span>
+          <span>Tirages</span><span>Studio</span><span>Contact</span>
+        </div>
+      </div>
+      <div style="position:absolute;left:56px;bottom:52px;display:flex;flex-direction:column;gap:20px;pointer-events:none">
+        <div style="display:flex;align-items:baseline;gap:16px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:40px;line-height:1">Hamza</span><span style="color:var(--brass,#B8925A);font-size:28px">—</span><span style="font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:rgba(239,233,225,.72)">Bruxelles</span></div>
+      </div>
+      <div style="position:absolute;right:56px;bottom:52px;display:flex;align-items:center;gap:14px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.6);pointer-events:none">
+        <span>Faire défiler</span><span style="width:52px;height:1px;background:var(--brass,#B8925A)"></span>
+      </div>
+    </div>
+
+    <!-- (01) le studio -->
+    <div style="padding:120px 56px;display:grid;grid-template-columns:minmax(0,1fr) 520px;gap:96px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:56px;padding-top:8px">
+        <div style="display:flex;align-items:baseline;gap:14px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">
+          <span style="color:var(--brass,#B8925A)">(01)</span><span>Le studio</span>
+        </div>
+        <div style="font-family:'Instrument Serif',serif;font-size:38px;line-height:1.32;letter-spacing:-.01em;max-width:640px;text-wrap:pretty">
+          Je photographie des nuits, des mariages et des soirées d'entreprise avec la même règle : une lumière honnête et des gens vrais. Pas de pose, pas de retouche qui invente. Ce qui reste, c'est ce qui s'est passé.
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,190px));gap:0;border-top:1px solid var(--rule,rgba(239,233,225,.14))">
+          <div style="padding:18px 24px 0 0;border-right:1px solid var(--rule,rgba(239,233,225,.14))"><div style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B;margin-bottom:10px">Actif depuis</div><div style="font-size:14px;letter-spacing:.06em">2018</div></div>
+          <div style="padding:18px 24px 0;border-right:1px solid var(--rule,rgba(239,233,225,.14))"><div style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B;margin-bottom:10px">Base</div><div style="font-size:14px;letter-spacing:.06em">Bruxelles</div></div>
+          <div style="padding:18px 0 0 24px"><div style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B;margin-bottom:10px">Langues</div><div style="font-size:14px;letter-spacing:.06em">FR / EN / NL</div></div>
+        </div>
+      </div>
+      <div style="height:720px;background:#1B1512;overflow:hidden">
+        <div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)">
+          <image-slot id="jk-studio-portrait" shape="rect" fit="cover" placeholder="MARIAGE — verticale, lumière naturelle chaude, fin de journée"></image-slot>
+        </div>
+      </div>
+    </div>
+
+    <!-- preuve sociale -->
+    <div style="{{ proofStyle }}"><div style="padding:0 56px">
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));border-bottom:1px solid var(--rule,rgba(239,233,225,.14));display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B;padding-right:40px">Ils m'ont confié leurs images</span>
+        <div style="display:flex;align-items:stretch;color:var(--dim,#9A938A)">
+          <span style="padding:22px 32px;border-left:1px solid var(--rule,rgba(239,233,225,.14));font-size:12px;letter-spacing:.22em;text-transform:uppercase">Deloitte</span>
+          <span style="padding:22px 32px;border-left:1px solid var(--rule,rgba(239,233,225,.14));font-size:12px;letter-spacing:.22em;text-transform:uppercase">Fuse</span>
+          <span style="padding:22px 32px;border-left:1px solid var(--rule,rgba(239,233,225,.14));font-size:12px;letter-spacing:.22em;text-transform:uppercase">Bozar</span>
+          <span style="padding:22px 32px;border-left:1px solid var(--rule,rgba(239,233,225,.14));font-size:12px;letter-spacing:.22em;text-transform:uppercase">Kanal</span>
+          <span style="padding:22px 32px;border-left:1px solid var(--rule,rgba(239,233,225,.14));font-size:12px;letter-spacing:.22em;text-transform:uppercase">C12</span>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- (02) sélection -->
+    <div style="padding:110px 56px 0;display:flex;flex-direction:column;gap:48px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between">
+        <div style="display:flex;align-items:baseline;gap:14px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--brass,#B8925A)">(02)</span><span>Sélection 2026</span></div>
+        <span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A);border-bottom:1px solid var(--brass,#B8925A);padding-bottom:3px">Tout le portfolio</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:56px 28px">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="height:460px;background:#171018;overflow:hidden"><div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)"><image-slot id="jk-sel-1" shape="rect" fit="cover" placeholder="NIGHTLIFE — flash direct, sueur, sourire"></image-slot></div></div>
+          <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Hamza</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">Fuse, Bruxelles</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="height:460px;background:#211A14;overflow:hidden"><div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)"><image-slot id="jk-sel-2" shape="rect" fit="cover" placeholder="MARIAGE — premier regard, contre-jour doré"></image-slot></div></div>
+          <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Élodie &amp; Marc</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">La Hulpe</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="height:460px;background:#14181B;overflow:hidden"><div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)"><image-slot id="jk-sel-3" shape="rect" fit="cover" placeholder="ÉVÉNEMENT — keynote, lumière froide de scène"></image-slot></div></div>
+          <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Keynote</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">Deloitte, Zaventem</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="height:460px;background:#1B1116;overflow:hidden"><div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)"><image-slot id="jk-sel-4" shape="rect" fit="cover" placeholder="NIGHTLIFE — DJ booth, fumée, laser"></image-slot></div></div>
+          <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Nadia</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">C12, Bruxelles</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="height:460px;background:#231C15;overflow:hidden"><div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)"><image-slot id="jk-sel-5" shape="rect" fit="cover" placeholder="MARIAGE — mains, détail, lumière de fenêtre"></image-slot></div></div>
+          <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Les alliances</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">Gand</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="height:460px;background:#16191A;overflow:hidden"><div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)"><image-slot id="jk-sel-6" shape="rect" fit="cover" placeholder="ÉVÉNEMENT — cocktail, conversations, ambiance"></image-slot></div></div>
+          <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Summer Party</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">Kanal, Bruxelles</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- (03) catégories -->
+    <div style="padding:120px 56px 110px;display:flex;flex-direction:column;gap:40px">
+      <div style="display:flex;align-items:baseline;gap:14px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--brass,#B8925A)">(03)</span><span>Catégories</span></div>
+      <div style="display:flex;flex-direction:column">
+        <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:34px 0;display:flex;align-items:baseline;gap:36px;transition:color 400ms ease" style-hover="color:#B8925A">
+          <span style="font-size:11px;letter-spacing:.24em;color:var(--brass,#B8925A);width:36px">01</span>
+          <span style="font-family:'Instrument Serif',serif;font-size:56px;line-height:1;flex:1">Nightlife</span>
+          <span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">26 photos</span>
+        </div>
+        <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:34px 0;display:flex;align-items:baseline;gap:36px;transition:color 400ms ease" style-hover="color:#B8925A">
+          <span style="font-size:11px;letter-spacing:.24em;color:var(--brass,#B8925A);width:36px">02</span>
+          <span style="font-family:'Instrument Serif',serif;font-size:56px;line-height:1;flex:1">Mariages</span>
+          <span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">41 photos</span>
+        </div>
+        <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));border-bottom:1px solid var(--rule,rgba(239,233,225,.14));padding:34px 0;display:flex;align-items:baseline;gap:36px;transition:color 400ms ease" style-hover="color:#B8925A">
+          <span style="font-size:11px;letter-spacing:.24em;color:var(--brass,#B8925A);width:36px">03</span>
+          <span style="font-family:'Instrument Serif',serif;font-size:56px;line-height:1;flex:1">Événements</span>
+          <span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">18 photos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div style="padding:90px 56px;background:var(--surface,#141210);display:flex;align-items:flex-end;justify-content:space-between">
+      <div style="font-family:'Instrument Serif',serif;font-size:64px;line-height:1;letter-spacing:-.01em">Écrivons-le en images</div>
+      <div style="display:flex;gap:64px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A);line-height:2.2">
+        <div>hello@jkstudio.fr<br>+32 4 — — — —</div>
+        <div>Instagram<br>Bruxelles, BE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 PAGE SÉRIE ============ -->
+<section data-screen-label="02" style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#6E655B">
+    <span style="color:var(--brass,#B8925A)">(02)</span><span>Page série — défilé plein écran, 5 écrans successifs</span>
+  </div>
+  <div style="width:1440px;display:flex;flex-direction:column;gap:6px">
+
+    <!-- écran 1 : ouverture -->
+    <div style="position:relative;height:900px;background:#150F14;color:#EFE9E1">
+      <image-slot id="jk-ser-1" shape="rect" fit="cover" placeholder="NIGHTLIFE — image d'ouverture, plan large très sombre"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(14,12,10,.58) 0%,rgba(14,12,10,.12) 40%,rgba(14,12,10,.78) 100%);pointer-events:none"></div>
+      <div style="position:absolute;top:0;left:0;right:0;padding:26px 56px;display:flex;align-items:center;justify-content:space-between;background:rgba(14,12,10,.34);backdrop-filter:blur(14px);pointer-events:none">
+        <span style="font-size:12px;letter-spacing:.34em;text-transform:uppercase">JKStudio</span>
+        <div style="display:flex;gap:38px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.72)"><span style="color:#EFE9E1">Portfolio</span><span>Tirages</span><span>Studio</span><span>Contact</span></div>
+      </div>
+      <div style="position:absolute;left:56px;bottom:110px;display:flex;flex-direction:column;gap:26px;pointer-events:none">
+        <div style="display:flex;align-items:center;gap:14px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass,#B8925A)"><span>01 Nightlife</span><span style="width:34px;height:1px;background:rgba(184,146,90,.6)"></span><span style="color:rgba(239,233,225,.7)">Série 03</span></div>
+        <div style="font-family:'Instrument Serif',serif;font-size:104px;line-height:.94;letter-spacing:-.02em">Nuit de mars</div>
+        <div style="display:flex;gap:34px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.66)"><span>Fuse, Bruxelles</span><span>Mars 2026</span><span>14 images</span></div>
+      </div>
+      <div style="position:absolute;right:34px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none">
+        <span style="font-size:9px;letter-spacing:.2em;color:#B8925A">01</span>
+        <div style="width:1px;height:180px;background:rgba(239,233,225,.18);position:relative"><div style="position:absolute;top:0;left:0;width:1px;height:36px;background:#B8925A"></div></div>
+        <span style="font-size:9px;letter-spacing:.2em;color:rgba(239,233,225,.4)">14</span>
+      </div>
+    </div>
+
+    <!-- écran 2 : paysage plein cadre -->
+    <div style="position:relative;height:900px;background:#181016;color:#EFE9E1">
+      <image-slot id="jk-ser-2" shape="rect" fit="cover" placeholder="NIGHTLIFE — paysage plein cadre, dancefloor au flash"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(14,12,10,.66) 0%,rgba(14,12,10,0) 42%);pointer-events:none"></div>
+      <div style="position:absolute;left:56px;bottom:56px;display:flex;align-items:baseline;gap:12px;pointer-events:none">
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px">Le dancefloor à 2h</span><span style="color:var(--brass,#B8925A);font-size:20px">—</span><span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.66)">Fuse, Bruxelles</span>
+      </div>
+      <div style="position:absolute;right:56px;bottom:58px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,233,225,.42);pointer-events:none">Paysage — plein cadre</div>
+      <div style="position:absolute;right:34px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none">
+        <span style="font-size:9px;letter-spacing:.2em;color:#B8925A">02</span>
+        <div style="width:1px;height:180px;background:rgba(239,233,225,.18);position:relative"><div style="position:absolute;top:36px;left:0;width:1px;height:36px;background:#B8925A"></div></div>
+        <span style="font-size:9px;letter-spacing:.2em;color:rgba(239,233,225,.4)">14</span>
+      </div>
+    </div>
+
+    <!-- écran 3 : portrait respiré -->
+    <div style="position:relative;height:900px;background:var(--surface,#141210);color:var(--fg,#EFE9E1);display:flex;align-items:center;justify-content:center">
+      <div style="width:560px;height:760px;background:#1C1119"><image-slot id="jk-ser-3" shape="rect" fit="cover" placeholder="NIGHTLIFE — portrait vertical, néon rouge, non croppé"></image-slot></div>
+      <div style="position:absolute;left:50%;bottom:74px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px">
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px">Hamza</span><span style="color:var(--brass,#B8925A);font-size:20px">—</span><span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">Fuse, Bruxelles</span>
+      </div>
+      <div style="position:absolute;right:56px;bottom:58px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#6E655B">Portrait — marges généreuses</div>
+      <div style="position:absolute;right:34px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:10px">
+        <span style="font-size:9px;letter-spacing:.2em;color:var(--brass,#B8925A)">03</span>
+        <div style="width:1px;height:180px;background:var(--rule,rgba(239,233,225,.18));position:relative"><div style="position:absolute;top:72px;left:0;width:1px;height:36px;background:#B8925A"></div></div>
+        <span style="font-size:9px;letter-spacing:.2em;color:#6E655B">14</span>
+      </div>
+    </div>
+
+    <!-- écran 4 : diptyque -->
+    <div style="position:relative;height:900px;background:var(--surface,#141210);display:flex;align-items:center;justify-content:center;gap:10px">
+      <div style="width:430px;height:700px;background:#1A1218"><image-slot id="jk-ser-4a" shape="rect" fit="cover" placeholder="NIGHTLIFE — verticale, bar, mains et verres"></image-slot></div>
+      <div style="width:430px;height:700px;background:#161016"><image-slot id="jk-ser-4b" shape="rect" fit="cover" placeholder="NIGHTLIFE — verticale, rire dans la foule"></image-slot></div>
+      <div style="position:absolute;left:50%;bottom:84px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px">
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px">Au bar, deux temps</span><span style="color:var(--brass,#B8925A);font-size:20px">—</span><span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">Fuse, Bruxelles</span>
+      </div>
+      <div style="position:absolute;right:56px;bottom:58px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#6E655B">Groupe serré — 2 images</div>
+      <div style="position:absolute;right:34px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:10px">
+        <span style="font-size:9px;letter-spacing:.2em;color:var(--brass,#B8925A)">05</span>
+        <div style="width:1px;height:180px;background:var(--rule,rgba(239,233,225,.18));position:relative"><div style="position:absolute;top:108px;left:0;width:1px;height:36px;background:#B8925A"></div></div>
+        <span style="font-size:9px;letter-spacing:.2em;color:#6E655B">14</span>
+      </div>
+    </div>
+
+    <!-- écran 5 : fin de série -->
+    <div style="position:relative;height:760px;background:var(--bg,#0E0C0A);color:var(--fg,#EFE9E1);padding:96px 56px;display:flex;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--rule,rgba(239,233,225,.14));padding-bottom:26px">
+        <span style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)">Fin de série — 14 images</span>
+        <span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A);border-bottom:1px solid var(--brass,#B8925A);padding-bottom:3px">Revenir à l'index</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:64px">
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <span style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass,#B8925A)">Série suivante — 02 Mariages</span>
+          <span style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.96;letter-spacing:-.02em">Élodie &amp; Marc</span>
+          <div style="display:flex;gap:30px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)"><span>La Hulpe</span><span>Juin 2025</span><span>22 images</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:28px">
+          <span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#6E655B">Aperçu au survol</span>
+          <div style="width:300px;height:390px;background:#221A13;overflow:hidden"><div style="width:100%;height:100%;transition:transform 900ms cubic-bezier(.16,1,.3,1)" style-hover="transform:scale(1.04)"><image-slot id="jk-ser-next" shape="rect" fit="cover" placeholder="MARIAGE — cover de la série suivante"></image-slot></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 INDEX PORTFOLIO ============ -->
+<section data-screen-label="03" style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#6E655B">
+    <span style="color:var(--brass,#B8925A)">(03)</span><span>Index portfolio — état survol</span>
+  </div>
+  <div style="width:1440px;height:1080px;background:var(--bg,#0E0C0A);color:var(--fg,#EFE9E1);position:relative;overflow:hidden;display:flex;flex-direction:column">
+    <div style="padding:26px 56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--rule,rgba(239,233,225,.14))">
+      <span style="font-size:12px;letter-spacing:.34em;text-transform:uppercase">JKStudio</span>
+      <div style="display:flex;gap:38px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--fg,#EFE9E1);border-bottom:1px solid var(--brass,#B8925A);padding-bottom:3px">Portfolio</span><span>Tirages</span><span>Studio</span><span>Contact</span></div>
+    </div>
+    <div style="padding:64px 56px 0;display:flex;align-items:flex-end;justify-content:space-between">
+      <span style="font-family:'Instrument Serif',serif;font-size:64px;line-height:1">Séries</span>
+      <div style="display:flex;gap:26px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--fg,#EFE9E1);border-bottom:1px solid var(--brass,#B8925A);padding-bottom:3px">Tout</span><span>Nightlife</span><span>Mariages</span><span>Événements</span></div>
+    </div>
+
+    <div style="padding:56px 56px 0;display:flex;flex-direction:column">
+      <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass,#B8925A);padding-bottom:18px">01 Nightlife — 26 photos</div>
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:22px 0;display:flex;align-items:baseline;gap:32px"><span style="font-size:10px;letter-spacing:.2em;color:#6E655B;width:30px">01</span><span style="font-family:'Instrument Serif',serif;font-size:34px;flex:1">Nuit de mars</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A);width:200px">Fuse, Bruxelles</span><span style="font-size:10px;letter-spacing:.22em;color:#6E655B;width:110px;text-align:right">Mars 2026</span></div>
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:22px 0;display:flex;align-items:baseline;gap:32px;color:var(--brass,#B8925A)"><span style="font-size:10px;letter-spacing:.2em;width:30px">02</span><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:34px;flex:1">Afters, rue Blaes</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;width:200px">C12, Bruxelles</span><span style="font-size:10px;letter-spacing:.22em;width:110px;text-align:right">Janv. 2026</span></div>
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:22px 0;display:flex;align-items:baseline;gap:32px"><span style="font-size:10px;letter-spacing:.2em;color:#6E655B;width:30px">03</span><span style="font-family:'Instrument Serif',serif;font-size:34px;flex:1">Laser, sueur, sourires</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A);width:200px">Kanal, Bruxelles</span><span style="font-size:10px;letter-spacing:.22em;color:#6E655B;width:110px;text-align:right">Nov. 2025</span></div>
+      <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass,#B8925A);padding:44px 0 18px">02 Mariages — 41 photos</div>
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:22px 0;display:flex;align-items:baseline;gap:32px"><span style="font-size:10px;letter-spacing:.2em;color:#6E655B;width:30px">01</span><span style="font-family:'Instrument Serif',serif;font-size:34px;flex:1">Élodie &amp; Marc</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A);width:200px">La Hulpe</span><span style="font-size:10px;letter-spacing:.22em;color:#6E655B;width:110px;text-align:right">Juin 2025</span></div>
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:22px 0;display:flex;align-items:baseline;gap:32px"><span style="font-size:10px;letter-spacing:.2em;color:#6E655B;width:30px">02</span><span style="font-family:'Instrument Serif',serif;font-size:34px;flex:1">Sarah &amp; Youssef</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A);width:200px">Gand</span><span style="font-size:10px;letter-spacing:.22em;color:#6E655B;width:110px;text-align:right">Août 2025</span></div>
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));border-bottom:1px solid var(--rule,rgba(239,233,225,.14));padding:22px 0;display:flex;align-items:baseline;gap:32px"><span style="font-size:10px;letter-spacing:.2em;color:#6E655B;width:30px">03</span><span style="font-family:'Instrument Serif',serif;font-size:34px;flex:1">Un mariage sous la pluie</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A);width:200px">Namur</span><span style="font-size:10px;letter-spacing:.22em;color:#6E655B;width:110px;text-align:right">Sept. 2025</span></div>
+      <div style="font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass,#B8925A);padding:44px 0 18px">03 Événements — 18 photos</div>
+      <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));border-bottom:1px solid var(--rule,rgba(239,233,225,.14));padding:22px 0;display:flex;align-items:baseline;gap:32px"><span style="font-size:10px;letter-spacing:.2em;color:#6E655B;width:30px">01</span><span style="font-family:'Instrument Serif',serif;font-size:34px;flex:1">Deloitte — Summer Party</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A);width:200px">Zaventem</span><span style="font-size:10px;letter-spacing:.22em;color:#6E655B;width:110px;text-align:right">Juil. 2025</span></div>
+    </div>
+
+    <!-- aperçu révélé au survol de la ligne 02 -->
+    <div style="position:absolute;right:96px;top:392px;width:320px;height:420px;background:#1A1016;box-shadow:0 40px 90px rgba(0,0,0,.5)">
+      <image-slot id="jk-idx-hover" shape="rect" fit="cover" placeholder="NIGHTLIFE — aperçu révélé au survol"></image-slot>
+      <div style="position:absolute;left:0;bottom:-30px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#6E655B">Révélé au survol — fondu 400ms</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 À PROPOS / CONTACT ============ -->
+<section data-screen-label="04" style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#6E655B">
+    <span style="color:var(--brass,#B8925A)">(04)</span><span>À propos &amp; Contact</span>
+  </div>
+  <div style="display:flex;gap:32px">
+    <div style="width:900px;height:900px;background:var(--bg,#0E0C0A);color:var(--fg,#EFE9E1);display:grid;grid-template-columns:400px minmax(0,1fr);gap:56px;padding:64px 56px">
+      <div style="background:#1F1811;overflow:hidden"><image-slot id="jk-about" shape="rect" fit="cover" placeholder="LE PHOTOGRAPHE en situation — boîtier, lumière chaude"></image-slot></div>
+      <div style="display:flex;flex-direction:column;justify-content:space-between;padding-top:6px">
+        <div style="display:flex;flex-direction:column;gap:40px">
+          <div style="display:flex;align-items:baseline;gap:14px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--brass,#B8925A)">(04)</span><span>Studio</span></div>
+          <div style="font-family:'Instrument Serif',serif;font-size:30px;line-height:1.42;text-wrap:pretty">
+            Je m'appelle Jonas. J'ai commencé en photographiant des nuits bruxelloises, parce que c'est là qu'on ne triche pas. Depuis, j'ai gardé la même façon de faire aux mariages et aux soirées d'entreprise : je reste discret, j'attends, et je déclenche quand quelque chose est vrai. Je travaille seul, en lumière disponible, et je livre peu d'images — mais je les défends toutes.
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="height:1px;background:var(--rule,rgba(239,233,225,.14))"></div>
+          <div style="display:flex;align-items:baseline;gap:12px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px">Jonas K.</span><span style="color:var(--brass,#B8925A);font-size:20px">—</span><span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">Bruxelles</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="width:508px;height:900px;background:var(--surface,#141210);color:var(--fg,#EFE9E1);padding:64px 48px;display:flex;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;flex-direction:column;gap:52px">
+        <div style="display:flex;align-items:baseline;gap:14px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--brass,#B8925A)">(05)</span><span>Contact</span></div>
+        <div style="font-family:'Instrument Serif',serif;font-size:56px;line-height:1.02;letter-spacing:-.01em">Écrivons-le en images</div>
+        <div style="display:flex;flex-direction:column;gap:34px">
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">Nom</span><div style="height:1px;background:var(--rule,rgba(239,233,225,.14))"></div></div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">E-mail</span><div style="height:1px;background:var(--brass,#B8925A)"></div></div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">Type de projet</span><div style="display:flex;gap:10px;padding-top:4px"><span style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--brass,#B8925A);color:var(--brass,#B8925A);padding:9px 14px">Mariage</span><span style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--rule,rgba(239,233,225,.14));color:var(--dim,#9A938A);padding:9px 14px">Nightlife</span><span style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--rule,rgba(239,233,225,.14));color:var(--dim,#9A938A);padding:9px 14px">Événement</span></div></div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">Date &amp; lieu</span><div style="height:1px;background:var(--rule,rgba(239,233,225,.14))"></div></div>
+          <div style="display:flex;flex-direction:column;gap:10px;padding-top:6px"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">Racontez-moi</span><div style="height:58px;border-bottom:1px solid var(--rule,rgba(239,233,225,.14))"></div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:26px">
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--rule,rgba(239,233,225,.14));padding-top:26px">
+          <span style="font-family:'Instrument Serif',serif;font-size:26px">Envoyer</span>
+          <span style="width:56px;height:1px;background:var(--brass,#B8925A)"></span>
+        </div>
+        <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#6E655B;line-height:2">hello@jkstudio.fr — réponse sous 48 h</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 TIRAGES / ALBUMS ============ -->
+<section data-screen-label="05" style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#6E655B">
+    <span style="color:var(--brass,#B8925A)">(05)</span><span>Tirages / Albums</span>
+  </div>
+  <div style="width:1440px;height:940px;background:var(--bg,#0E0C0A);color:var(--fg,#EFE9E1);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+    <div style="background:#231C14"><image-slot id="jk-album" shape="rect" fit="cover" placeholder="ALBUM OUVERT — double page, lumière rasante, matière du papier"></image-slot></div>
+    <div style="padding:80px 64px;display:flex;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;flex-direction:column;gap:40px">
+        <div style="display:flex;align-items:baseline;gap:14px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--brass,#B8925A)">(06)</span><span>Tirages &amp; albums</span></div>
+        <div style="font-family:'Instrument Serif',serif;font-size:60px;line-height:1.04;letter-spacing:-.01em">Une série mérite<br>autre chose qu'un écran</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:21px;line-height:1.6;color:var(--dim,#9A938A);max-width:460px">Papier coton, reliure à plat, séquence pensée avec vous. Trois formats, rien de plus.</div>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:26px 0;display:flex;align-items:baseline;gap:24px"><span style="font-size:10px;letter-spacing:.2em;color:var(--brass,#B8925A);width:30px">01</span><span style="font-family:'Instrument Serif',serif;font-size:30px;flex:1">Album fine art</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">30 × 30 — 40 pages</span></div>
+        <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));padding:26px 0;display:flex;align-items:baseline;gap:24px"><span style="font-size:10px;letter-spacing:.2em;color:var(--brass,#B8925A);width:30px">02</span><span style="font-family:'Instrument Serif',serif;font-size:30px;flex:1">Livre de série</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">21 × 28 — 24 pages</span></div>
+        <div style="border-top:1px solid var(--rule,rgba(239,233,225,.14));border-bottom:1px solid var(--rule,rgba(239,233,225,.14));padding:26px 0;display:flex;align-items:baseline;gap:24px"><span style="font-size:10px;letter-spacing:.2em;color:var(--brass,#B8925A);width:30px">03</span><span style="font-family:'Instrument Serif',serif;font-size:30px;flex:1">Tirage encadré</span><span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">40 × 50 — chêne clair</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:40px">
+          <span style="font-family:'Instrument Serif',serif;font-size:30px">Demander un devis</span>
+          <span style="width:72px;height:1px;background:var(--brass,#B8925A)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 MOBILE ============ -->
+<section data-screen-label="06" style="display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:baseline;gap:14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:#6E655B">
+    <span style="color:var(--brass,#B8925A)">(06)</span><span>Mobile — accueil &amp; défilé série (100dvh)</span>
+  </div>
+  <div style="display:flex;gap:28px;align-items:flex-start">
+
+    <!-- mobile accueil -->
+    <div style="width:390px;background:var(--bg,#0E0C0A);color:var(--fg,#EFE9E1);display:flex;flex-direction:column">
+      <div style="position:relative;height:844px;background:#151013">
+        <image-slot id="jk-m-hero" shape="rect" fit="cover" placeholder="NIGHTLIFE — cadrage vertical mobile"></image-slot>
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(14,12,10,.6) 0%,rgba(14,12,10,0) 30%,rgba(14,12,10,0) 55%,rgba(14,12,10,.8) 100%);pointer-events:none"></div>
+        <div style="position:absolute;top:0;left:0;right:0;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;pointer-events:none"><span style="font-size:11px;letter-spacing:.3em;text-transform:uppercase">JKStudio</span><span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass,#B8925A)">Menu</span></div>
+        <div style="position:absolute;left:22px;right:22px;bottom:40px;display:flex;flex-direction:column;gap:18px;pointer-events:none">
+          <div style="display:flex;align-items:baseline;gap:11px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:28px">Hamza</span><span style="color:var(--brass,#B8925A);font-size:20px">—</span><span style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.7)">Bruxelles</span></div>
+          <div style="height:1px;background:rgba(239,233,225,.18)"></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.55)"><span>Photographe — Bruxelles</span><span>Faire défiler</span></div>
+        </div>
+      </div>
+      <div style="padding:56px 22px;display:flex;flex-direction:column;gap:32px">
+        <div style="display:flex;align-items:baseline;gap:12px;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim,#9A938A)"><span style="color:var(--brass,#B8925A)">(01)</span><span>Le studio</span></div>
+        <div style="font-family:'Instrument Serif',serif;font-size:26px;line-height:1.38;text-wrap:pretty">Une lumière honnête et des gens vrais. Nuits, mariages, événements — la même façon de regarder.</div>
+        <div style="display:flex;flex-direction:column;border-top:1px solid var(--rule,rgba(239,233,225,.14))">
+          <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--rule,rgba(239,233,225,.14))"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">Depuis</span><span style="font-size:12px">2018</span></div>
+          <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--rule,rgba(239,233,225,.14))"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">Base</span><span style="font-size:12px">Bruxelles</span></div>
+          <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--rule,rgba(239,233,225,.14))"><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:#6E655B">Langues</span><span style="font-size:12px">FR / EN / NL</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;padding-top:8px">
+          <div style="height:470px;background:#171018;overflow:hidden"><image-slot id="jk-m-sel-1" shape="rect" fit="cover" placeholder="NIGHTLIFE — vignette mobile"></image-slot></div>
+          <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:17px">Nadia</span><span style="color:var(--brass,#B8925A);font-size:14px">—</span><span style="font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim,#9A938A)">C12, Bruxelles</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- mobile série ×3 -->
+    <div style="display:flex;gap:16px">
+      <div style="position:relative;width:390px;height:844px;background:#150F14;color:#EFE9E1">
+        <image-slot id="jk-m-ser-1" shape="rect" fit="cover" placeholder="NIGHTLIFE — ouverture de série, vertical"></image-slot>
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(14,12,10,.5) 0%,rgba(14,12,10,.05) 40%,rgba(14,12,10,.82) 100%);pointer-events:none"></div>
+        <div style="position:absolute;left:22px;right:22px;bottom:44px;display:flex;flex-direction:column;gap:14px;pointer-events:none">
+          <span style="font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass,#B8925A)">01 Nightlife — Série 03</span>
+          <span style="font-family:'Instrument Serif',serif;font-size:52px;line-height:.98;letter-spacing:-.02em">Nuit de mars</span>
+          <div style="display:flex;gap:18px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(239,233,225,.62)"><span>Fuse, Bruxelles</span><span>Mars 2026</span></div>
+        </div>
+        <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);width:1px;height:120px;background:rgba(239,233,225,.2)"><div style="position:absolute;top:0;width:1px;height:26px;background:#B8925A"></div></div>
+      </div>
+      <div style="position:relative;width:390px;height:844px;background:#181016;color:#EFE9E1">
+        <image-slot id="jk-m-ser-2" shape="rect" fit="cover" placeholder="NIGHTLIFE — plein cadre vertical, flash"></image-slot>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(14,12,10,.7) 0%,rgba(14,12,10,0) 38%);pointer-events:none"></div>
+        <div style="position:absolute;left:22px;right:22px;bottom:40px;display:flex;flex-direction:column;gap:6px;pointer-events:none">
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:24px">Le dancefloor à 2h</span>
+          <div style="display:flex;align-items:center;gap:9px"><span style="width:14px;height:1px;background:var(--brass,#B8925A)"></span><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:rgba(239,233,225,.62)">Fuse, Bruxelles</span></div>
+        </div>
+        <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);width:1px;height:120px;background:rgba(239,233,225,.2)"><div style="position:absolute;top:26px;width:1px;height:26px;background:#B8925A"></div></div>
+      </div>
+      <div style="position:relative;width:390px;height:844px;background:var(--surface,#141210);color:var(--fg,#EFE9E1);display:flex;align-items:center;justify-content:center">
+        <div style="width:322px;height:600px;background:#1C1119"><image-slot id="jk-m-ser-3" shape="rect" fit="cover" placeholder="NIGHTLIFE — portrait respiré, marges mobiles"></image-slot></div>
+        <div style="position:absolute;left:22px;right:22px;bottom:44px;display:flex;flex-direction:column;gap:6px">
+          <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:24px">Hamza</span>
+          <div style="display:flex;align-items:center;gap:9px"><span style="width:14px;height:1px;background:var(--brass,#B8925A)"></span><span style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim,#9A938A)">Fuse, Bruxelles</span></div>
+        </div>
+        <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);width:1px;height:120px;background:var(--rule,rgba(239,233,225,.2))"><div style="position:absolute;top:52px;width:1px;height:26px;background:#B8925A"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sombre&quot;,&quot;clair&quot;],&quot;default&quot;:&quot;sombre&quot;,&quot;tsType&quot;:&quot;'sombre' | 'clair'&quot;,&quot;section&quot;:&quot;Thème&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#B8925A&quot;,&quot;#8A6634&quot;,&quot;#A98F6B&quot;,&quot;#C2A06A&quot;],&quot;default&quot;:&quot;#B8925A&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Thème&quot;},&quot;showProof&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Accueil&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const light = (this.props.theme ?? 'sombre') === 'clair';
+    const brass = this.props.accent ?? (light ? '#8A6634' : '#B8925A');
+    const vars = light
+      ? { '--bg': '#F2ECE2', '--surface': '#E7DFD2', '--fg': '#171310', '--dim': '#6B6259', '--rule': 'rgba(23,19,16,.16)' }
+      : { '--bg': '#0E0C0A', '--surface': '#141210', '--fg': '#EFE9E1', '--dim': '#9A938A', '--rule': 'rgba(239,233,225,.14)' };
+    return {
+      themeStyle: { ...vars, '--brass': brass },
+      proofStyle: { display: (this.props.showProof ?? true) ? 'block' : 'none', padding: 0 }
+    };
+  }
+}
+</script>
+</body>
+</html>
