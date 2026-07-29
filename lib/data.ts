@@ -25,6 +25,14 @@ function mapPhoto(p: PhotoRow, period: string): Photo {
     alt: p.alt ?? p.caption ?? "",
     caption: p.caption ?? "",
     meta: period,
+    subject: p.subject ?? "",
+    place: p.location ?? "",
+    // Repli sur les dimensions tant que le backfill n'a pas tourné : mieux
+    // vaut déduire l'orientation que croper une verticale par défaut.
+    orientation:
+      p.orientation ??
+      (p.width && p.height ? (p.height > p.width ? "portrait" : "landscape") : null),
+    blurDataURL: p.blur_data_url ?? "",
   };
 }
 
