@@ -3,8 +3,76 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { Photo } from "@/lib/types";
+import { variantFallbackUrl, variantSrcSet } from "@/lib/image-variants";
 import { Caption } from "./Caption";
 import { Reveal } from "./Reveal";
+
+/** Rend une photo du défilé.
+ *
+ *  Deux chemins, choisis par la présence de dérivés :
+ *  - **avec variantes** : <img> natif et `srcSet` explicite pointant vers le
+ *    bucket. Le CDN Supabase sert les fichiers directement — aucune
+ *    transformation Vercel n'est consommée, et il n'y a pas de latence de
+ *    conversion à froid au premier visiteur (ce qui pèse sur le LCP).
+ *  - **sans variantes** : <Image> comme avant. Les photos antérieures au
+ *    backfill, et les URLs externes des données de démo, continuent donc de
+ *    s'afficher normalement. La bascule est progressive, photo par photo.
+ *
+ *  `loading`, `fetchPriority` et `sizes` existent nativement sur <img> : rien
+ *  n'est perdu par rapport à next/image sur ce chemin. */
+function ScreenImage({
+  photo,
+  first,
+  fit,
+  sizes,
+}: {
+  photo: Photo;
+  first: boolean;
+  fit: "cover" | "contain";
+  sizes: string;
+}) {
+  const srcSet = variantSrcSet(photo.storagePath, photo.variantWidths);
+
+  if (srcSet) {
+    return (
+      /* Les dérivés sont déjà optimisés et servis par le CDN Supabase : les
+         repasser dans next/image consommerait le quota de transformations
+         pour ré-encoder une image qui n'en a pas besoin. C'est précisément
+         ce que ce lot cherche à éviter. */
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={variantFallbackUrl(photo.storagePath, photo.variantWidths)}
+        srcSet={srcSet}
+        sizes={sizes}
+        alt={photo.alt}
+        loading={first ? "eager" : "lazy"}
+        fetchPriority={first ? "high" : "auto"}
+        decoding={first ? "sync" : "async"}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: fit,
+        }}
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={photo.src}
+      alt={photo.alt}
+      fill
+      sizes={sizes}
+      priority={first}
+      loading={first ? undefined : "lazy"}
+      placeholder={photo.blurDataURL ? "blur" : "empty"}
+      blurDataURL={photo.blurDataURL || undefined}
+      style={{ objectFit: fit }}
+    />
+  );
+}
 
 /** Défilé plein écran d'une série : un écran par photo.
  *
@@ -59,6 +127,28 @@ export function SeriesScroller({
     for (const el of refs.current) if (el) io.observe(el);
     return () => io.disconnect();
   }, [photos.length, onIndexChange]);
+
+  /* Préchargement de n+1 SEULEMENT (§7) : la photo suivante est déjà en cache
+     quand on l'atteint, sans précharger toute la série — ce qui reviendrait à
+     annuler le `lazy` et à télécharger vingt visuels d'un coup.
+     `new window.Image()` déclenche la requête sans monter de nœud ; le
+     navigateur réutilise ensuite l'entrée de cache pour le <img> réel. */
+  useEffect(() => {
+    const nextPhoto = photos[current + 1];
+    if (!nextPhoto) return;
+    const img = new window.Image();
+    const srcSet = variantSrcSet(nextPhoto.storagePath, nextPhoto.variantWidths);
+    if (srcSet) {
+      img.srcset = srcSet;
+      img.sizes = "100vw";
+      img.src = variantFallbackUrl(
+        nextPhoto.storagePath,
+        nextPhoto.variantWidths,
+      );
+    } else {
+      img.src = nextPhoto.src;
+    }
+  }, [current, photos]);
 
   const goTo = useCallback((i: number) => {
     const el = refs.current[i];
@@ -177,31 +267,16 @@ export function SeriesScroller({
                   maxWidth: "min(92vw, 720px)",
                 }}
               >
-                <Image
-                  src={p.src}
-                  alt={p.alt}
-                  fill
+                {/* priority sur la première image uniquement (§7). */}
+                <ScreenImage
+                  photo={p}
+                  first={i === 0}
+                  fit="contain"
                   sizes="(max-width: 760px) 92vw, 720px"
-                  // priority sur la première image uniquement (§7).
-                  priority={i === 0}
-                  loading={i === 0 ? undefined : "lazy"}
-                  placeholder={p.blurDataURL ? "blur" : "empty"}
-                  blurDataURL={p.blurDataURL || undefined}
-                  style={{ objectFit: "contain" }}
                 />
               </span>
             ) : (
-              <Image
-                src={p.src}
-                alt={p.alt}
-                fill
-                sizes="100vw"
-                priority={i === 0}
-                loading={i === 0 ? undefined : "lazy"}
-                placeholder={p.blurDataURL ? "blur" : "empty"}
-                blurDataURL={p.blurDataURL || undefined}
-                style={{ objectFit: "cover" }}
-              />
+              <ScreenImage photo={p} first={i === 0} fit="cover" sizes="100vw" />
             )}
 
             {/* Voile de lisibilité, uniquement là où la légende se pose. */}

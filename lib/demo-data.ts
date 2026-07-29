@@ -32,6 +32,10 @@ const ph = (
   place: "",
   orientation: h > w ? "portrait" : "landscape",
   blurDataURL: "",
+  // Les données de démo pointent vers des URLs absolues (Unsplash) : aucun
+  // dérivé dans notre bucket, donc rendu via l'optimiseur Next.
+  storagePath: IMG(id, w, h),
+  variantWidths: [],
 });
 
 let vid = 0;

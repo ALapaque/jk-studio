@@ -56,6 +56,8 @@ export interface PhotoRow {
   orientation: PhotoOrientation | null;
   /** LQIP pour `blurDataURL` de next/image (0004). */
   blur_data_url: string | null;
+  /** Largeurs des dérivés WebP présents en Storage (0005). NULL = aucun. */
+  variant_widths: number[] | null;
 }
 
 export interface VideoRow {

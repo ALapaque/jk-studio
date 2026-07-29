@@ -1,11 +1,17 @@
-/* Backfill de la migration 0004 — orientation & LQIP des photos existantes.
+/* Backfill des migrations 0004 et 0005 pour les photos déjà en ligne :
+ * orientation, LQIP, et dérivés WebP déposés dans le Storage.
  *
- *   npm run backfill:0004            # écrit en base
+ *   npm run backfill:0004            # écrit en base + Storage
  *   npm run backfill:0004 -- --dry   # simulation, aucune écriture
  *
+ * Les nouvelles photos n'en ont pas besoin : leurs dérivés sont générés dans
+ * le navigateur au moment de l'upload (lib/image-resize.ts). Ce script sert
+ * l'existant, et rattrape toute photo dont l'encodage navigateur a échoué.
+ *
  * Lit .env.local (via --env-file). Idempotent : ne traite que les photos dont
- * `orientation` ou `blur_data_url` est encore vide, et peut être relancé après
- * une interruption.
+ * `orientation`, `blur_data_url` ou `variant_widths` est encore vide, et peut
+ * être relancé après une interruption. En mode --dry, aucun dérivé n'est
+ * déposé.
  *
  * Ne touche JAMAIS à `subject` / `location` : les légendes éditoriales sont
  * une saisie humaine (Lot 2), pas une donnée dérivable d'un nom de fichier.
@@ -20,6 +26,7 @@
 import { createClient } from "@supabase/supabase-js";
 import sharp from "sharp";
 import type { PhotoOrientation } from "../lib/supabase/types";
+import { VARIANT_MIME, VARIANT_WIDTHS, variantKey } from "../lib/image-variants";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -50,6 +57,9 @@ interface Derived {
   blur_data_url: string;
   width: number;
   height: number;
+  /** Octets de l'original, réutilisés pour générer les dérivés sans
+   *  retélécharger l'image. */
+  input: Buffer;
 }
 
 /** Télécharge l'image et en dérive orientation + LQIP.
@@ -78,14 +88,47 @@ async function derive(src: string): Promise<Derived> {
     blur_data_url: `data:image/webp;base64,${lqip.toString("base64")}`,
     width: width ?? meta.width ?? 0,
     height: height ?? meta.height ?? 0,
+    input,
   };
+}
+
+/** Génère et dépose les dérivés WebP d'une photo déjà en ligne.
+ *
+ *  Équivalent Node/sharp de la génération navigateur faite à l'upload :
+ *  mêmes largeurs, même format, donc le rendu ne distingue pas les deux
+ *  origines.
+ *  N'agrandit jamais — une largeur supérieure à l'original est ignorée. */
+async function uploadVariants(
+  input: Buffer,
+  storagePath: string,
+  srcWidth: number,
+): Promise<number[]> {
+  const done: number[] = [];
+  for (const w of VARIANT_WIDTHS) {
+    if (w > srcWidth) continue;
+    const buf = await sharp(input)
+      .rotate()
+      .resize(w, null, { fit: "inside" })
+      .webp({ quality: 82 })
+      .toBuffer();
+    const { error } = await sb.storage
+      .from(bucket)
+      .upload(variantKey(storagePath, w), buf, {
+        contentType: VARIANT_MIME,
+        upsert: true,
+      });
+    if (!error) done.push(w);
+  }
+  return done;
 }
 
 async function main() {
   const { data: photos, error } = await sb
     .from("photos")
-    .select("id, storage_path, width, height, orientation, blur_data_url")
-    .or("orientation.is.null,blur_data_url.is.null");
+    .select(
+      "id, storage_path, width, height, orientation, blur_data_url, variant_widths",
+    )
+    .or("orientation.is.null,blur_data_url.is.null,variant_widths.is.null");
 
   if (error) {
     console.error("Lecture des photos impossible :", error.message);
@@ -107,6 +150,14 @@ async function main() {
     try {
       const d = await derive(imageUrl(p.storage_path));
 
+      // Les URLs absolues (démo Unsplash) ne vivent pas dans notre bucket :
+      // on ne peut pas y déposer de dérivés.
+      const external = /^https?:\/\//i.test(p.storage_path);
+      let widths: number[] = p.variant_widths ?? [];
+      if (!dryRun && !external && !widths.length) {
+        widths = await uploadVariants(d.input, p.storage_path, d.width);
+      }
+
       if (!dryRun) {
         const { error: ue } = await sb
           .from("photos")
@@ -117,13 +168,17 @@ async function main() {
             // réécrit pas une donnée déjà saisie.
             width: p.width ?? d.width,
             height: p.height ?? d.height,
+            variant_widths: widths.length ? widths : null,
           })
           .eq("id", p.id);
         if (ue) throw new Error(ue.message);
       }
 
       ok++;
-      console.log(`  ✓ ${p.storage_path} — ${d.orientation}`);
+      console.log(
+        `  ✓ ${p.storage_path} — ${d.orientation}` +
+          (widths.length ? ` · ${widths.length} dérivé(s)` : " · sans dérivé"),
+      );
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
       failures.push({ id: p.id, path: p.storage_path, reason });
