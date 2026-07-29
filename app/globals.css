@@ -4,6 +4,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Tokens de la refonte (`--jk-*`), transcrits de la maquette. Coexistent avec
+   les variables historiques jusqu'à la bascule finale — voir le fichier. */
+@import "./jk-tokens.css";
+
 /* La classe utilitaire `dark` de l'admin s'active via .admin-root.dark. */
 @custom-variant dark (&:where(.dark, .dark *));
 
