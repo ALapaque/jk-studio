@@ -207,6 +207,16 @@ export async function savePhoto(formData: FormData) {
   if (!scope || !storagePath) throw new Error("Données manquantes");
   const width = Number(formData.get("width")) || null;
   const height = Number(formData.get("height")) || null;
+  // Dérivés produits par le navigateur à l'upload (Lot 4). Absents = le rendu
+  // retombe sur /_next/image, et le backfill pourra les rattraper.
+  const rawWidths = s(formData, "variant_widths");
+  const variantWidths = rawWidths
+    ? rawWidths
+        .split(",")
+        .map((x) => Number(x.trim()))
+        .filter((n) => Number.isFinite(n) && n > 0)
+    : null;
+  const orientation = s(formData, "orientation");
   const { error } = await sb.from("photos").insert({
     project_id: scope.col === "project_id" ? scope.val : null,
     category_id: scope.col === "category_id" ? scope.val : null,
@@ -215,6 +225,12 @@ export async function savePhoto(formData: FormData) {
     caption: s(formData, "caption") || null,
     width,
     height,
+    orientation:
+      orientation === "portrait" || orientation === "landscape"
+        ? orientation
+        : null,
+    variant_widths: variantWidths?.length ? variantWidths : null,
+    blur_data_url: s(formData, "blur_data_url") || null,
     position: await nextPosition("photos", scope),
   });
   if (error) throw new Error(error.message);

@@ -32,11 +32,13 @@ Dans le projet : **Project Settings** (roue dentée) → **API**. Notez :
    - [`0003_category_media.sql`](../supabase/migrations/0003_category_media.sql) — photos/vidéos rattachées directement à une catégorie (sans passer par une série).
    - [`0004_series_captions.sql`](../supabase/migrations/0004_series_captions.sql) — légendes éditoriales (`subject` / `location`), `orientation`, LQIP, et métadonnées de série (`shot_at`, `intro`).
 
-### Backfill de la migration 0004
+   - [`0005_image_variants.sql`](../supabase/migrations/0005_image_variants.sql) — registre des dérivés d'images (`variant_widths`).
 
-`0004` n'ajoute que des colonnes **nullables** : le site rend exactement comme
-avant tant qu'elles sont vides. Pour calculer l'orientation et les LQIP des
-photos déjà en ligne :
+### Backfill des migrations 0004 et 0005
+
+`0004` et `0005` n'ajoutent que des colonnes **nullables** : le site rend
+exactement comme avant tant qu'elles sont vides. Pour calculer l'orientation,
+les LQIP et déposer les dérivés WebP des photos déjà en ligne :
 
 ```bash
 npm run backfill:0004 -- --dry   # simulation, aucune écriture
@@ -46,6 +48,11 @@ npm run backfill:0004            # écrit en base
 Le script est idempotent (il ne traite que les photos non renseignées) et
 relançable après interruption. Il ne remplit **pas** `subject` / `location` :
 les légendes sont une saisie humaine, via l'admin (Lot 2).
+
+Les photos **ajoutées après** ces migrations n'en ont pas besoin : leurs
+dérivés et leur LQIP sont générés dans le navigateur au moment de l'upload.
+Relancer le script reste utile pour rattraper une photo dont l'encodage
+navigateur aurait échoué — l'upload n'échoue jamais pour cette raison.
 
 Pour annuler la migration : [`0004_series_captions.rollback.sql`](../supabase/migrations/0004_series_captions.rollback.sql)
 (⚠️ supprime les légendes saisies — exporter avant, voir l'en-tête du fichier).

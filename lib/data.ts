@@ -33,6 +33,8 @@ function mapPhoto(p: PhotoRow, period: string): Photo {
       p.orientation ??
       (p.width && p.height ? (p.height > p.width ? "portrait" : "landscape") : null),
     blurDataURL: p.blur_data_url ?? "",
+    storagePath: p.storage_path,
+    variantWidths: p.variant_widths ?? [],
   };
 }
 

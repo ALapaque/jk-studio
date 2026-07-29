@@ -19,6 +19,10 @@ export interface Photo {
   orientation: "portrait" | "landscape" | null;
   /** LQIP (0004), consommé par `blurDataURL`. Vide si absent. */
   blurDataURL: string;
+  /** Clé Storage brute — nécessaire pour construire l'URL des dérivés. */
+  storagePath: string;
+  /** Largeurs des dérivés réellement présents (0005). Vide = aucun. */
+  variantWidths: number[];
 }
 
 export interface Video {

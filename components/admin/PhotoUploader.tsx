@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { savePhoto } from "@/app/admin/actions";
 import { createClient } from "@/lib/supabase/client";
 import { STORAGE_BUCKET } from "@/lib/env";
+import { deriveLqip, deriveVariants } from "@/lib/image-resize";
+import { VARIANT_MIME, variantKey } from "@/lib/image-variants";
 import { admin, Button } from "./ui";
 
 function readDimensions(file: File): Promise<{ w: number; h: number }> {
@@ -55,12 +57,47 @@ export function PhotoUploader({
           .from(STORAGE_BUCKET)
           .upload(key, file, { contentType: file.type || undefined, upsert: false });
         if (upErr) throw upErr;
-        // 2) enregistrement de la fiche (petit payload) via Server Action
+
+        // 2) dérivés + LQIP, encodés ici (sharp est Node-only et l'upload ne
+        //    passe pas par le serveur). Un échec d'encodage n'annule PAS
+        //    l'upload : la photo reste exploitable, le rendu retombera sur
+        //    l'optimiseur Next et le backfill pourra rattraper les dérivés.
+        let widths: number[] = [];
+        let lqip = "";
+        try {
+          setStatus(`Optimisation ${i + 1}/${list.length} — ${file.name}`);
+          const [variants, blur] = await Promise.all([
+            deriveVariants(file),
+            deriveLqip(file),
+          ]);
+          lqip = blur;
+          const uploaded = await Promise.all(
+            variants.map(async (v) => {
+              const { error } = await sb.storage
+                .from(STORAGE_BUCKET)
+                .upload(variantKey(key, v.width), v.blob, {
+                  contentType: VARIANT_MIME,
+                  upsert: true,
+                });
+              return error ? null : v.width;
+            }),
+          );
+          // N'enregistre que les largeurs réellement déposées : annoncer une
+          // variante absente enverrait le navigateur sur un 404.
+          widths = uploaded.filter((x): x is number => x !== null);
+        } catch {
+          widths = [];
+        }
+
+        // 3) enregistrement de la fiche (petit payload) via Server Action
         const fd = new FormData();
         fd.append(ownerField, ownerId);
         fd.append("storage_path", key);
         fd.append("width", String(w));
         fd.append("height", String(h));
+        fd.append("orientation", h > w ? "portrait" : "landscape");
+        if (widths.length) fd.append("variant_widths", widths.join(","));
+        if (lqip) fd.append("blur_data_url", lqip);
         await savePhoto(fd);
       } catch (e) {
         setError(
