@@ -136,11 +136,26 @@
   transform: none;
 }
 
-/* « Tout neutralisé sous prefers-reduced-motion » (maquette, écran 00). */
+/* Défilé plein écran — chaque section s'aligne en haut du viewport. */
+.jk-screen {
+  scroll-snap-align: start;
+}
+
+/* « Tout neutralisé sous prefers-reduced-motion » (maquette, écran 00).
+   Le §7 l'exige aussi pour le snap : la page doit redevenir un scroll
+   classique parfaitement lisible, sans accrochage ni défilement animé. */
 @media (prefers-reduced-motion: reduce) {
   .jk-reveal {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .jk-scroller {
+    scroll-snap-type: none !important;
+  }
+
+  .jk-screen {
+    scroll-snap-align: none;
   }
 }

@@ -10,6 +10,15 @@ export interface Photo {
   alt: string;
   caption: string;
   meta: string; // lieu, année
+  /** Légende éditoriale (0004) — partie italique. Vide si non saisie. */
+  subject: string;
+  /** Légende éditoriale (0004) — partie en capitales. Vide si non saisie. */
+  place: string;
+  /** Calculée à l'upload (0004). `null` tant que le backfill n'a pas tourné :
+   *  le défilé retombe alors sur le ratio, jamais sur un crop arbitraire. */
+  orientation: "portrait" | "landscape" | null;
+  /** LQIP (0004), consommé par `blurDataURL`. Vide si absent. */
+  blurDataURL: string;
 }
 
 export interface Video {

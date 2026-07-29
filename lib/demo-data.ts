@@ -26,6 +26,12 @@ const ph = (
   alt: caption,
   caption,
   meta,
+  // La démo n'a pas de légende éditoriale : `<Caption>` doit se dégrader
+  // proprement, et c'est justement le cas qu'on veut exercer localement.
+  subject: "",
+  place: "",
+  orientation: h > w ? "portrait" : "landscape",
+  blurDataURL: "",
 });
 
 let vid = 0;
