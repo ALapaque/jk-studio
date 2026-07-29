@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getCategories, getSeriesBySlug } from "@/lib/data";
 import { Caption } from "@/components/jk/Caption";
@@ -85,16 +86,19 @@ export default async function SeriesStoryPage({
           overflow: "hidden",
         }}
       >
+        {/* <Image> et non une background-image CSS : une image de fond n'est
+            pas vue par le scanner de préchargement du navigateur, ne peut pas
+            être marquée `priority` et ne reçoit pas de `srcset`. Elle se
+            chargeait donc tard, alors que c'est le visuel d'ouverture. */}
         {series.coverSrc && (
-          <span
+          <Image
+            src={series.coverSrc}
+            alt=""
             aria-hidden
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage: `url(${series.coverSrc})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
+            fill
+            sizes="100vw"
+            priority
+            style={{ objectFit: "cover" }}
           />
         )}
         <span
