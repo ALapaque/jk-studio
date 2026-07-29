@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Archivo, Space_Mono } from "next/font/google";
+import {
+  Instrument_Serif,
+  Archivo,
+  IBM_Plex_Sans,
+  Space_Mono,
+} from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { themeInitScript } from "@/lib/theme";
@@ -20,6 +25,21 @@ const sans = Archivo({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
+});
+
+// Sans de la refonte (maquette : nav, labels, numérotation, métadonnées).
+// Chargée par next/font — self-hosted, sans CDN tiers. Coexiste avec Archivo
+// tant que les anciens écrans ne sont pas basculés.
+const jkSans = IBM_Plex_Sans({
+  variable: "--font-jk-sans",
+  weight: ["300", "400", "500"],
+  subsets: ["latin"],
+  display: "swap",
+  // Aucun écran ne l'utilise encore (les lots 4-6 la consommeront) : la
+  // précharger ferait payer des octets aux pages actuelles pour rien.
+  // À repasser à true dès que les écrans de la refonte sont en ligne — le
+  // texte de la nav et des légendes participe alors au rendu initial.
+  preload: false,
 });
 
 const mono = Space_Mono({
@@ -58,7 +78,7 @@ export default async function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${serif.variable} ${sans.variable} ${mono.variable}`}
+      className={`${serif.variable} ${sans.variable} ${jkSans.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
       <head>

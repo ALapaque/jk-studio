@@ -1,0 +1,146 @@
+/* ============================================================
+   JKStudio — tokens de la refonte (fichier unique, §6 du brief).
+
+   Valeurs extraites telles quelles de `legacy/refonte/JKStudio Refonte.dc.html`
+   (écran « 00 Direction artistique »). Aucune valeur n'est approchée ou
+   réinterprétée : ce fichier est la transcription de la maquette.
+
+   COEXISTENCE — ces tokens sont préfixés `--jk-*` et vivent À CÔTÉ des
+   variables historiques (`--bg`, `--ink`, `--accent`…) que consomment les
+   pages actuelles. Les deux jeux cohabitent jusqu'à la bascule finale, pour
+   que rien ne casse en cours de refonte. Les écrans des lots 4 à 6
+   consomment `--jk-*` ; les anciennes variables disparaîtront avec les
+   anciens écrans.
+
+   Le thème est piloté par `data-theme` sur <html> (posé par le script
+   anti-FOUC de lib/theme.ts) — même mécanisme que l'existant.
+   ============================================================ */
+
+:root {
+  /* ---- couleurs — thème sombre (par défaut) ---- */
+  --jk-bg: #0e0c0a;
+  --jk-surface: #141210;
+  --jk-ink: #efe9e1;
+  --jk-ink-mute: #9a938a;
+  --jk-brass: #b8925a;
+  --jk-rule: rgba(239, 233, 225, 0.14);
+  /* Tertiaire de la maquette. ⚠️ 3.42:1 sur --jk-bg : sous le seuil AA.
+     Réservé au décoratif non essentiel — jamais pour une information que
+     l'utilisateur doit pouvoir lire. Voir docs/REFONTE_CONTRASTE.md. */
+  --jk-ink-faint: #6e655b;
+
+  /* ---- typographie ---- */
+  /* Instrument Serif : titres, légendes, corps court (italique utilisée).
+     IBM Plex Sans : nav, labels, numérotation, métadonnées. */
+  --jk-serif: var(--font-serif), Georgia, serif;
+  --jk-sans: var(--font-jk-sans), system-ui, sans-serif;
+
+  /* Échelle typographique de la maquette. */
+  --jk-size-display: 88px;
+  --jk-size-serie: 52px;
+  --jk-size-body: 21px;
+  --jk-size-label: 10px;
+  /* Tailles complémentaires relevées dans les écrans. */
+  --jk-size-hero-serie: 104px;
+  --jk-size-xl: 64px;
+  --jk-size-lg: 40px;
+  --jk-size-md: 34px;
+  --jk-size-sm: 26px;
+  --jk-size-xs: 17px;
+
+  --jk-lh-display: 0.92;
+  --jk-lh-serie: 1;
+  --jk-lh-body: 1.6;
+  --jk-ls-display: -0.02em;
+  --jk-ls-tight: -0.01em;
+
+  /* Interlettrage — deux valeurs distinctes dans la maquette. */
+  --jk-track-label: 0.26em;
+  --jk-track-place: 0.22em;
+
+  /* ---- espacement ---- */
+  /* Rythme relevé sur les écrans 1440px : gouttière de page 56px, sections
+     à 110-120px, colonnes à 64px. */
+  --jk-gap-page: 56px;
+  --jk-gap-section: 110px;
+  --jk-gap-col: 64px;
+  --jk-gap-grid: 28px;
+
+  /* ---- rayons ---- */
+  /* La maquette n'arrondit rien : cadres et images sont à angles vifs. */
+  --jk-radius: 0px;
+
+  /* ---- motion ---- */
+  --jk-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --jk-dur-caption: 600ms;
+  --jk-dur-zoom: 900ms;
+  --jk-dur-hover: 400ms;
+  /* Légende : fondu + 10px de translation. Vignette : zoom 1.04. */
+  --jk-caption-rise: 10px;
+  --jk-zoom: 1.04;
+  --jk-nav-blur: 14px;
+}
+
+/* ---- couleurs — thème clair ---- */
+[data-theme="light"] {
+  --jk-bg: #f2ece2;
+  --jk-surface: #e7dfd2;
+  --jk-ink: #171310;
+  --jk-ink-mute: #6b6259;
+  /* ⚠️ La maquette nomme ce ton « laiton AA », mais il mesure 4.43:1 sur
+     --jk-bg et 3.94:1 sur --jk-surface : les deux sont sous 4.5.
+     Non corrigé ici — le §6 demande de signaler, pas d'ajuster seul. */
+  --jk-brass: #8a6634;
+  --jk-rule: rgba(23, 19, 16, 0.16);
+  --jk-ink-faint: #6b6259;
+}
+
+/* ============================================================
+   Primitives partagées
+   ============================================================ */
+
+/* Légende éditoriale — voir components/jk/Caption.tsx. */
+.jk-caption {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.jk-caption__subject {
+  font-family: var(--jk-serif);
+  font-style: italic;
+}
+
+.jk-caption__dash {
+  color: var(--jk-brass);
+}
+
+.jk-caption__location {
+  font-family: var(--jk-sans);
+  text-transform: uppercase;
+  color: var(--jk-ink-mute);
+}
+
+/* Entrée de la légende dans le viewport : fondu + translation, aux durée et
+   courbe de la maquette. L'état visible est posé par IntersectionObserver. */
+.jk-reveal {
+  opacity: 0;
+  transform: translateY(var(--jk-caption-rise));
+  transition:
+    opacity var(--jk-dur-caption) var(--jk-ease),
+    transform var(--jk-dur-caption) var(--jk-ease);
+}
+
+.jk-reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* « Tout neutralisé sous prefers-reduced-motion » (maquette, écran 00). */
+@media (prefers-reduced-motion: reduce) {
+  .jk-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
