@@ -8,7 +8,7 @@ import {
   setProjectCover,
   updateProject,
 } from "@/app/admin/actions";
-import { PageTitle, Field, Input } from "@/components/admin/ui";
+import { PageTitle, Field, Input, Textarea } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ActionForm } from "@/components/admin/ActionForm";
@@ -73,6 +73,24 @@ export default async function EditSeriesPage({
                 <Input name="period" defaultValue={p.period} />
               </Field>
             </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                label="Date de prise de vue"
+                hint="Sert au tri chronologique. La « période » reste le texte affiché."
+              >
+                <Input
+                  type="date"
+                  name="shot_at"
+                  defaultValue={p.shot_at ?? ""}
+                />
+              </Field>
+            </div>
+            <Field
+              label="Chapô"
+              hint="2 à 3 phrases, affichées à l'ouverture du défilé."
+            >
+              <Textarea name="intro" rows={3} defaultValue={p.intro ?? ""} />
+            </Field>
             <SwitchField
               name="published"
               label="Publiée"

@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ActionForm } from "./ActionForm";
 import { PhotoUploader } from "./PhotoUploader";
+import { PhotoMontage } from "./PhotoMontage";
 
 type OwnerField = "project_id" | "category_id";
 
@@ -42,6 +43,9 @@ export function MediaManager({
 
   return (
     <>
+      {/* ---- montage narratif (ordre du défilé) ---- */}
+      <PhotoMontage ownerId={ownerId} ownerField={ownerField} photos={photos} />
+
       {/* ---- photos ---- */}
       <Card className="mb-6">
         <CardContent className="p-5">
@@ -72,13 +76,38 @@ export function MediaManager({
 
                   <form action={updatePhoto} className="grid min-w-[200px] flex-1 gap-2">
                     <input type="hidden" name="id" value={ph.id} />
-                    <Input name="caption" defaultValue={ph.caption ?? ""} placeholder="Légende" />
+                    {/* Légende éditoriale : « <sujet> — <LIEU> ». Les deux
+                        champs sont distincts en base, jamais concaténés à la
+                        main : le rendu est la responsabilité de <Caption>. */}
+                    <div className="flex flex-wrap gap-2">
+                      <Input
+                        name="subject"
+                        defaultValue={ph.subject ?? ""}
+                        placeholder="Sujet (ex. Hamza)"
+                        className="min-w-[140px] flex-1"
+                      />
+                      <Input
+                        name="location"
+                        defaultValue={ph.location ?? ""}
+                        placeholder="Lieu (ex. Fuse, Bruxelles)"
+                        className="min-w-[140px] flex-1"
+                      />
+                    </div>
                     <div className="flex gap-2">
-                      <Input name="alt" defaultValue={ph.alt ?? ""} placeholder="Texte alternatif (alt)" />
+                      <Input
+                        name="alt"
+                        defaultValue={ph.alt ?? ""}
+                        placeholder="Texte alternatif (accessibilité)"
+                      />
                       <Button type="submit" variant="outline" size="sm">
                         OK
                       </Button>
                     </div>
+                    <Input
+                      name="caption"
+                      defaultValue={ph.caption ?? ""}
+                      placeholder="Légende libre (hérité, optionnel)"
+                    />
                   </form>
 
                   <div className="flex flex-col gap-1.5">
