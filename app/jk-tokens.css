@@ -159,6 +159,14 @@ a.jk-cat-row:focus-visible {
   scroll-snap-align: start;
 }
 
+/* Section « (01) Le studio » : deux colonnes sur desktop comme la maquette,
+   une seule dès que la colonne de texte devient trop étroite. */
+@media (max-width: 900px) {
+  .jk-studio-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
 /* Vignette : zoom 1.04 de l'image dans son cadre, 900ms (maquette). Le cadre
    porte l'overflow, l'image porte la transformation. */
 .jk-zoom {

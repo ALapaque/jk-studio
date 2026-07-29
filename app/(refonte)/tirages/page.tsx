@@ -32,9 +32,6 @@ export default async function TiragesPage() {
   return (
     <main
       style={{
-        background: "var(--jk-bg)",
-        color: "var(--jk-ink)",
-        fontFamily: "var(--jk-sans)",
         minHeight: "100dvh",
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",

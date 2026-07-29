@@ -26,9 +26,6 @@ export default async function SeriesIndexPage() {
   return (
     <main
       style={{
-        background: "var(--jk-bg)",
-        color: "var(--jk-ink)",
-        fontFamily: "var(--jk-sans)",
         minHeight: "100dvh",
         padding: "clamp(96px, 14vh, 140px) var(--jk-gap-page) var(--jk-gap-section)",
       }}

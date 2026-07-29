@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCategories } from "@/lib/data";
 import { getSiteContent } from "@/lib/content";
+import { publicImageUrl } from "@/lib/supabase/storage";
 import { Caption } from "@/components/jk/Caption";
 import { Reveal } from "@/components/jk/Reveal";
 import { ProofBand } from "@/components/jk/ProofBand";
@@ -29,7 +30,24 @@ export default async function AccueilRefontePage() {
 
   // Photo du hero : première photo de la première série publiée. Aucune image
   // n'est codée en dur — si le portfolio est vide, le hero reste sur son fond.
-  const heroPhoto = cats.flatMap((c) => c.series.flatMap((s) => s.photos))[0];
+  const allPhotos = cats.flatMap((c) => c.series.flatMap((s) => s.photos));
+  const heroPhoto = allPhotos[0];
+
+  // Portrait du studio : celui saisi en admin s'il existe, sinon une autre
+  // photo du portfolio — jamais la même que le hero, pour ne pas la répéter.
+  const studioPortrait = content.about.portraitPath
+    ? {
+        src: publicImageUrl(content.about.portraitPath),
+        alt: content.about.portraitCaption || content.about.title,
+        blur: "",
+      }
+    : allPhotos[1]
+      ? {
+          src: allPhotos[1].src,
+          alt: allPhotos[1].alt,
+          blur: allPhotos[1].blurDataURL,
+        }
+      : null;
 
   // « Sélection » : une vignette par série, dans l'ordre des catégories.
   const selection = cats
@@ -37,13 +55,7 @@ export default async function AccueilRefontePage() {
     .slice(0, 6);
 
   return (
-    <main
-      style={{
-        background: "var(--jk-bg)",
-        color: "var(--jk-ink)",
-        fontFamily: "var(--jk-sans)",
-      }}
-    >
+    <main>
       <noscript>
         <style>{`.jk-reveal{opacity:1;transform:none;transition:none}`}</style>
       </noscript>
@@ -117,12 +129,18 @@ export default async function AccueilRefontePage() {
       </section>
 
       {/* ---- (01) le studio ---- */}
+      {/* Deux colonnes comme la maquette : texte à gauche, portrait à droite.
+          La largeur fixe de 520px de la maquette devient un minmax pour ne pas
+          casser sous 1440px. */}
       <section
         style={{
           padding: "var(--jk-gap-section) var(--jk-gap-page)",
           display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 520px)",
           gap: "var(--jk-gap-col)",
+          alignItems: "start",
         }}
+        className="jk-studio-grid"
       >
         <Reveal as="div" style={{ display: "grid", gap: 56 }}>
           <span
@@ -195,6 +213,32 @@ export default async function AccueilRefontePage() {
             ))}
           </dl>
         </Reveal>
+
+        {/* Portrait du studio — colonne droite de la maquette (720px de haut,
+            zoom 1.04 au survol). Pris dans le portfolio réel si aucun portrait
+            n'est renseigné, plutôt qu'une image importée. */}
+        {studioPortrait && (
+          <Reveal
+            as="div"
+            style={{
+              position: "relative",
+              height: "clamp(420px, 62vh, 720px)",
+              overflow: "hidden",
+              background: "var(--jk-surface)",
+            }}
+          >
+            <Image
+              src={studioPortrait.src}
+              alt={studioPortrait.alt}
+              fill
+              sizes="(max-width: 900px) 100vw, 520px"
+              className="jk-zoom"
+              placeholder={studioPortrait.blur ? "blur" : "empty"}
+              blurDataURL={studioPortrait.blur || undefined}
+              style={{ objectFit: "cover" }}
+            />
+          </Reveal>
+        )}
       </section>
 
       {/* ---- preuve sociale (masquée tant qu'elle n'est pas activée) ---- */}

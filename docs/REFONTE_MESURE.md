@@ -56,8 +56,11 @@ Deux causes structurelles :
    custom, parallaxe, transitions plein écran) — que les pages de la refonte
    n'utilisent pas.
 
-Les deux arrivent par le **layout partagé `(site)`** : les nouvelles routes
-héritent de tout le chrome de l'ancien site.
+> **Correction (mesure ultérieure).** J'avais attribué ces deux causes au layout
+> partagé `(site)`. C'est faux pour les polices : elles sont déclarées dans le
+> **layout racine** (`app/layout.tsx`), appliquées à `<html>` pour tout le site.
+> Détacher les écrans de la refonte de `(site)` ne pouvait donc pas les réduire —
+> et ne les a pas réduites. Voir la section suivante.
 
 ## Correction déjà appliquée
 
@@ -69,20 +72,45 @@ une fois le diagnostic posé. Le correctif reste juste sur le fond : sur de vrai
 photos, une cover lourde peut redevenir l'élément LCP, et elle sera alors
 découverte et priorisée correctement.
 
-## Ce qui reste à faire — décision requise
+## Après détachement du layout — mesure et démenti
 
-Descendre sous 2,5 s suppose de **détacher les écrans de la refonte du layout
-historique** : leur donner leur propre layout, sans le moteur d'animation ni les
-polices qu'ils n'utilisent pas. Cela supprimerait l'essentiel des 214 Ko de JS et
-la moitié des 123 Ko de polices.
+Les écrans de la refonte ont été sortis de `SiteChrome` et placés dans un groupe
+`(refonte)` avec leur propre layout (nav et footer de la maquette, sans le moteur
+d'animation historique). Objectif annoncé : corriger d'un coup la fidélité au
+design **et** le LCP.
 
-C'est un changement **architectural**, qui relève de la bascule finale — et le
-brief interdit de le décider seul. Il devient naturel au moment où les anciennes
-routes disparaissent : le problème se règle alors de lui-même.
+**Le design est corrigé, la performance non.** Mesure après détachement, deux runs
+concordants :
 
-**Recommandation** : traiter ce point pendant la bascule, pas avant. Refaire la
-mesure ensuite, sur données réelles et avec les variantes CDN actives — les deux
-manquent ici, et les deux jouent en faveur du LCP.
+| Métrique | Avant détachement | Après |
+|---|---|---|
+| LCP | 3,8 – 3,9 s | **4,6 – 4,7 s** |
+| CLS | 0 | 0 |
+| Score | 88 – 89 | 83 |
+| Polices | 6 fichiers / 124 Ko | **6 fichiers / 124 Ko** |
+| JS | 214 Ko | **237 Ko** |
+
+Les polices n'ont pas bougé — elles viennent du layout racine, pas de `(site)`.
+Le JS a légèrement augmenté (nav en composant client, footer, JSON-LD), et le LCP
+avec lui. **L'hypothèse « un seul changement corrige les deux » était fausse**, et
+la mesure l'a montrée.
+
+## Le vrai levier pour le LCP
+
+L'élément LCP est le `<h1>`, en `--jk-serif`. Il attend donc la police, et six
+fichiers (124 Ko) sont téléchargés alors que ces écrans n'en emploient que deux
+familles.
+
+Le levier est de **déclarer les polices par groupe de routes** plutôt que sur
+`<html>` : Instrument Serif + IBM Plex Sans pour la refonte, Archivo + Space Mono
+pour les écrans historiques et l'admin. Cela suppose de toucher le layout racine,
+partagé avec l'admin — donc un changement à faire et à mesurer isolément, pas en
+passant.
+
+**Recommandation** : le traiter comme un chantier à part, avant ou pendant la
+bascule, avec une mesure avant/après. Et refaire la mesure sur données réelles
+avec les variantes CDN actives — les deux manquent ici, et les deux jouent en
+faveur du LCP.
 
 ## Baseline
 
