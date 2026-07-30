@@ -8,6 +8,7 @@ import { Caption } from "@/components/jk/Caption";
 import { Reveal } from "@/components/jk/Reveal";
 import { ProofBand } from "@/components/jk/ProofBand";
 import { Parallax } from "@/components/jk/Parallax";
+import { CategoryRow } from "@/components/jk/CategoryRow";
 
 export const revalidate = 60;
 
@@ -388,58 +389,16 @@ export default async function AccueilRefontePage() {
               c.series.reduce((acc, s) => acc + s.photos.length, 0) +
               (c.directMedia?.filter((m) => m.kind === "photo").length ?? 0);
             return (
-              <li key={c.slug}>
-                <Reveal as="div" delay={Math.min(i, 5) * 80}>
-                <Link
-                  href={`/travaux/${c.slug}`}
-                  className="jk-cat-row"
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "baseline",
-                    gap: 36,
-                    padding: "34px 0",
-                    borderTop: "1px solid var(--jk-rule)",
-                    borderBottom:
-                      i === cats.length - 1
-                        ? "1px solid var(--jk-rule)"
-                        : undefined,
-                    color: "inherit",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 36,
-                      fontSize: 11,
-                      letterSpacing: "0.24em",
-                      color: "var(--jk-brass)",
-                    }}
-                  >
-                    {c.num}
-                  </span>
-                  <span
-                    style={{
-                      flex: 1,
-                      fontFamily: "var(--jk-serif)",
-                      fontSize: "clamp(32px, 5vw, 56px)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {c.title}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      letterSpacing: "0.24em",
-                      textTransform: "uppercase",
-                      color: "var(--jk-ink-mute)",
-                    }}
-                  >
-                    {n} {c.unit}
-                  </span>
-                </Link>
-                </Reveal>
-              </li>
+              <CategoryRow
+                key={c.slug}
+                href={`/travaux/${c.slug}`}
+                num={c.num}
+                title={c.title}
+                count={`${n} ${c.unit}`}
+                coverSrc={c.coverSrc}
+                last={i === cats.length - 1}
+                delay={Math.min(i, 5) * 80}
+              />
             );
           })}
         </ul>

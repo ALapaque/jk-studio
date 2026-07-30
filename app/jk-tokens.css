@@ -230,6 +230,28 @@ a:hover .jk-zoom {
   color: var(--jk-brass);
 }
 
+/* Glissement de 18px vers la droite au survol — repris de l'ancien site
+   (demandé explicitement). Mêmes durée et courbe que l'original. La
+   translation ne remplace pas le passage au laiton, elle s'y ajoute. */
+.jk-row-slide {
+  transition:
+    color var(--jk-dur-hover) ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.jk-row-slide:hover {
+  transform: translateX(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jk-row-slide {
+    transition: color var(--jk-dur-hover) ease;
+  }
+  .jk-row-slide:hover {
+    transform: none;
+  }
+}
+
 /* « Tout neutralisé sous prefers-reduced-motion » (maquette, écran 00).
    Le §7 l'exige aussi pour le snap : la page doit redevenir un scroll
    classique parfaitement lisible, sans accrochage ni défilement animé. */
