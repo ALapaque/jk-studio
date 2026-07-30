@@ -94,3 +94,15 @@ export function countLabel(c: Category): string {
   if (!nV) return `${nP} photos`;
   return `${nP} photos · ${nV} ${nV > 1 ? "films" : "film"}`;
 }
+
+/** Article du journal, prêt pour le rendu public (couverture résolue en URL). */
+export interface Post {
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverSrc: string;
+  body: string;
+  tags: string[];
+  /** ISO ; date de publication (ou de création si non publiée). */
+  date: string;
+}

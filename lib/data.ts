@@ -3,10 +3,11 @@ import { isSupabaseConfigured } from "./env";
 import { createPublicSupabase } from "./supabase/server";
 import { publicImageUrl } from "./supabase/storage";
 import { CATEGORIES as DEMO } from "./demo-data";
-import { Category, Media, Photo, Series, Video } from "./types";
+import { Category, Media, Photo, Post, Series, Video } from "./types";
 import {
   CategoryRow,
   PhotoRow,
+  PostRow,
   ProjectRow,
   VideoRow,
 } from "./supabase/types";
@@ -281,4 +282,45 @@ export async function getSeriesBySlug(
   const series = category?.series.find((s) => s.slug === seriesSlug);
   if (category && series) return { category, series };
   return undefined;
+}
+
+// ============================================================ JOURNAL (blog)
+
+function mapPost(p: PostRow): Post {
+  return {
+    slug: p.slug,
+    title: p.title,
+    excerpt: p.excerpt ?? "",
+    coverSrc: publicImageUrl(p.cover_path),
+    body: p.body ?? "",
+    tags: p.tags ?? [],
+    date: p.published_at ?? p.created_at,
+  };
+}
+
+/** Articles publiés, du plus récent au plus ancien. */
+export async function getPublishedPosts(): Promise<Post[]> {
+  if (!isSupabaseConfigured()) return [];
+  const sb = createPublicSupabase();
+  const { data } = await sb
+    .from("posts")
+    .select("*")
+    .eq("published", true)
+    .order("published_at", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false });
+  return ((data ?? []) as PostRow[]).map(mapPost);
+}
+
+/** Un article publié par son slug, ou null. La RLS masque déjà les brouillons,
+ *  mais on filtre aussi ici par sécurité. */
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  if (!isSupabaseConfigured()) return null;
+  const sb = createPublicSupabase();
+  const { data } = await sb
+    .from("posts")
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+  return data ? mapPost(data as PostRow) : null;
 }
