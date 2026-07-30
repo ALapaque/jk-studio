@@ -3,6 +3,7 @@ import { JsonLd } from "@/components/jk/JsonLd";
 import { Nav } from "@/components/jk/Nav";
 import { Footer } from "@/components/jk/Footer";
 import { PageTransition } from "@/components/jk/PageTransition";
+import { IntroLoader } from "@/components/jk/IntroLoader";
 
 /* Layout des écrans de la refonte.
  *
@@ -45,6 +46,12 @@ export default async function RefonteLayout({
       }}
     >
       <JsonLd content={content} />
+      {/* Intro jouée au chargement : le nom du studio se remplit, puis se
+          retire. Au-dessus de tout (z-index 995), une fois par session. */}
+      <IntroLoader
+        brandName={content.brand.name}
+        tagline={content.brand.tagline}
+      />
       {/* Le voile enveloppe nav, contenu et footer : l'interception des clics
           couvre tous les liens, et le voile (z-index élevé) passe au-dessus de
           la nav fixe. */}

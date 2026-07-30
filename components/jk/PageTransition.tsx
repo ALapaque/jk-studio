@@ -107,6 +107,15 @@ export function PageTransition({
   // vers une route interne (href commençant par « / ») déclenchent le voile ;
   // clic modifié, cible _blank, ancre de page et liens externes suivent leur
   // comportement natif.
+  //
+  // CAPTURE, pas bulle : les <Link> de Next naviguent dans leur propre
+  // gestionnaire onClick, délégué par React sur le document en phase de bulle.
+  // Un écouteur en bulle passerait donc APRÈS eux — d'où un voile qui ne se
+  // jouait qu'au retour navigateur (popstate), jamais à l'aller. En capturant
+  // sur le document, on prend la main AVANT : notre `preventDefault()` court en
+  // premier, et le onClick de <Link> — qui teste `e.defaultPrevented` avant de
+  // pousser la route — se désiste. On NE stoppe PAS la propagation : les autres
+  // gestionnaires en bulle (fermeture du menu mobile au clic) doivent tourner.
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (
@@ -125,6 +134,8 @@ export function PageTransition({
       if (!href || !href.startsWith("/")) return;
       if (a.target && a.target !== "_self") return;
       if (a.hasAttribute("download")) return;
+      // Empêche la navigation native ; le onClick de <Link> se désistera en
+      // voyant `defaultPrevented`, sans qu'on ait à couper la propagation.
       e.preventDefault();
       // Libellé explicite du lien s'il en porte un (le vrai titre de la série
       // ou de la catégorie, accents et « & » compris) ; sinon on le déduit de
@@ -132,8 +143,8 @@ export function PageTransition({
       const explicit = a.getAttribute("data-jk-label");
       navigate(href, explicit && explicit.trim() ? explicit : labelFromPath(href));
     };
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
   }, [navigate]);
 
   // Précédent / Suivant du navigateur : App Router re-rend la page, ce qui
