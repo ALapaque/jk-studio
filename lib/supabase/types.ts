@@ -28,6 +28,8 @@ export interface PostRow {
   tags: string[];
   /** Galerie d'images de l'article (0008) : clés Storage + légende, ordonnées. */
   media: { path: string; caption: string }[];
+  /** Clé du template de mise en page de la page détail (0010). Défaut `classic`. */
+  template: string;
   published: boolean;
   published_at: string | null;
   created_at: string;
@@ -50,6 +52,8 @@ export interface ProjectRow {
   shot_at: string | null;
   /** Chapô éditorial affiché à l'ouverture du défilé (0004). */
   intro: string | null;
+  /** Clé du template de mise en page de la page détail (0009). Défaut `classic`. */
+  template: string;
 }
 
 export interface PhotoRow {
