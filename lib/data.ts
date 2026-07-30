@@ -295,6 +295,9 @@ function mapPost(p: PostRow): Post {
     body: p.body ?? "",
     tags: p.tags ?? [],
     date: p.published_at ?? p.created_at,
+    media: (Array.isArray(p.media) ? p.media : [])
+      .filter((m) => m && m.path)
+      .map((m) => ({ src: publicImageUrl(m.path), caption: m.caption ?? "" })),
   };
 }
 

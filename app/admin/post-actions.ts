@@ -30,6 +30,25 @@ function tags(formData: FormData): string[] {
     .filter(Boolean);
 }
 
+/** Galerie : le champ « media » est un JSON [{ path, caption }] produit par
+ *  l'éditeur client. On revalide la forme avant de l'écrire en base. */
+function media(formData: FormData): { path: string; caption: string }[] {
+  const raw = s(formData, "media");
+  if (!raw) return [];
+  try {
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .filter((m) => m && typeof m.path === "string" && m.path)
+      .map((m) => ({
+        path: String(m.path),
+        caption: typeof m.caption === "string" ? m.caption : "",
+      }));
+  } catch {
+    return [];
+  }
+}
+
 function revalidatePost(slug?: string) {
   revalidatePath("/journal");
   if (slug) revalidatePath(`/journal/${slug}`);
@@ -82,6 +101,7 @@ export async function updatePost(formData: FormData) {
       excerpt: s(formData, "excerpt") || null,
       body: s(formData, "body"),
       tags: tags(formData),
+      media: media(formData),
       published: publishing,
       published_at: publishedAt,
       updated_at: new Date().toISOString(),

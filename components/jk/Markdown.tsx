@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
+import { ProseImage } from "./ProseImage";
 
 /** Rendu du corps d'un article (Markdown → HTML assaini).
  *
@@ -17,6 +18,12 @@ export function Markdown({ children }: { children: string }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeSanitize]}
+        components={{
+          // Images du corps : figures animées + légende (voir ProseImage).
+          img: ({ src, alt }) => (
+            <ProseImage src={typeof src === "string" ? src : undefined} alt={alt} />
+          ),
+        }}
       >
         {children}
       </ReactMarkdown>

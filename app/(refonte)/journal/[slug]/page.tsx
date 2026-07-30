@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { getPublishedPosts, getPostBySlug } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 import { Reveal } from "@/components/jk/Reveal";
+import { Parallax } from "@/components/jk/Parallax";
 import { Markdown } from "@/components/jk/Markdown";
+import { PostGallery } from "@/components/jk/PostGallery";
 
 export const revalidate = 60;
 
@@ -137,14 +139,17 @@ export default async function PostPage({
               margin: "0 0 clamp(40px, 6vw, 72px)",
             }}
           >
-            <Image
-              src={post.coverSrc}
-              alt={post.title}
-              fill
-              priority
-              sizes="(max-width: 900px) 100vw, 820px"
-              style={{ objectFit: "cover" }}
-            />
+            {/* Parallaxe sur la cover, comme l'ouverture d'une série. */}
+            <Parallax>
+              <Image
+                src={post.coverSrc}
+                alt={post.title}
+                fill
+                priority
+                sizes="(max-width: 900px) 100vw, 820px"
+                style={{ objectFit: "cover" }}
+              />
+            </Parallax>
           </Reveal>
         )}
 
@@ -154,28 +159,36 @@ export default async function PostPage({
           </Reveal>
         )}
 
-        <div
+      </article>
+
+      {/* Galerie média — hors de la colonne de lecture (820px) pour respirer
+          plus large, façon planche éditoriale. Séquence animée. */}
+      <div style={{ margin: "0 auto", width: "min(100%, 1180px)" }}>
+        <PostGallery media={post.media} />
+      </div>
+
+      <div
+        style={{
+          margin: "clamp(56px, 8vw, 96px) auto 0",
+          maxWidth: 820,
+          borderTop: "1px solid var(--jk-rule)",
+          paddingTop: 28,
+        }}
+      >
+        <Link
+          href="/journal"
           style={{
-            marginTop: "clamp(56px, 8vw, 96px)",
-            borderTop: "1px solid var(--jk-rule)",
-            paddingTop: 28,
+            fontSize: 11,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "var(--jk-brass)",
+            borderBottom: "1px solid var(--jk-brass)",
+            paddingBottom: 3,
           }}
         >
-          <Link
-            href="/journal"
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color: "var(--jk-brass)",
-              borderBottom: "1px solid var(--jk-brass)",
-              paddingBottom: 3,
-            }}
-          >
-            ← Toutes les histoires
-          </Link>
-        </div>
-      </article>
+          ← Toutes les histoires
+        </Link>
+      </div>
     </main>
   );
 }

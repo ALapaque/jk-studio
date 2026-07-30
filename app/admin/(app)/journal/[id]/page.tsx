@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { requireUser, getPost } from "@/lib/admin";
+import { requireUser, getPost, getAllAssets, getAllFolders } from "@/lib/admin";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import {
   updatePost,
@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SwitchField } from "@/components/admin/fields/SwitchField";
 import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
 import { PostBodyEditor } from "@/components/admin/PostBodyEditor";
+import { PostMediaEditor } from "@/components/admin/PostMediaEditor";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,11 @@ export default async function PostEditorPage({
 }) {
   await requireUser();
   const { id } = await params;
-  const post = await getPost(id);
+  const [post, assets, folders] = await Promise.all([
+    getPost(id),
+    getAllAssets(),
+    getAllFolders(),
+  ]);
   if (!post) notFound();
 
   return (
@@ -82,6 +87,19 @@ export default async function PostEditorPage({
             <div className="grid gap-2">
               <span className="text-sm font-medium">Corps de l&apos;article</span>
               <PostBodyEditor initial={post.body} />
+            </div>
+
+            <div className="grid gap-2">
+              <span className="text-sm font-medium">Galerie de l&apos;article</span>
+              <span className="text-xs text-muted-foreground">
+                Images affichées en bas de l&apos;article, en grand, avec
+                animations. Distinctes des images insérées dans le corps.
+              </span>
+              <PostMediaEditor
+                initial={post.media}
+                assets={assets}
+                folders={folders}
+              />
             </div>
 
             <SwitchField
