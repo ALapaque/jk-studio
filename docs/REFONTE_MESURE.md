@@ -199,3 +199,23 @@ l'en-tête `Accept` et le cache par format nativement.
 **À mesurer en prod** (PageSpeed / données terrain) : LCP et poids du hero avant
 (WebP) vs après (AVIF). Non mesurable dans ce bac à sable (images distantes non
 chargées en local, interstitiel HSTS sur le preview).
+
+### Mesure prod (preview Vercel) — négociation de format vérifiée
+
+Lighthouse reste inaccessible depuis le bac à sable, mais l'optimiseur, lui, est
+joignable via `curl` (le proxy porte le CA). Requête de l'URL `/_next/image` du
+hero de l'accueil, en faisant varier l'en-tête `Accept` :
+
+| `Accept` | `Content-Type` servi | Poids du hero |
+|---|---|---|
+| `image/webp` | `image/webp` | 25 842 o |
+| `image/avif` | **`image/avif`** | **15 418 o** |
+
+- Réponse `vary: Accept` + `cache-control: public, max-age=31536000` : négociation
+  et cache par format corrects.
+- **~40 % plus léger** en AVIF qu'en WebP sur l'élément LCP réel — au-delà des
+  20 % annoncés par la doc Next pour cette image.
+
+Reste à confirmer l'impact **LCP** (temps, pas seulement poids) en données de
+terrain une fois la prod à jour — mais le gain de charge utile sur le hero est
+acquis et mesuré.
