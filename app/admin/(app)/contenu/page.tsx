@@ -25,14 +25,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
 import { SwitchField } from "@/components/admin/fields/SwitchField";
+import { ProofClientsEditor } from "@/components/admin/ProofClientsEditor";
 
 export const dynamic = "force-dynamic";
 
 const factsToText = (f: Fact[]) => f.map((x) => `${x.k} | ${x.v}`).join("\n");
-const clientsToText = (
-  cl: { name: string; logoPath?: string }[],
-): string =>
-  cl.map((c) => (c.logoPath ? `${c.name} | ${c.logoPath}` : c.name)).join("\n");
 
 function Save() {
   return (
@@ -219,17 +216,14 @@ export default async function ContenuPage() {
                   <Field label="Intitulé" hint="Ex. « Ils nous ont fait confiance »">
                     <Input name="label" defaultValue={c.proof.label} />
                   </Field>
-                  <Field
-                    label="Clients (un par ligne)"
-                    hint="« Nom | chemin-logo » — le logo est optionnel. Sans logo, le nom s'affiche en capitales."
-                  >
-                    <Textarea
-                      name="clients"
-                      rows={4}
-                      defaultValue={clientsToText(c.proof.clients)}
-                      placeholder={"Deloitte\nBrussels Airport | brand/clients/bru.svg"}
-                    />
-                  </Field>
+                  <div className="grid gap-2">
+                    <span className="text-sm font-medium">Clients</span>
+                    <span className="text-xs text-muted-foreground">
+                      Le logo est optionnel. Sans logo, le nom s&apos;affiche en
+                      capitales.
+                    </span>
+                    <ProofClientsEditor initial={c.proof.clients} />
+                  </div>
                   <Save />
                 </form>
               </CardContent>
