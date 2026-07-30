@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -87,6 +88,45 @@ export function MediaDrive({
 }) {
   const [renaming, setRenaming] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const router = useRouter();
+  const [, startMove] = useTransition();
+  // Cible de dépôt survolée pendant un glisser (id de dossier, ou "__root__"
+  // pour la racine). Sert au retour visuel. Le glisser-déposer double les menus
+  // « Ranger » (qui restent, eux, accessibles au clavier).
+  const [dropOver, setDropOver] = useState<string | null>(null);
+
+  const ROOT = "__root__";
+
+  // Déplace une image vers un dossier (ou la racine si null), puis rafraîchit.
+  const moveAssetTo = (assetId: string, folderId: string | null) => {
+    const fd = new FormData();
+    fd.set("id", assetId);
+    if (folderId) fd.set("folder_id", folderId);
+    startMove(async () => {
+      await moveAsset(fd);
+      router.refresh();
+    });
+  };
+
+  // Un glisser transporte l'id de l'image dans le dataTransfer.
+  const onAssetDragStart = (e: React.DragEvent, assetId: string) => {
+    e.dataTransfer.setData("application/x-jk-asset", assetId);
+    e.dataTransfer.effectAllowed = "move";
+  };
+  const allowDrop = (e: React.DragEvent, key: string) => {
+    if (e.dataTransfer.types.includes("application/x-jk-asset")) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      if (dropOver !== key) setDropOver(key);
+    }
+  };
+  const onDropTo = (e: React.DragEvent, folderId: string | null) => {
+    const assetId = e.dataTransfer.getData("application/x-jk-asset");
+    setDropOver(null);
+    if (!assetId) return;
+    e.preventDefault();
+    moveAssetTo(assetId, folderId);
+  };
 
   // Filtre local du dossier courant : sous-dossiers par nom, images par nom de
   // fichier + texte alt. Purement visuel (aucune requête) — pour retrouver vite
@@ -156,7 +196,13 @@ export function MediaDrive({
             <nav className="flex flex-wrap items-center gap-1 text-sm">
               <Link
                 href="/admin/mediatheque"
-                className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                draggable={false}
+                onDragOver={(e) => allowDrop(e, ROOT)}
+                onDragLeave={() => setDropOver(null)}
+                onDrop={(e) => onDropTo(e, null)}
+                className={`inline-flex items-center gap-1 rounded px-1 text-muted-foreground hover:text-foreground ${
+                  dropOver === ROOT ? "bg-primary/15 text-foreground ring-1 ring-primary" : ""
+                }`}
               >
                 <Home className="size-4" /> Racine
               </Link>
@@ -165,7 +211,13 @@ export function MediaDrive({
                   <ChevronRight className="size-4 text-muted-foreground" />
                   <Link
                     href={`/admin/mediatheque?folder=${f.id}`}
-                    className="text-muted-foreground hover:text-foreground"
+                    draggable={false}
+                    onDragOver={(e) => allowDrop(e, f.id)}
+                    onDragLeave={() => setDropOver(null)}
+                    onDrop={(e) => onDropTo(e, f.id)}
+                    className={`rounded px-1 text-muted-foreground hover:text-foreground ${
+                      dropOver === f.id ? "bg-primary/15 text-foreground ring-1 ring-primary" : ""
+                    }`}
                   >
                     {f.name}
                   </Link>
@@ -216,7 +268,14 @@ export function MediaDrive({
               {shownSubfolders.map((f) => (
                 <div
                   key={f.id}
-                  className="rounded-lg border border-border p-3"
+                  onDragOver={(e) => allowDrop(e, f.id)}
+                  onDragLeave={() => setDropOver(null)}
+                  onDrop={(e) => onDropTo(e, f.id)}
+                  className={`rounded-lg border p-3 transition-colors ${
+                    dropOver === f.id
+                      ? "border-primary bg-primary/10 ring-1 ring-primary"
+                      : "border-border"
+                  }`}
                 >
                   {renaming === f.id ? (
                     <form
@@ -319,13 +378,17 @@ export function MediaDrive({
               {shownAssets.map((a) => (
                 <div
                   key={a.id}
-                  className="group relative overflow-hidden rounded-lg border border-border"
+                  draggable
+                  onDragStart={(e) => onAssetDragStart(e, a.id)}
+                  title="Glisse vers un dossier pour la ranger"
+                  className="group relative cursor-grab overflow-hidden rounded-lg border border-border active:cursor-grabbing"
                 >
                   <div className="relative aspect-square bg-muted">
                     <Image
                       src={publicImageUrl(a.storage_path)}
                       alt={a.alt ?? a.filename ?? ""}
                       fill
+                      draggable={false}
                       sizes="(max-width:640px) 50vw, 25vw"
                       className="object-cover"
                     />
