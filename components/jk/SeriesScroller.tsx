@@ -96,6 +96,8 @@ export function SeriesScroller({
   onIndexChange?: (i: number) => void;
 }) {
   const refs = useRef<(HTMLElement | null)[]>([]);
+  // Couche image de chaque écran paysage, translatée pour la parallaxe.
+  const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [current, setCurrent] = useState(0);
   const [reduced, setReduced] = useState(false);
 
@@ -149,6 +151,45 @@ export function SeriesScroller({
       img.src = nextPhoto.src;
     }
   }, [current, photos]);
+
+  // Parallaxe : chaque image paysage glisse plus lentement que le défilé, dans
+  // la limite de son overscan (elle est 116 % de haut, calée en -8 %), donc les
+  // bords ne se découvrent jamais. Une seule boucle rAF pilotée au scroll,
+  // neutralisée sous prefers-reduced-motion.
+  useEffect(() => {
+    if (reduced) {
+      for (const el of layerRefs.current) if (el) el.style.transform = "";
+      return;
+    }
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      for (let i = 0; i < layerRefs.current.length; i++) {
+        const layer = layerRefs.current[i];
+        const section = refs.current[i];
+        if (!layer || !section) continue;
+        const rect = section.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > vh) continue; // hors écran : on saute
+        const over = rect.height * 0.08;
+        // progress ≈ -1 (écran sous le pli) … 0 (centré) … 1 (au-dessus).
+        const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
+        const ty = Math.max(-over, Math.min(over, -progress * over));
+        layer.style.transform = `translate3d(0, ${ty.toFixed(1)}px, 0)`;
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [reduced, photos.length]);
 
   const goTo = useCallback((i: number) => {
     const el = refs.current[i];
@@ -276,7 +317,25 @@ export function SeriesScroller({
                 />
               </span>
             ) : (
-              <ScreenImage photo={p} first={i === 0} fit="cover" sizes="100vw" />
+              // Couche parallaxe : plus haute que l'écran (116 %, calée en -8 %)
+              // pour translater sans jamais découvrir de bord.
+              <div
+                ref={(el) => {
+                  layerRefs.current[i] = el;
+                }}
+                aria-hidden={false}
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: "-8%",
+                  height: "116%",
+                  overflow: "hidden",
+                  willChange: "transform",
+                }}
+              >
+                <ScreenImage photo={p} first={i === 0} fit="cover" sizes="100vw" />
+              </div>
             )}
 
             {/* Voile de lisibilité, uniquement là où la légende se pose. */}
