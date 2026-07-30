@@ -52,6 +52,7 @@ export default async function ContenuPage() {
         <TabsList className="mb-5 flex-wrap">
           <TabsTrigger value="brand">Marque & nav</TabsTrigger>
           <TabsTrigger value="home">Accueil</TabsTrigger>
+          <TabsTrigger value="proof">Preuve sociale</TabsTrigger>
           <TabsTrigger value="about">À propos</TabsTrigger>
           <TabsTrigger value="contact">Contact</TabsTrigger>
           <TabsTrigger value="footer">Pied de page</TabsTrigger>
@@ -195,40 +196,43 @@ export default async function ContenuPage() {
               </CardContent>
             </Card>
 
-            {/* ---- PREUVE SOCIALE ---- */}
-            <Card>
-              <CardContent className="p-5">
-                <h3 className="mb-1 text-base font-semibold text-foreground">
-                  Preuve sociale
-                </h3>
-                <p className="mb-4 text-sm text-muted-foreground">
-                  Bandeau de logos/clients sous le hero de l&apos;accueil.
-                  N&apos;affiche que des marques dont tu as l&apos;autorisation
-                  d&apos;usage. Masqué tant qu&apos;il est éteint ou vide.
-                </p>
-                <form action={saveProof} className="grid gap-4">
-                  <SwitchField
-                    name="enabled"
-                    label="Afficher le bandeau"
-                    hint="Désactivable à tout moment, sans redéploiement."
-                    defaultChecked={c.proof.enabled}
-                  />
-                  <Field label="Intitulé" hint="Ex. « Ils nous ont fait confiance »">
-                    <Input name="label" defaultValue={c.proof.label} />
-                  </Field>
-                  <div className="grid gap-2">
-                    <span className="text-sm font-medium">Clients</span>
-                    <span className="text-xs text-muted-foreground">
-                      Le logo est optionnel. Sans logo, le nom s&apos;affiche en
-                      capitales.
-                    </span>
-                    <ProofClientsEditor initial={c.proof.clients} />
-                  </div>
-                  <Save />
-                </form>
-              </CardContent>
-            </Card>
           </div>
+        </TabsContent>
+
+        {/* ---- PREUVE SOCIALE (onglet dédié) ---- */}
+        <TabsContent value="proof">
+          <Card>
+            <CardContent className="p-5">
+              <h3 className="mb-1 text-base font-semibold text-foreground">
+                Preuve sociale — logos clients
+              </h3>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Bandeau de logos/clients sous le hero de l&apos;accueil.
+                N&apos;affiche que des marques dont tu as l&apos;autorisation
+                d&apos;usage. Masqué tant qu&apos;il est éteint ou vide.
+              </p>
+              <form action={saveProof} className="grid gap-4">
+                <SwitchField
+                  name="enabled"
+                  label="Afficher le bandeau"
+                  hint="Désactivable à tout moment, sans redéploiement."
+                  defaultChecked={c.proof.enabled}
+                />
+                <Field label="Intitulé" hint="Ex. « Ils nous ont fait confiance »">
+                  <Input name="label" defaultValue={c.proof.label} />
+                </Field>
+                <div className="grid gap-2">
+                  <span className="text-sm font-medium">Clients</span>
+                  <span className="text-xs text-muted-foreground">
+                    Ajoute un client, puis téléverse son logo. Sans logo, le nom
+                    s&apos;affiche en capitales.
+                  </span>
+                  <ProofClientsEditor initial={c.proof.clients} />
+                </div>
+                <Save />
+              </form>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* ---- À PROPOS ---- */}

@@ -171,7 +171,11 @@ export function SeriesScroller({
         if (!layer || !section) continue;
         const rect = section.getBoundingClientRect();
         if (rect.bottom < 0 || rect.top > vh) continue; // hors écran : on saute
-        const over = rect.height * 0.08;
+        // Amplitude par image (fraction de la hauteur d'écran), portée sur la
+        // couche via data-amp : forte en paysage (débord large), plus mesurée
+        // en portrait (limitée par ses marges).
+        const amp = parseFloat(layer.dataset.amp || "0.1");
+        const over = rect.height * amp;
         // progress ≈ -1 (écran sous le pli) … 0 (centré) … 1 (au-dessus).
         const progress = (rect.top + rect.height / 2 - vh / 2) / vh;
         const ty = Math.max(-over, Math.min(over, -progress * over));
@@ -299,16 +303,17 @@ export function SeriesScroller({
             }}
           >
             {portrait ? (
-              // Verticale : marges généreuses, jamais croppée. La parallaxe la
-              // fait flotter dans ses marges (±8 % de l'écran < les ~10 % de
-              // marge de chaque côté), donc jamais de débordement.
+              // Verticale : jamais croppée. La parallaxe la fait flotter dans
+              // ses marges — hauteur ramenée à 72dvh (≈14 % de marge de chaque
+              // côté) pour autoriser ±10 % de translation sans débordement.
               <span
                 ref={(el) => {
                   layerRefs.current[i] = el;
                 }}
+                data-amp="0.1"
                 style={{
                   position: "relative",
-                  height: "min(80dvh, 100%)",
+                  height: "min(72dvh, 100%)",
                   aspectRatio: p.ar.replace(" / ", "/"),
                   maxWidth: "min(92vw, 720px)",
                   willChange: "transform",
@@ -323,19 +328,20 @@ export function SeriesScroller({
                 />
               </span>
             ) : (
-              // Couche parallaxe : plus haute que l'écran (116 %, calée en -8 %)
-              // pour translater sans jamais découvrir de bord.
+              // Couche parallaxe paysage : nettement plus haute que l'écran
+              // (136 %, calée en -18 %) pour une translation ample (±18 %) sans
+              // jamais découvrir de bord — au diapason de la parallaxe de la cover.
               <div
                 ref={(el) => {
                   layerRefs.current[i] = el;
                 }}
-                aria-hidden={false}
+                data-amp="0.18"
                 style={{
                   position: "absolute",
                   left: 0,
                   right: 0,
-                  top: "-8%",
-                  height: "116%",
+                  top: "-18%",
+                  height: "136%",
                   overflow: "hidden",
                   willChange: "transform",
                 }}
