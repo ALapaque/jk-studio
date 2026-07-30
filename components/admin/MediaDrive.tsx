@@ -32,6 +32,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ActionForm } from "./ActionForm";
 import { ImageUploader } from "./ImageUploader";
+import { FolderTree } from "./FolderTree";
 
 /** Petit `<select>` qui soumet son formulaire (Server Action) au changement,
  *  pour ranger une image ou un dossier sans clic supplémentaire. */
@@ -243,8 +244,28 @@ export function MediaDrive({
         </CardContent>
       </Card>
 
-      {/* ---- dossiers ---- */}
-      <Card className="mb-6">
+      {/* Deux panneaux façon explorateur : arbre des dossiers à gauche,
+          contenu du dossier courant à droite. */}
+      <div className="grid items-start gap-6 md:grid-cols-[minmax(200px,260px)_1fr]">
+        <Card className="md:sticky md:top-4">
+          <CardContent className="p-3">
+            <FolderTree
+              allFolders={allFolders}
+              currentFolderId={currentFolderId}
+              dnd={{
+                dropOver,
+                ROOT,
+                onDragOver: allowDrop,
+                onDragLeave: () => setDropOver(null),
+                onDrop: onDropTo,
+              }}
+            />
+          </CardContent>
+        </Card>
+
+        <div className="grid gap-6">
+          {/* ---- dossiers ---- */}
+          <Card>
         <CardContent className="p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-base font-semibold text-foreground">
@@ -442,6 +463,8 @@ export function MediaDrive({
           )}
         </CardContent>
       </Card>
+        </div>
+      </div>
     </>
   );
 }
