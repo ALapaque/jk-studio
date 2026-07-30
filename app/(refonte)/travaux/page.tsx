@@ -83,7 +83,7 @@ export default async function SeriesIndexPage() {
               {c.series.map((s, i) => (
                 <IndexRow
                   key={s.slug}
-                  href={`/travaux/${c.slug}/${s.slug}/histoire`}
+                  href={`/travaux/${c.slug}/${s.slug}`}
                   num={String(i + 1).padStart(2, "0")}
                   title={s.title}
                   location={s.location}

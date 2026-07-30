@@ -318,7 +318,7 @@ export default async function AccueilRefontePage() {
                       deviendrait perceptible et la page paraîtrait lente. */}
                   <Reveal as="div" delay={Math.min(i, 5) * 80}>
                     <Link
-                      href={`/travaux/${cat.slug}/${serie.slug}/histoire`}
+                      href={`/travaux/${cat.slug}/${serie.slug}`}
                       style={{ display: "grid", gap: 16, color: "inherit" }}
                     >
                       <span

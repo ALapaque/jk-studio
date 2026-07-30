@@ -37,17 +37,11 @@ function labelFromPath(path: string): string {
   } catch {}
   const seg = p.split("/").filter(Boolean);
   if (seg.length === 0) return "Accueil";
-  if (seg[0] === "accueil") return "Accueil";
-  if (seg[0] === "series") return "Séries";
   if (seg[0] === "tirages") return "Tirages";
   if (seg[0] === "a-propos") return "À propos";
   if (seg[0] === "contact") return "Contact";
-  if (seg[0] === "travaux") {
-    if (seg.length === 1) return "Travaux";
-    // Une page « histoire » est nommée par sa série, pas par le mot histoire.
-    const last = seg[seg.length - 1];
-    return titleCase(last === "histoire" ? seg[seg.length - 2] : last);
-  }
+  if (seg[0] === "travaux")
+    return seg.length === 1 ? "Travaux" : titleCase(seg[seg.length - 1]);
   return titleCase(seg[seg.length - 1]);
 }
 

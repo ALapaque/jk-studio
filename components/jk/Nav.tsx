@@ -90,7 +90,7 @@ export function Nav({
         }}
       >
         <Link
-          href="/accueil"
+          href="/"
           style={{
             fontSize: 12,
             letterSpacing: "0.32em",

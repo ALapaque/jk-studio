@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { submitContact } from "@/app/(site)/contact/actions";
+import { submitContact } from "@/app/(refonte)/contact/actions";
 
 const labelStyle: React.CSSProperties = {
   fontFamily: "var(--font-mono), monospace",

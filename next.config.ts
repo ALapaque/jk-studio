@@ -25,6 +25,20 @@ const nextConfig: NextConfig = {
         : [{ protocol: "https" as const, hostname: "*.supabase.co" }]),
     ],
   },
+  // Bascule finale : la refonte a pris les URLs canoniques. On redirige (301)
+  // les URLs parallèles utilisées pendant la coexistence, pour ne perdre ni le
+  // référencement ni les liens déjà partagés.
+  async redirects() {
+    return [
+      { source: "/accueil", destination: "/", permanent: true },
+      { source: "/series", destination: "/travaux", permanent: true },
+      {
+        source: "/travaux/:categorie/:serie/histoire",
+        destination: "/travaux/:categorie/:serie",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

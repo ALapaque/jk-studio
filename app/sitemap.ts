@@ -4,17 +4,11 @@ import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  // `/accueil` n'y figure pas : c'est l'aperçu de la refonte, destiné à
-  // remplacer `/` à la bascule. L'indexer créerait un doublon de contenu avec
-  // la page d'accueil, ce qui nuirait aux deux.
-  const staticPages = [
-    "",
-    "/travaux",
-    "/series",
-    "/tirages",
-    "/a-propos",
-    "/contact",
-  ].map((p) => ({
+  // URLs canoniques après la bascule (la refonte est le site). Les anciennes
+  // URLs de coexistence (/accueil, /series, …/histoire) sont redirigées en 301
+  // via next.config.ts et n'ont donc pas leur place ici.
+  const staticPages = ["", "/travaux", "/tirages", "/a-propos", "/contact"].map(
+    (p) => ({
     url: `${SITE_URL}${p}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
@@ -28,24 +22,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
-  // Deux entrées par série : la planche contact actuelle et le défilé
-  // immersif, qui coexistent jusqu'à la bascule. Le défilé porte une priorité
-  // plus haute — c'est la lecture que la refonte met en avant.
+  // Une entrée par série (le défilé, désormais à l'URL canonique).
   const seriesPages = cats.flatMap((c) =>
-    c.series.flatMap((s) => [
-      {
-        url: `${SITE_URL}/travaux/${c.slug}/${s.slug}`,
-        lastModified: now,
-        changeFrequency: "monthly" as const,
-        priority: 0.5,
-      },
-      {
-        url: `${SITE_URL}/travaux/${c.slug}/${s.slug}/histoire`,
-        lastModified: now,
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-      },
-    ]),
+    c.series.map((s) => ({
+      url: `${SITE_URL}/travaux/${c.slug}/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   );
 
   return [...staticPages, ...catPages, ...seriesPages];

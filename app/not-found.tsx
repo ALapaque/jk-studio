@@ -1,26 +1,31 @@
-import { TransitionLink } from "@/components/motion/TransitionLink";
+import Link from "next/link";
 import { getSiteContent } from "@/lib/content";
+
+/* 404 — layout racine (hors groupe refonte), donc sans nav ni voile. On
+ * utilise les tokens --jk-* de la refonte, désormais la seule direction. */
 
 export default async function NotFound() {
   const { notFound } = await getSiteContent();
   return (
     <main
       style={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         display: "grid",
         placeItems: "center",
         textAlign: "center",
         padding: "0 20px",
+        background: "var(--jk-bg)",
+        color: "var(--jk-ink)",
+        fontFamily: "var(--jk-sans)",
       }}
     >
       <div>
         <div
           style={{
-            fontFamily: "var(--font-mono), monospace",
             fontSize: 10.5,
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            color: "var(--ink2)",
+            color: "var(--jk-ink-mute)",
             marginBottom: 20,
           }}
         >
@@ -29,7 +34,7 @@ export default async function NotFound() {
         <h1
           style={{
             margin: "0 0 28px",
-            fontFamily: "var(--font-serif), serif",
+            fontFamily: "var(--jk-serif)",
             fontStyle: "italic",
             fontWeight: 400,
             fontSize: "clamp(48px,9vw,120px)",
@@ -39,21 +44,19 @@ export default async function NotFound() {
         >
           {notFound.title}
         </h1>
-        <TransitionLink
+        <Link
           href="/"
-          transitionLabel="Accueil"
-          data-cursor="link"
-          className="jk-cta"
           style={{
-            fontFamily: "var(--font-mono), monospace",
             fontSize: 11,
             letterSpacing: "0.16em",
             textTransform: "uppercase",
-            color: "var(--accent)",
+            color: "var(--jk-brass)",
+            borderBottom: "1px solid var(--jk-brass)",
+            paddingBottom: 3,
           }}
         >
           {notFound.cta}
-        </TransitionLink>
+        </Link>
       </div>
     </main>
   );

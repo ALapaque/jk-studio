@@ -217,7 +217,7 @@ export default async function SeriesStoryPage({
 
         {next && next.slug !== series.slug && (
           <Link
-            href={`/travaux/${category.slug}/${next.slug}/histoire`}
+            href={`/travaux/${category.slug}/${next.slug}`}
             style={{
               display: "flex",
               flexDirection: "column",

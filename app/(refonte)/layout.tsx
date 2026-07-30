@@ -28,7 +28,7 @@ export default async function RefonteLayout({
   const content = await getSiteContent();
 
   const items = [
-    { href: "/series", label: content.nav.portfolio },
+    { href: "/travaux", label: content.nav.portfolio },
     // Entrée demandée par le §9, absente jusqu'ici.
     { href: "/tirages", label: content.nav.prints },
     { href: "/a-propos", label: content.nav.about },
