@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { CoverUploader } from "@/components/admin/CoverUploader";
+import { CoverFromLibrary } from "@/components/admin/CoverFromLibrary";
 import { MediaManager } from "@/components/admin/MediaManager";
 import { SelectField } from "@/components/admin/fields/SelectField";
 import { SwitchField } from "@/components/admin/fields/SwitchField";
@@ -129,15 +130,24 @@ export default async function EditSeriesPage({
         <CardContent className="p-5">
           <Field
             label="Image de couverture de la série"
-            hint="Uploade une image, ou utilise « Couv. » sous une photo ci-dessous."
+            hint="Choisis depuis la médiathèque, uploade une image, ou utilise « Couv. » sous une photo ci-dessous."
           >
-            <CoverUploader
-              ownerId={p.id}
-              idField="project_id"
-              pathPrefix={p.id}
-              action={setProjectCover}
-              currentSrc={publicImageUrl(p.cover_path) || undefined}
-            />
+            <div className="flex flex-wrap items-center gap-3">
+              <CoverUploader
+                ownerId={p.id}
+                idField="project_id"
+                pathPrefix={p.id}
+                action={setProjectCover}
+                currentSrc={publicImageUrl(p.cover_path) || undefined}
+              />
+              <CoverFromLibrary
+                ownerId={p.id}
+                idField="project_id"
+                action={setProjectCover}
+                assets={assets}
+                folders={folders}
+              />
+            </div>
           </Field>
         </CardContent>
       </Card>

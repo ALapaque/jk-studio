@@ -8,6 +8,7 @@ import { PageTitle, Field, Input } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CoverUploader } from "@/components/admin/CoverUploader";
+import { CoverFromLibrary } from "@/components/admin/CoverFromLibrary";
 import { MediaManager } from "@/components/admin/MediaManager";
 
 export const dynamic = "force-dynamic";
@@ -37,14 +38,26 @@ export default async function EditCategoryPage({
 
       <Card className="mb-6">
         <CardContent className="p-5">
-          <Field label="Image de couverture">
-            <CoverUploader
-              ownerId={cat.id}
-              idField="category_id"
-              pathPrefix={`covers/cat-${cat.id}`}
-              action={setCategoryCover}
-              currentSrc={publicImageUrl(cat.cover_path) || undefined}
-            />
+          <Field
+            label="Image de couverture"
+            hint="Choisis depuis la médiathèque ou uploade une image."
+          >
+            <div className="flex flex-wrap items-center gap-3">
+              <CoverUploader
+                ownerId={cat.id}
+                idField="category_id"
+                pathPrefix={`covers/cat-${cat.id}`}
+                action={setCategoryCover}
+                currentSrc={publicImageUrl(cat.cover_path) || undefined}
+              />
+              <CoverFromLibrary
+                ownerId={cat.id}
+                idField="category_id"
+                action={setCategoryCover}
+                assets={assets}
+                folders={folders}
+              />
+            </div>
           </Field>
         </CardContent>
       </Card>
