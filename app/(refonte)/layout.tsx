@@ -32,6 +32,7 @@ export default async function RefonteLayout({
     { href: "/travaux", label: content.nav.portfolio },
     // Entrée demandée par le §9, absente jusqu'ici.
     { href: "/tirages", label: content.nav.prints },
+    { href: "/journal", label: content.nav.journal },
     { href: "/a-propos", label: content.nav.about },
     { href: "/contact", label: content.nav.contact },
   ];

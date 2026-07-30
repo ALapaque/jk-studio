@@ -28,6 +28,8 @@ export interface SiteContent {
     /** Libellés de la nav de la refonte. Le §9 demande une entrée « Tirages ». */
     portfolio: string;
     prints: string;
+    /** Entrée du blog (journal). */
+    journal: string;
     /** Libellés du menu mobile (maquette, écran 06). */
     menu: string;
     close: string;
@@ -136,6 +138,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     contact: "Contact",
     portfolio: "Portfolio",
     prints: "Tirages",
+    journal: "Journal",
     menu: "Menu",
     close: "Fermer",
   },
