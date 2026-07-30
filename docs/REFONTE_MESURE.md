@@ -170,3 +170,52 @@ constatées pendant la mesure :
 - Si le **hero** devient l'élément LCP (probable), les leviers suivants seront
   côté image (AVIF, priorité, taille de la variante servie) — c'est l'objet de
   la Phase 2.
+
+---
+
+## Phase 2 — AVIF sur le chemin next/image
+
+`images.formats = ['image/avif', 'image/webp']` dans `next.config.ts` (le défaut
+Next était `['image/webp']` seul). AVIF est préféré quand le navigateur l'accepte,
+avec repli WebP puis format d'origine.
+
+Portée :
+
+- **Couvre le hero de l'accueil et les covers de série** — l'élément LCP probable
+  en production — ainsi que vignettes, portraits, logos de preuve sociale : tout
+  ce qui passe par `next/image`. AVIF ≈ 20 % plus léger que WebP.
+- **Ne couvre pas** le défilé immersif (`SeriesScroller`) : ses dérivés WebP sont
+  servis directement par le CDN Supabase et contournent `next/image` à dessein
+  (pas de consommation du quota de transformations). Ils ne sont pas l'élément
+  LCP. Leur passage à l'AVIF supposerait de générer des dérivés AVIF via le
+  backfill `sharp` (le canvas navigateur ne sait pas encoder l'AVIF) et un
+  élément `<picture>` — chantier distinct, à ouvrir seulement si la mesure
+  terrain le justifie.
+
+Compromis assumé (doc Next) : le tout premier accès à une image est ~50 % plus
+lent à encoder en AVIF, puis servi depuis le cache. Sur Vercel, l'optimiseur gère
+l'en-tête `Accept` et le cache par format nativement.
+
+**À mesurer en prod** (PageSpeed / données terrain) : LCP et poids du hero avant
+(WebP) vs après (AVIF). Non mesurable dans ce bac à sable (images distantes non
+chargées en local, interstitiel HSTS sur le preview).
+
+### Mesure prod (preview Vercel) — négociation de format vérifiée
+
+Lighthouse reste inaccessible depuis le bac à sable, mais l'optimiseur, lui, est
+joignable via `curl` (le proxy porte le CA). Requête de l'URL `/_next/image` du
+hero de l'accueil, en faisant varier l'en-tête `Accept` :
+
+| `Accept` | `Content-Type` servi | Poids du hero |
+|---|---|---|
+| `image/webp` | `image/webp` | 25 842 o |
+| `image/avif` | **`image/avif`** | **15 418 o** |
+
+- Réponse `vary: Accept` + `cache-control: public, max-age=31536000` : négociation
+  et cache par format corrects.
+- **~40 % plus léger** en AVIF qu'en WebP sur l'élément LCP réel — au-delà des
+  20 % annoncés par la doc Next pour cette image.
+
+Reste à confirmer l'impact **LCP** (temps, pas seulement poids) en données de
+terrain une fois la prod à jour — mais le gain de charge utile sur le hero est
+acquis et mesuré.
