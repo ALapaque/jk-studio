@@ -117,8 +117,11 @@ export function PostBodyEditor({ initial }: { initial: string }) {
         }`}
       />
 
+      {/* Aperçu : même classe .jk-prose que le rendu public. Le plugin Tailwind
+          Typography (`prose`) n'est pas installé — d'où l'aperçu non formaté
+          auparavant. */}
       {tab === "preview" && (
-        <div className="prose prose-sm max-w-none rounded-md border border-input p-4 dark:prose-invert">
+        <div className="jk-prose rounded-md border border-input p-4">
           {value.trim() ? (
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
