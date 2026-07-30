@@ -66,7 +66,7 @@ export default async function AccueilRefontePage() {
       <section
         style={{
           position: "relative",
-          height: "100dvh",
+          height: "100svh",
           background: "var(--jk-surface)",
           overflow: "hidden",
         }}

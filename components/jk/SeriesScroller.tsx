@@ -77,8 +77,11 @@ function ScreenImage({
 /** Défilé plein écran d'une série : un écran par photo.
  *
  *  Comportements imposés par le brief (§7) :
- *  - sections en `100dvh`, jamais `100vh` — sinon la barre d'adresse iOS
- *    décale tout le défilé ;
+ *  - sections en `100svh` (small viewport height), jamais `100vh` ni `100dvh` :
+ *    `svh` est STABLE (hauteur barre d'adresse visible), donc les écrans ne se
+ *    redimensionnent pas quand la barre mobile se rétracte au scroll — c'est ce
+ *    qui provoquait un « saut » de mise à l'échelle. `100vh` couperait sur iOS,
+ *    `100dvh` suivrait la barre en direct (d'où le glitch) ;
  *  - `scroll-snap-type: y proximity` en CSS pur, jamais `mandatory` (effet
  *    collant sur mobile, casse le flick rapide) ;
  *  - cadrage par orientation : paysage en plein cadre (`cover`), portrait
@@ -152,10 +155,10 @@ export function SeriesScroller({
     }
   }, [current, photos]);
 
-  // Parallaxe : chaque image paysage glisse plus lentement que le défilé, dans
-  // la limite de son overscan (elle est 116 % de haut, calée en -8 %), donc les
-  // bords ne se découvrent jamais. Une seule boucle rAF pilotée au scroll,
-  // neutralisée sous prefers-reduced-motion.
+  // Parallaxe : chaque image glisse plus lentement que le défilé, dans la limite
+  // de son overscan (paysage : couche 136 %, calée en -18 % → ±18 % ; portrait :
+  // ±10 % dans ses marges), donc les bords ne se découvrent jamais. Une seule
+  // boucle rAF pilotée au scroll, neutralisée sous prefers-reduced-motion.
   useEffect(() => {
     if (reduced) {
       for (const el of layerRefs.current) if (el) el.style.transform = "";
@@ -293,8 +296,8 @@ export function SeriesScroller({
             aria-label={`Image ${i + 1} sur ${photos.length}`}
             style={{
               position: "relative",
-              // 100dvh, pas 100vh : la barre d'adresse iOS décalerait tout.
-              height: "100dvh",
+              // 100svh, pas 100vh : la barre d'adresse iOS décalerait tout.
+              height: "100svh",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -304,7 +307,7 @@ export function SeriesScroller({
           >
             {portrait ? (
               // Verticale : jamais croppée. La parallaxe la fait flotter dans
-              // ses marges — hauteur ramenée à 72dvh (≈14 % de marge de chaque
+              // ses marges — hauteur ramenée à 72svh (≈14 % de marge de chaque
               // côté) pour autoriser ±10 % de translation sans débordement.
               <span
                 ref={(el) => {
@@ -313,7 +316,7 @@ export function SeriesScroller({
                 data-amp="0.1"
                 style={{
                   position: "relative",
-                  height: "min(72dvh, 100%)",
+                  height: "min(72svh, 100%)",
                   aspectRatio: p.ar.replace(" / ", "/"),
                   maxWidth: "min(92vw, 720px)",
                   willChange: "transform",

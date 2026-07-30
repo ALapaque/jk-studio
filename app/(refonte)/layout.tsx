@@ -43,7 +43,7 @@ export default async function RefonteLayout({
         background: "var(--jk-bg)",
         color: "var(--jk-ink)",
         fontFamily: "var(--jk-sans)",
-        minHeight: "100dvh",
+        minHeight: "100svh",
       }}
     >
       <JsonLd content={content} />

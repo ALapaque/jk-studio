@@ -32,7 +32,7 @@ export default async function TiragesPage() {
   return (
     <main
       style={{
-        minHeight: "100dvh",
+        minHeight: "100svh",
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
       }}
@@ -44,7 +44,7 @@ export default async function TiragesPage() {
       <div
         style={{
           position: "relative",
-          minHeight: "42dvh",
+          minHeight: "42svh",
           background: "var(--jk-surface)",
           overflow: "hidden",
         }}

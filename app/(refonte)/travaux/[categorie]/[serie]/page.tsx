@@ -79,7 +79,7 @@ export default async function SeriesStoryPage({
       <section
         style={{
           position: "relative",
-          height: "100dvh",
+          height: "100svh",
           display: "flex",
           alignItems: "flex-end",
           background: "var(--jk-surface)",
@@ -175,7 +175,7 @@ export default async function SeriesStoryPage({
       {/* ---- écran de fin ---- */}
       <section
         style={{
-          minHeight: "76dvh",
+          minHeight: "76svh",
           padding: "96px var(--jk-gap-page)",
           display: "flex",
           flexDirection: "column",
