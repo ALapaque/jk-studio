@@ -2,6 +2,7 @@ import { getSiteContent } from "@/lib/content";
 import { JsonLd } from "@/components/jk/JsonLd";
 import { Nav } from "@/components/jk/Nav";
 import { Footer } from "@/components/jk/Footer";
+import { PageTransition } from "@/components/jk/PageTransition";
 
 /* Layout des écrans de la refonte.
  *
@@ -44,14 +45,19 @@ export default async function RefonteLayout({
       }}
     >
       <JsonLd content={content} />
-      <Nav
-        brandName={content.brand.name}
-        items={items}
-        menuLabel={content.nav.menu}
-        closeLabel={content.nav.close}
-      />
-      {children}
-      <Footer content={content} />
+      {/* Le voile enveloppe nav, contenu et footer : l'interception des clics
+          couvre tous les liens, et le voile (z-index élevé) passe au-dessus de
+          la nav fixe. */}
+      <PageTransition brandName={content.brand.name}>
+        <Nav
+          brandName={content.brand.name}
+          items={items}
+          menuLabel={content.nav.menu}
+          closeLabel={content.nav.close}
+        />
+        {children}
+        <Footer content={content} />
+      </PageTransition>
     </div>
   );
 }
