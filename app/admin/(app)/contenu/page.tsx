@@ -15,6 +15,7 @@ import {
   saveHome,
   saveNav,
   saveNotFound,
+  saveProof,
   saveStudio,
   saveWorks,
 } from "@/app/admin/actions";
@@ -23,10 +24,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
+import { SwitchField } from "@/components/admin/fields/SwitchField";
 
 export const dynamic = "force-dynamic";
 
 const factsToText = (f: Fact[]) => f.map((x) => `${x.k} | ${x.v}`).join("\n");
+const clientsToText = (
+  cl: { name: string; logoPath?: string }[],
+): string =>
+  cl.map((c) => (c.logoPath ? `${c.name} | ${c.logoPath}` : c.name)).join("\n");
 
 function Save() {
   return (
@@ -186,6 +192,43 @@ export default async function ContenuPage() {
                   </Field>
                   <Field label="Faits (clé | valeur)">
                     <Textarea name="facts" rows={3} defaultValue={factsToText(c.studio.facts)} />
+                  </Field>
+                  <Save />
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* ---- PREUVE SOCIALE ---- */}
+            <Card>
+              <CardContent className="p-5">
+                <h3 className="mb-1 text-base font-semibold text-foreground">
+                  Preuve sociale
+                </h3>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Bandeau de logos/clients sous le hero de l&apos;accueil.
+                  N&apos;affiche que des marques dont tu as l&apos;autorisation
+                  d&apos;usage. Masqué tant qu&apos;il est éteint ou vide.
+                </p>
+                <form action={saveProof} className="grid gap-4">
+                  <SwitchField
+                    name="enabled"
+                    label="Afficher le bandeau"
+                    hint="Désactivable à tout moment, sans redéploiement."
+                    defaultChecked={c.proof.enabled}
+                  />
+                  <Field label="Intitulé" hint="Ex. « Ils nous ont fait confiance »">
+                    <Input name="label" defaultValue={c.proof.label} />
+                  </Field>
+                  <Field
+                    label="Clients (un par ligne)"
+                    hint="« Nom | chemin-logo » — le logo est optionnel. Sans logo, le nom s'affiche en capitales."
+                  >
+                    <Textarea
+                      name="clients"
+                      rows={4}
+                      defaultValue={clientsToText(c.proof.clients)}
+                      placeholder={"Deloitte\nBrussels Airport | brand/clients/bru.svg"}
+                    />
                   </Field>
                   <Save />
                 </form>
