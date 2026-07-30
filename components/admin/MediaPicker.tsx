@@ -26,14 +26,23 @@ export function MediaPicker({
 }) {
   const [open, setOpen] = useState(false);
   const [folderId, setFolderId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  const visible = useMemo(
-    () => assets.filter((a) => (a.folder_id ?? null) === folderId),
-    [assets, folderId],
-  );
+  const q = query.trim().toLowerCase();
+  // Une recherche porte sur TOUTE la médiathèque (nom de fichier + texte alt),
+  // tous dossiers confondus — c'est là son intérêt : rattacher une image sans
+  // savoir où elle est rangée. Sans recherche, on reste sur la vue par dossier.
+  const visible = useMemo(() => {
+    if (q) {
+      return assets.filter((a) =>
+        `${a.filename ?? ""} ${a.alt ?? ""}`.toLowerCase().includes(q),
+      );
+    }
+    return assets.filter((a) => (a.folder_id ?? null) === folderId);
+  }, [assets, folderId, q]);
 
   const toggle = (id: string) =>
     setSelected((prev) => {
@@ -81,11 +90,21 @@ export function MediaPicker({
         >
           <div className="flex items-center justify-between gap-3 border-b border-border p-4">
             <h2 className="text-base font-semibold">Médiathèque</h2>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Rechercher (toute la médiathèque)…"
+                aria-label="Rechercher une image"
+                className="w-56 rounded-md border border-input bg-transparent px-2 py-1.5 text-sm"
+              />
               <select
                 value={folderId ?? ""}
                 onChange={(e) => setFolderId(e.target.value || null)}
-                className="rounded-md border border-input bg-transparent px-2 py-1.5 text-sm"
+                disabled={!!q}
+                title={q ? "Recherche active sur toute la médiathèque" : undefined}
+                className="rounded-md border border-input bg-transparent px-2 py-1.5 text-sm disabled:opacity-50"
               >
                 <option value="">Racine</option>
                 {folders.map((f) => (
@@ -139,7 +158,7 @@ export function MediaPicker({
               </div>
             ) : (
               <p className="p-6 text-center text-sm text-muted-foreground">
-                Aucune image dans ce dossier.
+                {q ? "Aucun résultat." : "Aucune image dans ce dossier."}
               </p>
             )}
           </div>

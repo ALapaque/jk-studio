@@ -86,6 +86,21 @@ export function MediaDrive({
   assets: (MediaAssetRow & { usage: number })[];
 }) {
   const [renaming, setRenaming] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+
+  // Filtre local du dossier courant : sous-dossiers par nom, images par nom de
+  // fichier + texte alt. Purement visuel (aucune requête) — pour retrouver vite
+  // dans un dossier chargé. La recherche sur TOUTE la banque, elle, vit dans le
+  // sélecteur « Depuis la médiathèque ».
+  const q = query.trim().toLowerCase();
+  const shownSubfolders = q
+    ? subfolders.filter((f) => f.name.toLowerCase().includes(q))
+    : subfolders;
+  const shownAssets = q
+    ? assets.filter((a) =>
+        `${a.filename ?? ""} ${a.alt ?? ""}`.toLowerCase().includes(q),
+      )
+    : assets;
 
   // Descendants de chaque dossier : cibles interdites pour un déplacement (on
   // ne peut pas ranger un dossier sous lui-même ni sous l'un de ses enfants,
@@ -157,11 +172,21 @@ export function MediaDrive({
                 </span>
               ))}
             </nav>
-            <ImageUploader
-              prefix="library"
-              label="Uploader ici"
-              submit={submitToLibrary}
-            />
+            <div className="flex items-center gap-2">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Filtrer ce dossier…"
+                aria-label="Filtrer ce dossier"
+                className="w-48 rounded-md border border-input bg-transparent px-2 py-1.5 text-sm"
+              />
+              <ImageUploader
+                prefix="library"
+                label="Uploader ici"
+                submit={submitToLibrary}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -171,7 +196,7 @@ export function MediaDrive({
         <CardContent className="p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-base font-semibold text-foreground">
-              Dossiers <span className="text-muted-foreground">({subfolders.length})</span>
+              Dossiers <span className="text-muted-foreground">({shownSubfolders.length})</span>
             </h2>
             <form action={createFolder} className="flex items-end gap-2">
               {currentFolderId && (
@@ -186,9 +211,9 @@ export function MediaDrive({
             </form>
           </div>
 
-          {subfolders.length ? (
+          {shownSubfolders.length ? (
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {subfolders.map((f) => (
+              {shownSubfolders.map((f) => (
                 <div
                   key={f.id}
                   className="rounded-lg border border-border p-3"
@@ -275,7 +300,9 @@ export function MediaDrive({
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">Aucun sous-dossier.</p>
+            <p className="text-sm text-muted-foreground">
+              {q ? "Aucun dossier ne correspond au filtre." : "Aucun sous-dossier."}
+            </p>
           )}
         </CardContent>
       </Card>
@@ -284,12 +311,12 @@ export function MediaDrive({
       <Card>
         <CardContent className="p-5">
           <h2 className="mb-4 text-base font-semibold text-foreground">
-            Images <span className="text-muted-foreground">({assets.length})</span>
+            Images <span className="text-muted-foreground">({shownAssets.length})</span>
           </h2>
 
-          {assets.length ? (
+          {shownAssets.length ? (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {assets.map((a) => (
+              {shownAssets.map((a) => (
                 <div
                   key={a.id}
                   className="group relative overflow-hidden rounded-lg border border-border"
@@ -345,8 +372,9 @@ export function MediaDrive({
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Aucune image dans ce dossier. Utilise « Uploader ici » pour en
-              ajouter.
+              {q
+                ? "Aucune image ne correspond au filtre."
+                : "Aucune image dans ce dossier. Utilise « Uploader ici » pour en ajouter."}
             </p>
           )}
         </CardContent>
