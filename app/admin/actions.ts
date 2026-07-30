@@ -161,6 +161,8 @@ export async function updateProject(formData: FormData) {
       // doit repartir en NULL, sinon Postgres rejette la valeur.
       shot_at: s(formData, "shot_at") || null,
       intro: s(formData, "intro") || null,
+      // Template de mise en page (0009). Repli `classic` si le champ manque.
+      template: s(formData, "template") || "classic",
     })
     .eq("id", id);
   if (error) throw new Error(error.message);

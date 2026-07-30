@@ -54,6 +54,13 @@ type ProjectWithMedia = ProjectRow & {
   videos: VideoRow[] | null;
 };
 
+/** Convertit une ligne projet + ses médias en série publique. Exporté pour
+ *  l'aperçu admin (`/preview`), qui charge des brouillons via les fonctions
+ *  admin puis les nourrit aux mêmes templates que le rendu public. */
+export function seriesFromProjectRow(p: ProjectWithMedia): Series {
+  return mapSeries(p);
+}
+
 function mapSeries(p: ProjectWithMedia): Series {
   const photos = [...(p.photos ?? [])]
     .sort((a, b) => a.position - b.position)
@@ -287,6 +294,12 @@ export async function getSeriesBySlug(
 }
 
 // ============================================================ JOURNAL (blog)
+
+/** Convertit une ligne article en article public. Exporté pour l'aperçu admin
+ *  (`/preview`), qui prévisualise aussi les brouillons. */
+export function postFromRow(p: PostRow): Post {
+  return mapPost(p);
+}
 
 function mapPost(p: PostRow): Post {
   return {

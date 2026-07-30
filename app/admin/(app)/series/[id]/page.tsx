@@ -22,6 +22,8 @@ import { CoverFromLibrary } from "@/components/admin/CoverFromLibrary";
 import { MediaManager } from "@/components/admin/MediaManager";
 import { SelectField } from "@/components/admin/fields/SelectField";
 import { SwitchField } from "@/components/admin/fields/SwitchField";
+import { TemplatePicker } from "@/components/admin/TemplatePicker";
+import { SERIES_TEMPLATE_OPTIONS } from "@/components/jk/series-templates";
 
 export const dynamic = "force-dynamic";
 
@@ -101,6 +103,17 @@ export default async function EditSeriesPage({
               hint="2 à 3 phrases, affichées à l'ouverture du défilé."
             >
               <Textarea name="intro" rows={3} defaultValue={p.intro ?? ""} />
+            </Field>
+            <Field
+              label="Mise en page"
+              hint="Choisis le template de la page détail. L'aperçu reflète le contenu enregistré."
+            >
+              <TemplatePicker
+                kind="series"
+                id={p.id}
+                options={SERIES_TEMPLATE_OPTIONS}
+                initial={p.template}
+              />
             </Field>
             <SwitchField
               name="published"

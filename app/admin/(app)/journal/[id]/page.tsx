@@ -15,6 +15,8 @@ import { SwitchField } from "@/components/admin/fields/SwitchField";
 import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
 import { PostBodyEditor } from "@/components/admin/PostBodyEditor";
 import { PostMediaEditor } from "@/components/admin/PostMediaEditor";
+import { TemplatePicker } from "@/components/admin/TemplatePicker";
+import { POST_TEMPLATE_OPTIONS } from "@/components/jk/post-templates";
 
 export const dynamic = "force-dynamic";
 
@@ -101,6 +103,18 @@ export default async function PostEditorPage({
                 folders={folders}
               />
             </div>
+
+            <Field
+              label="Mise en page"
+              hint="Choisis le template de l'article. L'aperçu reflète le contenu enregistré."
+            >
+              <TemplatePicker
+                kind="post"
+                id={post.id}
+                options={POST_TEMPLATE_OPTIONS}
+                initial={post.template}
+              />
+            </Field>
 
             <SwitchField
               name="published"
