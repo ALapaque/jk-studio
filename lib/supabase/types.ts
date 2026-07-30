@@ -58,6 +58,32 @@ export interface PhotoRow {
   blur_data_url: string | null;
   /** Largeurs des dérivés WebP présents en Storage (0005). NULL = aucun. */
   variant_widths: number[] | null;
+  /** Provenance : fiche de la médiathèque dont cette photo est issue (0006). */
+  asset_id: string | null;
+}
+
+/** Dossier de la médiathèque (0006). Imbriquable via `parent_id`. */
+export interface MediaFolderRow {
+  id: string;
+  name: string;
+  parent_id: string | null;
+  position: number;
+  created_at: string;
+}
+
+/** Fiche d'image de la médiathèque (0006) — la banque, jamais publique. */
+export interface MediaAssetRow {
+  id: string;
+  folder_id: string | null;
+  storage_path: string;
+  filename: string | null;
+  alt: string | null;
+  width: number | null;
+  height: number | null;
+  orientation: PhotoOrientation | null;
+  blur_data_url: string | null;
+  variant_widths: number[] | null;
+  created_at: string;
 }
 
 export interface VideoRow {
@@ -102,6 +128,8 @@ export interface Database {
       videos: Table<VideoRow>;
       messages: Table<MessageRow>;
       site_content: Table<SiteContentRow>;
+      media_folders: Table<MediaFolderRow>;
+      media_assets: Table<MediaAssetRow>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

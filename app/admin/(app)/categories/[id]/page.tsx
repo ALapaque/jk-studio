@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getCategoryFull } from "@/lib/admin";
+import { getAllAssets, getAllFolders, getCategoryFull } from "@/lib/admin";
 import { setCategoryCover, updateCategory } from "@/app/admin/actions";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import { PageTitle, Field, Input } from "@/components/admin/ui";
@@ -18,7 +18,11 @@ export default async function EditCategoryPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const cat = await getCategoryFull(id);
+  const [cat, assets, folders] = await Promise.all([
+    getCategoryFull(id),
+    getAllAssets(),
+    getAllFolders(),
+  ]);
   if (!cat) notFound();
 
   return (
@@ -89,6 +93,8 @@ export default async function EditCategoryPage({
         coverPath={cat.cover_path}
         setCover={setCategoryCover}
         coverField="category_id"
+        assets={assets}
+        folders={folders}
       />
     </div>
   );

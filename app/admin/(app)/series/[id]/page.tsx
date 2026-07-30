@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
-import { getAllCategories, getProjectFull } from "@/lib/admin";
+import {
+  getAllAssets,
+  getAllCategories,
+  getAllFolders,
+  getProjectFull,
+} from "@/lib/admin";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import {
   deleteProject,
@@ -25,7 +30,12 @@ export default async function EditSeriesPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [p, cats] = await Promise.all([getProjectFull(id), getAllCategories()]);
+  const [p, cats, assets, folders] = await Promise.all([
+    getProjectFull(id),
+    getAllCategories(),
+    getAllAssets(),
+    getAllFolders(),
+  ]);
   if (!p) notFound();
 
   return (
@@ -141,6 +151,8 @@ export default async function EditSeriesPage({
         coverPath={p.cover_path}
         setCover={setProjectCover}
         coverField="project_id"
+        assets={assets}
+        folders={folders}
       />
 
       {/* ---- zone dangereuse ---- */}

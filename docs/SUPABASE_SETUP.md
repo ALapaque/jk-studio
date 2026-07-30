@@ -31,6 +31,8 @@ Dans le projet : **Project Settings** (roue dentée) → **API**. Notez :
    - [`0002_covers_hero.sql`](../supabase/migrations/0002_covers_hero.sql) — couvertures uploadables + photos « à la une ».
    - [`0003_category_media.sql`](../supabase/migrations/0003_category_media.sql) — photos/vidéos rattachées directement à une catégorie (sans passer par une série).
    - [`0004_series_captions.sql`](../supabase/migrations/0004_series_captions.sql) — légendes éditoriales (`subject` / `location`), `orientation`, LQIP, et métadonnées de série (`shot_at`, `intro`).
+   - [`0005_image_variants.sql`](../supabase/migrations/0005_image_variants.sql) — registre des dérivés WebP (`variant_widths`).
+   - [`0006_media_library.sql`](../supabase/migrations/0006_media_library.sql) — médiathèque (banque photo façon drive) : tables `media_folders` / `media_assets` en RLS **admin uniquement**, et lien de provenance `photos.asset_id`. La médiathèque n'est jamais exposée sur le site public.
 
    - [`0005_image_variants.sql`](../supabase/migrations/0005_image_variants.sql) — registre des dérivés d'images (`variant_widths`).
 
