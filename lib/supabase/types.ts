@@ -26,6 +26,8 @@ export interface PostRow {
   cover_path: string | null;
   body: string;
   tags: string[];
+  /** Galerie d'images de l'article (0008) : clés Storage + légende, ordonnées. */
+  media: { path: string; caption: string }[];
   published: boolean;
   published_at: string | null;
   created_at: string;

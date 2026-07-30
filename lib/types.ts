@@ -105,4 +105,6 @@ export interface Post {
   tags: string[];
   /** ISO ; date de publication (ou de création si non publiée). */
   date: string;
+  /** Galerie d'images (URL résolues) affichée dans la page détail. */
+  media: { src: string; caption: string }[];
 }
