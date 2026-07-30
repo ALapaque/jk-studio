@@ -71,6 +71,8 @@ function mapSeries(p: ProjectWithMedia): Series {
       publicImageUrl(p.cover_path) || photos[0]?.src || "",
     photos,
     videos,
+    // ⚠️ mapSeries ne recopie pas toute la ligne : ajouter explicitement.
+    template: p.template ?? "classic",
   };
 }
 
@@ -298,6 +300,7 @@ function mapPost(p: PostRow): Post {
     media: (Array.isArray(p.media) ? p.media : [])
       .filter((m) => m && m.path)
       .map((m) => ({ src: publicImageUrl(m.path), caption: m.caption ?? "" })),
+    template: p.template ?? "classic",
   };
 }
 

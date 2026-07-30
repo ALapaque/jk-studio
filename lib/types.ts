@@ -48,6 +48,8 @@ export interface Series {
   coverSrc: string;
   photos: Photo[];
   videos: Video[];
+  /** Clé du template de mise en page de la page détail. Défaut `"classic"`. */
+  template: string;
 }
 
 export interface Category {
@@ -107,4 +109,6 @@ export interface Post {
   date: string;
   /** Galerie d'images (URL résolues) affichée dans la page détail. */
   media: { src: string; caption: string }[];
+  /** Clé du template de mise en page de la page détail. Défaut `"classic"`. */
+  template: string;
 }
