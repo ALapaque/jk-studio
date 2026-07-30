@@ -1,4 +1,8 @@
 import { SeriesClassic } from "./classic";
+import { SeriesContactSheet } from "./contactSheet";
+import { SeriesCinema } from "./cinema";
+import { SeriesSplit } from "./split";
+import { SeriesFrames } from "./frames";
 import type { SeriesTemplateEntry, SeriesTemplateProps } from "./types";
 
 export type { SeriesTemplateProps, SeriesTemplateEntry } from "./types";
@@ -15,6 +19,34 @@ export const SERIES_TEMPLATES: SeriesTemplateEntry[] = [
     description:
       "Cover plein écran, puis une photo par écran avec parallaxe. La mise en page actuelle.",
     Component: SeriesClassic,
+  },
+  {
+    key: "contactSheet",
+    label: "Planche contact",
+    description:
+      "Grille dense et numérotée de toutes les images, façon planche de tirage. Lecture d'archive.",
+    Component: SeriesContactSheet,
+  },
+  {
+    key: "cinema",
+    label: "Cinéma",
+    description:
+      "Images plein cadre empilées, parallaxe ample et grandes légendes serif. Défilement continu.",
+    Component: SeriesCinema,
+  },
+  {
+    key: "split",
+    label: "Double page",
+    description:
+      "Image d'un côté, légende de l'autre, côté alterné — une double page de magazine.",
+    Component: SeriesSplit,
+  },
+  {
+    key: "frames",
+    label: "Mur de galerie",
+    description:
+      "Beaucoup de vide, images encadrées au laiton et cartels centrés. Accrochage d'exposition.",
+    Component: SeriesFrames,
   },
 ];
 

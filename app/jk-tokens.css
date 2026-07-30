@@ -238,6 +238,18 @@ a.jk-cat-row:focus-visible {
   }
 }
 
+/* Template série « split » (double page) : les deux colonnes se réempilent
+   sous 900px, image toujours au-dessus de sa légende quel que soit l'ordre
+   alterné du desktop. */
+@media (max-width: 900px) {
+  .jk-split-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .jk-split-row > * {
+    order: 0 !important;
+  }
+}
+
 /* Vignette : zoom 1.04 de l'image dans son cadre, 900ms (maquette). Le cadre
    porte l'overflow, l'image porte la transformation. */
 .jk-zoom {
