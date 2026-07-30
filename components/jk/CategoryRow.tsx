@@ -137,6 +137,7 @@ export function CategoryRow({
         <Link
           href={href}
           className="jk-cat-row jk-row-slide"
+          data-jk-label={title}
           style={{
             display: "flex",
             flexWrap: "wrap",

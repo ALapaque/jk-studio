@@ -44,6 +44,7 @@ export function IndexRow({
       <Link
         href={href}
         className="jk-cat-row"
+        data-jk-label={title}
         style={{
           display: "flex",
           flexWrap: "wrap",

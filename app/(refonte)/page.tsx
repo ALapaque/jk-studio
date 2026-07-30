@@ -319,6 +319,7 @@ export default async function AccueilRefontePage() {
                   <Reveal as="div" delay={Math.min(i, 5) * 80}>
                     <Link
                       href={`/travaux/${cat.slug}/${serie.slug}`}
+                      data-jk-label={serie.title}
                       style={{ display: "grid", gap: 16, color: "inherit" }}
                     >
                       <span

@@ -126,7 +126,11 @@ export function PageTransition({
       if (a.target && a.target !== "_self") return;
       if (a.hasAttribute("download")) return;
       e.preventDefault();
-      navigate(href, labelFromPath(href));
+      // Libellé explicite du lien s'il en porte un (le vrai titre de la série
+      // ou de la catégorie, accents et « & » compris) ; sinon on le déduit de
+      // l'URL, comme l'ancien site le faisait pour le retour navigateur.
+      const explicit = a.getAttribute("data-jk-label");
+      navigate(href, explicit && explicit.trim() ? explicit : labelFromPath(href));
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);

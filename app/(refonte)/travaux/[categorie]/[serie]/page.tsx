@@ -205,6 +205,7 @@ export default async function SeriesStoryPage({
           </span>
           <Link
             href={indexHref}
+            data-jk-label={category.title}
             style={{
               color: "var(--jk-ink-mute)",
               borderBottom: "1px solid var(--jk-brass)",
@@ -218,6 +219,7 @@ export default async function SeriesStoryPage({
         {next && next.slug !== series.slug && (
           <Link
             href={`/travaux/${category.slug}/${next.slug}`}
+            data-jk-label={next.title}
             style={{
               display: "flex",
               flexDirection: "column",
