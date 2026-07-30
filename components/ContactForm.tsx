@@ -3,12 +3,19 @@
 import { useState } from "react";
 import { submitContact } from "@/app/(refonte)/contact/actions";
 
+/* Formulaire de contact de la refonte.
+ *
+ * Stylé aux tokens --jk-* et aux seules polices de la refonte (Instrument Serif
+ * + IBM Plex Sans). Il ne référence plus les variables de l'ancien thème ni les
+ * polices de l'admin (Archivo / Space Mono) : c'était le dernier écran public à
+ * les tirer, ce qui forçait leur préchargement et encombrait le LCP. */
+
 const labelStyle: React.CSSProperties = {
-  fontFamily: "var(--font-mono), monospace",
+  fontFamily: "var(--jk-sans)",
   fontSize: 9.5,
   letterSpacing: "0.18em",
   textTransform: "uppercase",
-  color: "var(--ink2)",
+  color: "var(--jk-ink-mute)",
 };
 
 const fieldStyle: React.CSSProperties = {
@@ -16,11 +23,11 @@ const fieldStyle: React.CSSProperties = {
   boxSizing: "border-box",
   background: "transparent",
   border: "none",
-  borderBottom: "1px solid var(--line)",
+  borderBottom: "1px solid var(--jk-rule)",
   padding: "10px 0",
-  fontFamily: "var(--font-sans), sans-serif",
+  fontFamily: "var(--jk-sans)",
   fontSize: 16,
-  color: "var(--ink)",
+  color: "var(--jk-ink)",
   outline: "none",
 };
 
@@ -44,17 +51,16 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
 
   if (sent) {
     return (
-      <div style={{ border: "1px solid var(--line)", padding: "clamp(30px,4vw,56px)" }}>
-        <div style={{ fontFamily: "var(--font-serif), serif", fontStyle: "italic", fontSize: "clamp(28px,3vw,40px)", lineHeight: 1.15, marginBottom: 16 }}>
+      <div style={{ border: "1px solid var(--jk-rule)", padding: "clamp(30px,4vw,56px)" }}>
+        <div style={{ fontFamily: "var(--jk-serif)", fontStyle: "italic", fontSize: "clamp(28px,3vw,40px)", lineHeight: 1.15, marginBottom: 16 }}>
           Merci — votre message est parti.
         </div>
-        <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--ink2)", marginBottom: 28 }}>
+        <div style={{ fontFamily: "var(--jk-sans)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--jk-ink-mute)", marginBottom: 28 }}>
           Réponse sous 48 h, promis.
         </div>
         <button
           onClick={() => setSent(false)}
-          data-cursor="link"
-          style={{ background: "none", border: "none", padding: 0, fontFamily: "var(--font-mono), monospace", fontSize: 10, letterSpacing: "0.16em", color: "var(--accent)", textTransform: "uppercase" }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "var(--jk-sans)", fontSize: 10, letterSpacing: "0.16em", color: "var(--jk-brass)", textTransform: "uppercase" }}
         >
           Envoyer un autre message →
         </button>
@@ -63,7 +69,7 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
   }
 
   return (
-    <form onSubmit={onSubmit} data-reveal="rise" style={{ display: "grid", gap: 26 }}>
+    <form onSubmit={onSubmit} style={{ display: "grid", gap: 26 }}>
       <input type="hidden" name="projet_type" value={projType} />
 
       {/* Honeypot. Caché à l'œil ET aux lecteurs d'écran (aria-hidden +
@@ -84,11 +90,11 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
       </div>
       <label style={{ display: "grid", gap: 9 }}>
         <span style={labelStyle}>Nom *</span>
-        <input required name="nom" placeholder="Votre nom" className="jk-field" style={fieldStyle} />
+        <input required name="nom" placeholder="Votre nom" className="jk-cf-field" style={fieldStyle} />
       </label>
       <label style={{ display: "grid", gap: 9 }}>
         <span style={labelStyle}>Email *</span>
-        <input required type="email" name="email" placeholder="vous@exemple.be" className="jk-field" style={fieldStyle} />
+        <input required type="email" name="email" placeholder="vous@exemple.be" className="jk-cf-field" style={fieldStyle} />
       </label>
       <div style={{ display: "grid", gap: 12 }}>
         <span style={labelStyle}>Type de projet</span>
@@ -100,14 +106,14 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
                 key={t}
                 type="button"
                 onClick={() => setProjType(t)}
-                data-cursor="link"
                 style={{
-                  background: sel ? "var(--ink)" : "transparent",
-                  color: sel ? "var(--bg)" : "var(--ink2)",
-                  border: `1px solid ${sel ? "var(--ink)" : "var(--line)"}`,
+                  background: sel ? "var(--jk-ink)" : "transparent",
+                  color: sel ? "var(--jk-bg)" : "var(--jk-ink-mute)",
+                  border: `1px solid ${sel ? "var(--jk-ink)" : "var(--jk-rule)"}`,
                   borderRadius: 999,
                   padding: "9px 18px",
-                  fontFamily: "var(--font-mono), monospace",
+                  cursor: "pointer",
+                  fontFamily: "var(--jk-sans)",
                   fontSize: 10,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
@@ -127,7 +133,7 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
           name="message"
           rows={5}
           placeholder="Dates, lieu, envies, références…"
-          className="jk-field"
+          className="jk-cf-field"
           style={{ ...fieldStyle, lineHeight: 1.6, resize: "vertical" }}
         />
       </label>
@@ -135,19 +141,18 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
         <button
           type="submit"
           disabled={pending}
-          data-magnet="1"
-          data-cursor="link"
-          className="jk-btn-outline"
+          className="jk-cf-btn"
           style={{
             background: "transparent",
-            border: "1px solid var(--ink)",
+            border: "1px solid var(--jk-ink)",
             borderRadius: 999,
             padding: "16px 34px",
-            fontFamily: "var(--font-mono), monospace",
+            cursor: pending ? "default" : "pointer",
+            fontFamily: "var(--jk-sans)",
             fontSize: 11,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color: "var(--ink)",
+            color: "var(--jk-ink)",
             opacity: pending ? 0.6 : 1,
           }}
         >
@@ -157,7 +162,7 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
           <span
             role="alert"
             style={{
-              fontFamily: "var(--font-mono), monospace",
+              fontFamily: "var(--jk-sans)",
               fontSize: 10,
               letterSpacing: "0.12em",
               textTransform: "uppercase",

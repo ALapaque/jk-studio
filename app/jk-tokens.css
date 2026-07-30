@@ -252,6 +252,24 @@ a:hover .jk-zoom {
   }
 }
 
+/* Formulaire de contact (refonte) — champs soulignés et bouton contour, aux
+   tokens --jk-* (l'ancien ContactForm dépendait des variables de l'ancien
+   thème et des polices admin ; cette version n'utilise plus que les polices de
+   la refonte, ce qui allège le chemin critique du LCP). */
+.jk-cf-field {
+  transition: border-color var(--jk-dur-hover) ease;
+}
+.jk-cf-field:focus {
+  border-bottom-color: var(--jk-brass);
+}
+.jk-cf-btn {
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.jk-cf-btn:hover:not(:disabled) {
+  background: var(--jk-ink);
+  color: var(--jk-bg);
+}
+
 /* « Tout neutralisé sous prefers-reduced-motion » (maquette, écran 00).
    Le §7 l'exige aussi pour le snap : la page doit redevenir un scroll
    classique parfaitement lisible, sans accrochage ni défilement animé. */

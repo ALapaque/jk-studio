@@ -118,3 +118,55 @@ Le §3 demandait une baseline au Lot 0. Elle n'a pas pu être établie : la prev
 était alors derrière le SSO Vercel, et aucune URL n'était accessible. **La
 comparaison avant/après demandée au §10 n'est donc pas possible** — ce document
 constitue la première mesure du projet, pas une comparaison.
+
+---
+
+## Phase 1 — polices par groupe de routes (bascule terminée)
+
+Le levier ci-dessus a été appliqué **après la bascule**. Trois changements :
+
+- Root layout : `preload: true` pour Instrument Serif et IBM Plex Sans (les deux
+  familles de la refonte, sur le chemin critique), `preload: false` pour Archivo
+  et Space Mono (désormais **admin uniquement**).
+- `ContactForm` restylé aux tokens `--jk-*` : c'était le dernier écran public à
+  tirer Archivo / Space Mono et les variables de l'ancien thème.
+- Résultat vérifiable sur `/` : **3 polices préchargées au lieu de 5**, et Archivo
+  + Space Mono ne sont **plus téléchargées du tout** sur les pages publiques.
+
+### Mesure locale (Lighthouse 12, preset mobile) — et sa limite
+
+| Métrique | main (avant) | Phase 1 (après) |
+|---|---|---|
+| LCP | 2,4 – 2,6 s | 2,4 – 3,1 s |
+| CLS | 0,001 | 0 |
+| Score perf | 95 – 97 | 92 – 95 |
+| Polices préchargées (/) | 5 | **3** |
+
+**La mesure LCP locale n'est pas représentative de la production.** Deux raisons,
+constatées pendant la mesure :
+
+1. **Les images distantes (Unsplash / Supabase) ne se chargent pas** dans le
+   Chromium du bac à sable. L'élément LCP retombe donc sur du **texte** (le nom
+   du studio de l'intro, puis, intro masquée, le logo de la nav) — alors qu'en
+   production, sur un site tout en images plein écran, le LCP sera très
+   probablement la **photo du hero**.
+2. Le LCP local est donc **borné par le rendu d'un texte en police web (~2,5 s
+   sous throttling mobile)**, indépendamment du nombre de préchargements — la
+   serif était déjà préchargée sur `main`. D'où un avant/après **neutre en LCP**
+   ici, alors que le gain réel (2 familles de police en moins sur le réseau)
+   ne se voit que sous contrainte de bande passante réelle.
+
+### Ce que Phase 1 apporte réellement
+
+- Chemin critique allégé pour le **vrai** visiteur : le site public ne télécharge
+  plus les polices de l'admin (Archivo 3 graisses + Space Mono 2 graisses).
+- Architecture correcte : les polices admin restent à l'admin.
+- `ContactForm` cohérent avec les tokens de la refonte (dette technique soldée).
+
+### À vérifier en production (non mesurable ici)
+
+- LCP réel sur le preview Vercel, avec images et CDN actifs — idéalement en
+  **données de terrain** (Core Web Vitals / RUM), pas seulement en labo.
+- Si le **hero** devient l'élément LCP (probable), les leviers suivants seront
+  côté image (AVIF, priorité, taille de la variante servie) — c'est l'objet de
+  la Phase 2.
