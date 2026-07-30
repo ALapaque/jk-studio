@@ -185,7 +185,8 @@ export default async function SeriesStoryPage({
           scrollSnapAlign: "start",
         }}
       >
-        <div
+        <Reveal
+          as="div"
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -214,19 +215,20 @@ export default async function SeriesStoryPage({
           >
             Revenir à l&apos;index
           </Link>
-        </div>
+        </Reveal>
 
         {next && next.slug !== series.slug && (
-          <Link
-            href={`/travaux/${category.slug}/${next.slug}`}
-            data-jk-label={next.title}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 22,
-              color: "var(--jk-ink)",
-            }}
-          >
+          <Reveal as="div" delay={120}>
+            <Link
+              href={`/travaux/${category.slug}/${next.slug}`}
+              data-jk-label={next.title}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 22,
+                color: "var(--jk-ink)",
+              }}
+            >
             <span
               style={{
                 fontSize: 10,
@@ -247,12 +249,13 @@ export default async function SeriesStoryPage({
             >
               {next.title}
             </span>
-            <Caption
-              subject={next.location}
-              location={next.period}
-              variant="thumbnail"
-            />
-          </Link>
+              <Caption
+                subject={next.location}
+                location={next.period}
+                variant="thumbnail"
+              />
+            </Link>
+          </Reveal>
         )}
       </section>
     </main>
