@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getCategories } from "@/lib/data";
+import { getCategories, getPublishedPosts } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -7,8 +7,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // URLs canoniques après la bascule (la refonte est le site). Les anciennes
   // URLs de coexistence (/accueil, /series, …/histoire) sont redirigées en 301
   // via next.config.ts et n'ont donc pas leur place ici.
-  const staticPages = ["", "/travaux", "/tirages", "/a-propos", "/contact"].map(
-    (p) => ({
+  const staticPages = [
+    "",
+    "/travaux",
+    "/tirages",
+    "/journal",
+    "/a-propos",
+    "/contact",
+  ].map((p) => ({
     url: `${SITE_URL}${p}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
@@ -32,5 +38,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
-  return [...staticPages, ...catPages, ...seriesPages];
+  // Une entrée par article publié du journal.
+  const posts = await getPublishedPosts();
+  const postPages = posts.map((p) => ({
+    url: `${SITE_URL}/journal/${p.slug}`,
+    lastModified: p.date ? new Date(p.date) : now,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
+  return [...staticPages, ...catPages, ...seriesPages, ...postPages];
 }

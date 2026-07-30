@@ -7,6 +7,7 @@ import {
   MediaFolderRow,
   MessageRow,
   PhotoRow,
+  PostRow,
   ProjectRow,
   VideoRow,
 } from "./supabase/types";
@@ -169,6 +170,28 @@ export async function getAllFolders(): Promise<MediaFolderRow[]> {
   const sb = createAdminSupabase();
   const { data } = await sb.from("media_folders").select("*").order("name");
   return (data ?? []) as MediaFolderRow[];
+}
+
+// ---- Journal (blog) ----
+
+export async function getAllPosts(): Promise<PostRow[]> {
+  const sb = createAdminSupabase();
+  const { data } = await sb
+    .from("posts")
+    .select("*")
+    .order("published_at", { ascending: false, nullsFirst: true })
+    .order("created_at", { ascending: false });
+  return (data ?? []) as PostRow[];
+}
+
+export async function getPost(id: string): Promise<PostRow | null> {
+  const sb = createAdminSupabase();
+  const { data } = await sb
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  return (data as PostRow | null) ?? null;
 }
 
 export async function getMessages(): Promise<MessageRow[]> {

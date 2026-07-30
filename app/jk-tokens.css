@@ -297,3 +297,69 @@ a:hover .jk-zoom {
     transform: none;
   }
 }
+
+/* ============================================================
+   Corps d'article (journal) — rendu Markdown. Aux tokens de la refonte :
+   titres en serif, corps lisible, images pleine largeur, liens en laiton.
+   ============================================================ */
+.jk-prose {
+  font-family: var(--jk-sans);
+  font-size: clamp(16px, 1.25vw, 18px);
+  line-height: var(--jk-lh-body);
+  color: var(--jk-ink);
+  max-width: 68ch;
+}
+.jk-prose > * + * {
+  margin-top: 1.1em;
+}
+.jk-prose h2,
+.jk-prose h3 {
+  font-family: var(--jk-serif);
+  font-weight: 400;
+  letter-spacing: var(--jk-ls-tight);
+  line-height: 1.12;
+  margin-top: 1.8em;
+}
+.jk-prose h2 {
+  font-size: clamp(26px, 3.2vw, 36px);
+}
+.jk-prose h3 {
+  font-size: clamp(21px, 2.4vw, 27px);
+}
+.jk-prose a {
+  color: var(--jk-brass);
+  border-bottom: 1px solid var(--jk-brass);
+}
+.jk-prose img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 2em 0;
+}
+.jk-prose blockquote {
+  border-left: 2px solid var(--jk-brass);
+  padding-left: 1.1em;
+  font-family: var(--jk-serif);
+  font-style: italic;
+  font-size: 1.15em;
+  color: var(--jk-ink-mute);
+}
+.jk-prose ul,
+.jk-prose ol {
+  padding-left: 1.3em;
+}
+.jk-prose li + li {
+  margin-top: 0.4em;
+}
+.jk-prose hr {
+  border: 0;
+  border-top: 1px solid var(--jk-rule);
+  margin: 2.4em 0;
+}
+.jk-prose code {
+  font-family: var(--jk-mono, ui-monospace, monospace);
+  font-size: 0.9em;
+  background: var(--jk-surface);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
