@@ -71,11 +71,19 @@ export function Nav({
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
 
+  // Pages à hero sombre plein écran (accueil + défilé d'une série) : le texte
+  // de la nav doit y être clair. Ailleurs (pages intérieures, fond selon le
+  // thème), il suit le thème — sinon il devient invisible en thème clair. La
+  // couleur est pilotée en CSS via `data-hero` (+ `data-scrolled`).
+  const seg = pathname.split("/").filter(Boolean);
+  const overHero = pathname === "/" || (seg[0] === "travaux" && seg.length === 3);
+
   return (
     <>
       <header
         ref={headerRef}
         className="jk-nav"
+        data-hero={overHero ? "true" : undefined}
         style={{
           position: "fixed",
           top: 0,
@@ -91,11 +99,11 @@ export function Nav({
       >
         <Link
           href="/"
+          className="jk-nav-brand"
           style={{
             fontSize: 12,
             letterSpacing: "0.32em",
             textTransform: "uppercase",
-            color: "#efe9e1",
           }}
         >
           {brandName}
@@ -119,9 +127,9 @@ export function Nav({
               <li key={it.href}>
                 <Link
                   href={it.href}
+                  className="jk-nav-link"
                   aria-current={isActive(it.href) ? "page" : undefined}
                   style={{
-                    color: isActive(it.href) ? "#efe9e1" : "rgba(239,233,225,.78)",
                     borderBottom: isActive(it.href)
                       ? "1px solid var(--jk-brass)"
                       : "1px solid transparent",

@@ -197,6 +197,33 @@ a.jk-cat-row:focus-visible {
   backdrop-filter: blur(var(--jk-nav-blur));
 }
 
+/* Couleur du texte de la nav.
+   Par défaut (pages intérieures) : suit le thème, donc lisible en clair comme
+   en sombre. Sur une page à hero sombre (`data-hero`) ou dès qu'on a défilé
+   (`data-scrolled`, voile sombre), le texte passe en clair pour rester lisible
+   sur fond sombre. */
+.jk-nav-brand {
+  color: var(--jk-ink);
+}
+.jk-nav-link {
+  color: var(--jk-ink-mute);
+}
+.jk-nav-link[aria-current="page"] {
+  color: var(--jk-ink);
+}
+.jk-nav[data-hero="true"] .jk-nav-brand,
+.jk-nav[data-scrolled="true"] .jk-nav-brand,
+.jk-nav[data-hero="true"] .jk-nav-link,
+.jk-nav[data-scrolled="true"] .jk-nav-link {
+  color: rgba(239, 233, 225, 0.78);
+}
+.jk-nav[data-hero="true"] .jk-nav-link[aria-current="page"],
+.jk-nav[data-scrolled="true"] .jk-nav-link[aria-current="page"],
+.jk-nav[data-hero="true"] .jk-nav-brand,
+.jk-nav[data-scrolled="true"] .jk-nav-brand {
+  color: #efe9e1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .jk-nav {
     transition: none;
