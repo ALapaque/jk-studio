@@ -43,7 +43,7 @@ export default async function CategoryPage({
   return (
     <main
       style={{
-        minHeight: "100dvh",
+        minHeight: "100svh",
         padding:
           "clamp(96px, 14vh, 140px) var(--jk-gap-page) var(--jk-gap-section)",
       }}
