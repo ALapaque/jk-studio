@@ -48,6 +48,13 @@ export function MediaManager({
 }) {
   const owner = { [ownerField]: ownerId } as Record<string, string>;
 
+  // Accessibilité & SEO (§6 du brief) : on signale les photos sans texte
+  // alternatif rédigé. Le rendu public retombe alors sur la légende ou du vide,
+  // ce qui dessert lecteurs d'écran et référencement — à enrichir à la main sur
+  // les séries mises en avant.
+  const needsAlt = (p: PhotoRow) => !p.alt?.trim();
+  const missingAltCount = photos.filter(needsAlt).length;
+
   return (
     <>
       {/* ---- montage narratif (ordre du défilé) ---- */}
@@ -57,8 +64,17 @@ export function MediaManager({
       <Card className="mb-6">
         <CardContent className="p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-base font-semibold text-foreground">
+            <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
               Photos <span className="text-muted-foreground">({photos.length})</span>
+              {missingAltCount > 0 && (
+                <Badge
+                  variant="outline"
+                  className="border-amber-500/50 text-amber-600 dark:text-amber-400"
+                  title="Ces photos n'ont pas de texte alternatif — à rédiger pour l'accessibilité et le SEO"
+                >
+                  {missingAltCount} sans alt
+                </Badge>
+              )}
             </h2>
             {/* Deux voies (§ demande) : piocher dans la médiathèque, ou
                 uploader — l'upload range aussi le fichier dans la banque. */}
@@ -89,6 +105,15 @@ export function MediaManager({
                       sizes="64px"
                       className="object-cover"
                     />
+                    {needsAlt(ph) && (
+                      <span
+                        className="absolute left-1 top-1 flex size-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white"
+                        title="Texte alternatif manquant"
+                        aria-hidden
+                      >
+                        !
+                      </span>
+                    )}
                   </div>
 
                   <form action={updatePhoto} className="grid min-w-[200px] flex-1 gap-2">
@@ -115,11 +140,23 @@ export function MediaManager({
                         name="alt"
                         defaultValue={ph.alt ?? ""}
                         placeholder="Texte alternatif (accessibilité)"
+                        aria-invalid={needsAlt(ph) || undefined}
+                        className={
+                          needsAlt(ph)
+                            ? "border-amber-500/60 focus-visible:ring-amber-500/40"
+                            : undefined
+                        }
                       />
                       <Button type="submit" variant="outline" size="sm">
                         OK
                       </Button>
                     </div>
+                    {needsAlt(ph) && (
+                      <p className="text-xs text-amber-600 dark:text-amber-400">
+                        Décris la photo en quelques mots — utile aux lecteurs
+                        d&apos;écran et au référencement.
+                      </p>
+                    )}
                     <Input
                       name="caption"
                       defaultValue={ph.caption ?? ""}
