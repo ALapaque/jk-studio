@@ -6,6 +6,8 @@ import {
   Space_Mono,
 } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { themeInitScript } from "@/lib/theme";
 import { getAppearance, getSiteContent } from "@/lib/content";
@@ -93,6 +95,11 @@ export default async function RootLayout({
       </head>
       <body>
         <ThemeProvider appearance={appearance}>{children}</ThemeProvider>
+        {/* Mesure d'audience (Vercel Analytics) + Core Web Vitals de terrain
+            (Speed Insights). Sans cookie, chargés après l'hydratation ; aucun
+            impact sur le rendu. Actives dès que l'onglet est activé côté Vercel. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
