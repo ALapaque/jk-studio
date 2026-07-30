@@ -25,6 +25,12 @@ export interface SiteContent {
     work: string;
     about: string;
     contact: string;
+    /** Libellés de la nav de la refonte. Le §9 demande une entrée « Tirages ». */
+    portfolio: string;
+    prints: string;
+    /** Libellés du menu mobile (maquette, écran 06). */
+    menu: string;
+    close: string;
   };
   hero: {
     eyebrow: string;
@@ -128,6 +134,10 @@ export const DEFAULT_CONTENT: SiteContent = {
     work: "Travaux",
     about: "À propos",
     contact: "Contact",
+    portfolio: "Portfolio",
+    prints: "Tirages",
+    menu: "Menu",
+    close: "Fermer",
   },
   hero: {
     eyebrow: "Studio photo & vidéo — Bruxelles",

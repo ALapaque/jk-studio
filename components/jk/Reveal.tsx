@@ -25,6 +25,10 @@ export function Reveal({
   once = true,
   /** Part du seuil de visibilité à partir duquel on révèle. */
   threshold = 0.25,
+  /** Décalage en ms, pour échelonner les éléments d'une même liste.
+   *  Plafonné par l'appelant : au-delà de ~6 éléments, l'attente devient
+   *  perceptible et la page paraît lente plutôt qu'animée. */
+  delay = 0,
 }: {
   children: ReactNode;
   as?: "span" | "div";
@@ -32,6 +36,7 @@ export function Reveal({
   style?: CSSProperties;
   once?: boolean;
   threshold?: number;
+  delay?: number;
 }) {
   const ref = useRef<HTMLElement | null>(null);
 
@@ -65,7 +70,7 @@ export function Reveal({
     <Tag
       ref={ref as React.Ref<HTMLSpanElement & HTMLDivElement>}
       className={["jk-reveal", className].filter(Boolean).join(" ")}
-      style={style}
+      style={delay ? { transitionDelay: `${delay}ms`, ...style } : style}
     >
       {children}
     </Tag>

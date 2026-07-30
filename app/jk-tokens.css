@@ -159,6 +159,58 @@ a.jk-cat-row:focus-visible {
   scroll-snap-align: start;
 }
 
+/* Mobile — la maquette (écran 06) resserre la gouttière de page à 22px et
+   remplace la nav déployée par une entrée « Menu ». 56px de marge latérale
+   sur un écran de 390px mangeraient près du tiers de la largeur. */
+@media (max-width: 760px) {
+  :root {
+    --jk-gap-page: 22px;
+    --jk-gap-section: 64px;
+    --jk-gap-col: 32px;
+  }
+
+  /* Liens déployés masqués, bouton « Menu » affiché. */
+  .jk-nav-links {
+    display: none !important;
+  }
+
+  .jk-nav-toggle {
+    display: inline-flex !important;
+  }
+}
+
+/* Le bouton « Menu » n'existe qu'en dessous du point de rupture. */
+.jk-nav-toggle {
+  display: none;
+}
+
+/* Nav : transparente au repos, voile flouté après 40px de défilement
+   (maquette). L'attribut est posé par le composant, sans re-render. */
+.jk-nav {
+  background: transparent;
+  transition: background var(--jk-dur-hover) var(--jk-ease);
+}
+
+.jk-nav[data-scrolled="true"] {
+  background: rgba(14, 12, 10, 0.34);
+  -webkit-backdrop-filter: blur(var(--jk-nav-blur));
+  backdrop-filter: blur(var(--jk-nav-blur));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jk-nav {
+    transition: none;
+  }
+}
+
+/* Section « (01) Le studio » : deux colonnes sur desktop comme la maquette,
+   une seule dès que la colonne de texte devient trop étroite. */
+@media (max-width: 900px) {
+  .jk-studio-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
 /* Vignette : zoom 1.04 de l'image dans son cadre, 900ms (maquette). Le cadre
    porte l'overflow, l'image porte la transformation. */
 .jk-zoom {
@@ -176,6 +228,28 @@ a:hover .jk-zoom {
 
 .jk-cat-row:hover {
   color: var(--jk-brass);
+}
+
+/* Glissement de 18px vers la droite au survol — repris de l'ancien site
+   (demandé explicitement). Mêmes durée et courbe que l'original. La
+   translation ne remplace pas le passage au laiton, elle s'y ajoute. */
+.jk-row-slide {
+  transition:
+    color var(--jk-dur-hover) ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.jk-row-slide:hover {
+  transform: translateX(18px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jk-row-slide {
+    transition: color var(--jk-dur-hover) ease;
+  }
+  .jk-row-slide:hover {
+    transform: none;
+  }
 }
 
 /* « Tout neutralisé sous prefers-reduced-motion » (maquette, écran 00).

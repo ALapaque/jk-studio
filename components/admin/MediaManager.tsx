@@ -16,8 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ActionForm } from "./ActionForm";
-import { PhotoUploader } from "./PhotoUploader";
 import { PhotoMontage } from "./PhotoMontage";
+import { MediaPicker } from "./MediaPicker";
+import { OwnerUploader } from "./OwnerUploader";
+import type { MediaAssetRow, MediaFolderRow } from "@/lib/supabase/types";
 
 type OwnerField = "project_id" | "category_id";
 
@@ -30,6 +32,8 @@ export function MediaManager({
   coverPath,
   setCover,
   coverField,
+  assets = [],
+  folders = [],
 }: {
   ownerId: string;
   ownerField: OwnerField;
@@ -38,6 +42,9 @@ export function MediaManager({
   coverPath: string | null;
   setCover: (formData: FormData) => void | Promise<void>;
   coverField: OwnerField;
+  /** Médiathèque, pour le sélecteur « depuis la médiathèque ». */
+  assets?: MediaAssetRow[];
+  folders?: MediaFolderRow[];
 }) {
   const owner = { [ownerField]: ownerId } as Record<string, string>;
 
@@ -53,7 +60,17 @@ export function MediaManager({
             <h2 className="text-base font-semibold text-foreground">
               Photos <span className="text-muted-foreground">({photos.length})</span>
             </h2>
-            <PhotoUploader ownerId={ownerId} ownerField={ownerField} />
+            {/* Deux voies (§ demande) : piocher dans la médiathèque, ou
+                uploader — l'upload range aussi le fichier dans la banque. */}
+            <div className="flex flex-wrap items-center gap-2">
+              <MediaPicker
+                ownerField={ownerField}
+                ownerId={ownerId}
+                assets={assets}
+                folders={folders}
+              />
+              <OwnerUploader ownerField={ownerField} ownerId={ownerId} />
+            </div>
           </div>
 
           <div className="grid gap-3">
