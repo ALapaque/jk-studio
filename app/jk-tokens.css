@@ -395,6 +395,19 @@ a:hover .jk-zoom {
   border-top: 1px solid var(--jk-rule);
   margin: 2.4em 0;
 }
+/* Lettrine du template d'article « magazine » : la 1re lettre du 1er
+   paragraphe passe en grand serif laiton, calée sur les premières lignes.
+   Neutralisée si le lecteur préfère un rendu sobre : purement décoratif. */
+.jk-dropcap .jk-prose > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--jk-serif);
+  font-weight: 400;
+  font-size: 3.4em;
+  line-height: 0.78;
+  padding: 0.04em 0.12em 0 0;
+  color: var(--jk-brass);
+}
+
 .jk-prose code {
   font-family: var(--jk-mono, ui-monospace, monospace);
   font-size: 0.9em;

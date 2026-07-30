@@ -1,4 +1,8 @@
 import { PostClassic } from "./classic";
+import { PostMagazine } from "./magazine";
+import { PostMinimal } from "./minimal";
+import { PostGalleryFirst } from "./galleryFirst";
+import { PostFeature } from "./feature";
 import type { PostTemplateEntry, PostTemplateProps } from "./types";
 
 export type { PostTemplateProps, PostTemplateEntry } from "./types";
@@ -12,6 +16,34 @@ export const POST_TEMPLATES: PostTemplateEntry[] = [
     description:
       "Header serif, cover en parallaxe, corps de lecture étroit, galerie large en fin. La mise en page actuelle.",
     Component: PostClassic,
+  },
+  {
+    key: "magazine",
+    label: "Magazine",
+    description:
+      "Titre surimprimé sur la cover, corps ouvert par une lettrine, galerie large. Ouverture de magazine.",
+    Component: PostMagazine,
+  },
+  {
+    key: "minimal",
+    label: "Minimal",
+    description:
+      "Pas de hero, colonne étroite et typographie sobre. Pour un texte long ou une note d'intention.",
+    Component: PostMinimal,
+  },
+  {
+    key: "galleryFirst",
+    label: "Galerie d'abord",
+    description:
+      "Mosaïque d'images en tête, texte ensuite. Quand l'image raconte avant les mots.",
+    Component: PostGalleryFirst,
+  },
+  {
+    key: "feature",
+    label: "Grand format",
+    description:
+      "Cover plein écran, titre centré en surimpression, galerie large. Pour une histoire phare.",
+    Component: PostFeature,
   },
 ];
 
