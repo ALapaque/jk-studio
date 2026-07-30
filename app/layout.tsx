@@ -12,33 +12,37 @@ import { getAppearance, getSiteContent } from "@/lib/content";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import { SITE_URL } from "@/lib/site";
 
+// Polices de la REFONTE (le site public). Préchargées : elles participent au
+// rendu initial — l'élément LCP est le <h1> en Instrument Serif, la nav et les
+// légendes sont en IBM Plex Sans. Ce sont les deux seules familles du chemin
+// critique après la bascule.
 const serif = Instrument_Serif({
   variable: "--font-serif",
   weight: "400",
   style: ["normal", "italic"],
   subsets: ["latin"],
   display: "swap",
+  preload: true,
 });
 
-const sans = Archivo({
-  variable: "--font-sans",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// Sans de la refonte (maquette : nav, labels, numérotation, métadonnées).
-// Chargée par next/font — self-hosted, sans CDN tiers. Coexiste avec Archivo
-// tant que les anciens écrans ne sont pas basculés.
 const jkSans = IBM_Plex_Sans({
   variable: "--font-jk-sans",
   weight: ["300", "400", "500"],
   subsets: ["latin"],
   display: "swap",
-  // Aucun écran ne l'utilise encore (les lots 4-6 la consommeront) : la
-  // précharger ferait payer des octets aux pages actuelles pour rien.
-  // À repasser à true dès que les écrans de la refonte sont en ligne — le
-  // texte de la nav et des légendes participe alors au rendu initial.
+  preload: true,
+});
+
+// Polices de l'ADMIN uniquement (tableau de bord derrière authentification, et
+// page de connexion). Depuis la bascule, plus aucun écran public ne les rend :
+// on ne les précharge donc PAS, pour ne pas encombrer le chemin critique du
+// site. `display: swap` leur suffit — l'admin n'est pas sensible au LCP, et
+// `next/font` génère un fallback métrique qui évite tout décalage.
+const sans = Archivo({
+  variable: "--font-sans",
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  display: "swap",
   preload: false,
 });
 
@@ -47,6 +51,7 @@ const mono = Space_Mono({
   weight: ["400", "700"],
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {
