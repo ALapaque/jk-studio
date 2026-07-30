@@ -14,6 +14,15 @@ const supabaseHost = (() => {
 
 const nextConfig: NextConfig = {
   images: {
+    // AVIF préféré, repli WebP (§6 du brief : « formats modernes AVIF/WebP »).
+    // S'applique aux images servies par next/image — dont le hero de l'accueil
+    // et les covers de série, qui sont l'élément LCP en production. AVIF pèse
+    // ~20 % de moins que WebP ; il est ~50 % plus lent à encoder au tout premier
+    // accès, puis servi depuis le cache (net gain pour le visiteur).
+    // Le défilé immersif (SeriesScroller) garde volontairement ses dérivés WebP
+    // servis directement par le CDN Supabase : ils contournent next/image pour
+    // ne pas consommer le quota de transformations, et ne sont pas l'élément LCP.
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "plus.unsplash.com" },
