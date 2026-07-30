@@ -102,6 +102,8 @@ export async function updatePost(formData: FormData) {
       body: s(formData, "body"),
       tags: tags(formData),
       media: media(formData),
+      // Template de mise en page (0010). Repli `classic` si le champ manque.
+      template: s(formData, "template") || "classic",
       published: publishing,
       published_at: publishedAt,
       updated_at: new Date().toISOString(),
