@@ -96,8 +96,8 @@ export function SeriesScroller({
   onIndexChange?: (i: number) => void;
 }) {
   const refs = useRef<(HTMLElement | null)[]>([]);
-  // Couche image de chaque écran paysage, translatée pour la parallaxe.
-  const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // Couche image de chaque écran (paysage ou portrait), translatée en parallaxe.
+  const layerRefs = useRef<(HTMLElement | null)[]>([]);
   const [current, setCurrent] = useState(0);
   const [reduced, setReduced] = useState(false);
 
@@ -299,13 +299,19 @@ export function SeriesScroller({
             }}
           >
             {portrait ? (
-              // Verticale : marges généreuses, jamais croppée.
+              // Verticale : marges généreuses, jamais croppée. La parallaxe la
+              // fait flotter dans ses marges (±8 % de l'écran < les ~10 % de
+              // marge de chaque côté), donc jamais de débordement.
               <span
+                ref={(el) => {
+                  layerRefs.current[i] = el;
+                }}
                 style={{
                   position: "relative",
                   height: "min(80dvh, 100%)",
                   aspectRatio: p.ar.replace(" / ", "/"),
                   maxWidth: "min(92vw, 720px)",
+                  willChange: "transform",
                 }}
               >
                 {/* priority sur la première image uniquement (§7). */}
