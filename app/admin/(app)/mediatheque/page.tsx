@@ -16,9 +16,8 @@ export default async function MediathequePage({
 }) {
   await requireUser();
   const { folder } = await searchParams;
-  const { breadcrumb, subfolders, assets } = await getFolderContents(
-    folder ?? null,
-  );
+  const { breadcrumb, subfolders, allFolders, assets } =
+    await getFolderContents(folder ?? null);
 
   return (
     <div>
@@ -29,6 +28,7 @@ export default async function MediathequePage({
         currentFolderId={folder ?? null}
         breadcrumb={breadcrumb}
         subfolders={subfolders}
+        allFolders={allFolders}
         assets={assets}
       />
     </div>
