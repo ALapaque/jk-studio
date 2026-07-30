@@ -99,6 +99,8 @@ export async function getFolderContents(folderId: string | null): Promise<{
   folder: MediaFolderRow | null;
   breadcrumb: MediaFolderRow[];
   subfolders: MediaFolderRow[];
+  /** Tous les dossiers, pour les menus « déplacer vers… ». */
+  allFolders: MediaFolderRow[];
   assets: (MediaAssetRow & { usage: number })[];
 }> {
   const sb = createAdminSupabase();
@@ -147,6 +149,7 @@ export async function getFolderContents(folderId: string | null): Promise<{
     folder,
     breadcrumb,
     subfolders,
+    allFolders,
     assets: assets.map((a) => ({ ...a, usage: usageMap.get(a.id) ?? 0 })),
   };
 }
