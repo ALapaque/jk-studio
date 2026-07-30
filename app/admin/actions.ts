@@ -436,6 +436,22 @@ function facts(formData: FormData, key: string): { k: string; v: string }[] {
   });
 }
 
+/** Clients de la preuve sociale : « Nom | chemin-logo (optionnel) » par ligne.
+ *  Sans logo, seul le nom est conservé — il s'affiche alors en capitales. */
+function clients(
+  formData: FormData,
+  key: string,
+): { name: string; logoPath?: string }[] {
+  return lines(formData, key)
+    .map((l) => {
+      const [name, ...rest] = l.split("|");
+      const logoPath = rest.join("|").trim();
+      const n = (name ?? "").trim();
+      return logoPath ? { name: n, logoPath } : { name: n };
+    })
+    .filter((c) => c.name);
+}
+
 async function upsertContent(key: string, value: unknown) {
   const sb = createAdminSupabase();
   const { error } = await sb
@@ -548,6 +564,17 @@ export async function saveStudio(formData: FormData) {
     leadEm: s(formData, "leadEm"),
     paragraph: s(formData, "paragraph"),
     facts: facts(formData, "facts"),
+  });
+}
+
+export async function saveProof(formData: FormData) {
+  await assertUser();
+  // `enabled` désactivable sans redéploiement (§8) ; le bandeau ne rend rien
+  // s'il est éteint ou sans client — inutile de garder un état cohérent ici.
+  await upsertContent("proof", {
+    enabled: formData.get("enabled") === "on",
+    label: s(formData, "label"),
+    clients: clients(formData, "clients"),
   });
 }
 
