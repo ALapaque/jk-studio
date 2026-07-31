@@ -1,6 +1,8 @@
 import { CategoryClassic } from "./classic";
 import { CategorySplit } from "./split";
 import { CategoryGallery } from "./gallery";
+import { CategorySpread } from "./spread";
+import { CategoryCinema } from "./cinema";
 import type { CategoryTemplateEntry, CategoryTemplateProps } from "./types";
 
 export type { CategoryTemplateProps, CategoryTemplateEntry } from "./types";
@@ -27,6 +29,20 @@ export const CATEGORY_TEMPLATES: CategoryTemplateEntry[] = [
     description:
       "Cover en bandeau, sélection de médias directs en tête, liste des séries en pied.",
     Component: CategoryGallery,
+  },
+  {
+    key: "spread",
+    label: "Double page",
+    description:
+      "Cover, médias (photos directes + covers de séries) en galerie double page qui parallaxe, index des séries en pied.",
+    Component: CategorySpread,
+  },
+  {
+    key: "cinema",
+    label: "Cinéma",
+    description:
+      "Cover plein écran, médias empilés bord à bord en parallaxe ample avec grandes légendes, défilement continu.",
+    Component: CategoryCinema,
   },
 ];
 

@@ -1,6 +1,8 @@
 import { AboutClassic } from "./classic";
 import { AboutFeature } from "./feature";
 import { AboutManifesto } from "./manifesto";
+import { AboutColumns } from "./columns";
+import { AboutCentered } from "./centered";
 import type { AboutTemplateEntry, AboutTemplateProps } from "./types";
 
 export type { AboutTemplateProps, AboutTemplateEntry } from "./types";
@@ -28,6 +30,20 @@ export const ABOUT_TEMPLATES: AboutTemplateEntry[] = [
     description:
       "Sans portrait : colonne étroite, récit puis principes en gros et faits en pied. Une déclaration.",
     Component: AboutManifesto,
+  },
+  {
+    key: "columns",
+    label: "Magazine",
+    description:
+      "Grand titre, portrait en bandeau large, récit en deux colonnes de texte, faits en pied.",
+    Component: AboutColumns,
+  },
+  {
+    key: "centered",
+    label: "Centré",
+    description:
+      "Portrait centré en tête, récit dans une colonne étroite centrée. Calme et symétrique.",
+    Component: AboutCentered,
   },
 ];
 
