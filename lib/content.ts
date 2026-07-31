@@ -40,6 +40,13 @@ export interface SiteContent {
     coords: string;
     categoriesLine: string;
     scrollHint: string;
+    /** Clé Storage de l'image du hero de l'accueil (ou URL). Vide = repli sur
+     *  la première photo du portfolio. */
+    heroPath: string;
+    /** Légende du hero — partie italique (sujet). Optionnelle. */
+    heroCaption: string;
+    /** Légende du hero — partie en capitales (lieu). Optionnelle. */
+    heroCaptionLocation: string;
   };
   home: {
     studioTitle: string;
@@ -148,6 +155,9 @@ export const DEFAULT_CONTENT: SiteContent = {
     coords: "50.8467° N — 4.3499° E",
     categoriesLine: "Portrait · Mariage · Mode · Gaming · Vidéo",
     scrollHint: "((défiler))",
+    heroPath: "",
+    heroCaption: "",
+    heroCaptionLocation: "",
   },
   home: {
     studioTitle: "Le studio",

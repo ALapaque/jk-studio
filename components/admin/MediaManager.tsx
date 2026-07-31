@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ChevronUp, ChevronDown, Star, Trash2, Check, Plus } from "lucide-react";
+import { ChevronUp, ChevronDown, Trash2, Check, Plus } from "lucide-react";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import { PhotoRow, VideoRow } from "@/lib/supabase/types";
 import {
@@ -8,7 +8,6 @@ import {
   deleteVideo,
   movePhoto,
   moveVideo,
-  toggleFeatured,
   updatePhoto,
 } from "@/app/admin/actions";
 import { Field, Input } from "./ui";
@@ -180,17 +179,6 @@ export function MediaManager({
                     <ActionForm action={setCover} hidden={{ [coverField]: ownerId, storage_path: ph.storage_path }}>
                       <Button variant={isCover ? "secondary" : "outline"} size="sm" className="w-full" disabled={isCover}>
                         {isCover ? <><Check className="size-3.5" /> Couv.</> : "Couv."}
-                      </Button>
-                    </ActionForm>
-                    <ActionForm action={toggleFeatured} hidden={{ id: ph.id, featured: ph.featured ? "false" : "true" }}>
-                      <Button
-                        variant={ph.featured ? "default" : "outline"}
-                        size="sm"
-                        className="w-full"
-                        title="Mettre en avant dans le hero de l'accueil"
-                      >
-                        <Star className={ph.featured ? "size-3.5 fill-current" : "size-3.5"} />
-                        {ph.featured ? "À la une" : "Hero"}
                       </Button>
                     </ActionForm>
                     <ActionForm action={deletePhoto} hidden={{ id: ph.id, storage_path: ph.storage_path }} confirm="Supprimer cette photo ?" confirmLabel="Supprimer">

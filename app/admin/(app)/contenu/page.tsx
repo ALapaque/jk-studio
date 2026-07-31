@@ -1,4 +1,5 @@
 import { getSiteContent, type Fact } from "@/lib/content";
+import { getAllAssets, getAllFolders } from "@/lib/admin";
 import { publicImageUrl } from "@/lib/supabase/storage";
 import {
   saveAbout,
@@ -12,6 +13,8 @@ import {
   saveContact,
   saveFooter,
   saveHero,
+  saveHeroImage,
+  removeHeroImage,
   saveHome,
   saveNav,
   saveNotFound,
@@ -24,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
+import { CoverFromLibrary } from "@/components/admin/CoverFromLibrary";
 import { SwitchField } from "@/components/admin/fields/SwitchField";
 import { ProofClientsEditor } from "@/components/admin/ProofClientsEditor";
 
@@ -40,7 +44,11 @@ function Save() {
 }
 
 export default async function ContenuPage() {
-  const c = await getSiteContent();
+  const [c, assets, folders] = await Promise.all([
+    getSiteContent(),
+    getAllAssets(),
+    getAllFolders(),
+  ]);
 
   return (
     <div>
@@ -129,6 +137,32 @@ export default async function ContenuPage() {
             <Card>
               <CardContent className="p-5">
                 <h3 className="mb-4 text-base font-semibold text-foreground">Hero</h3>
+
+                {/* Image du hero (plein écran de l'accueil). Hors du form des
+                    textes : l'image et les textes s'enregistrent séparément et
+                    ne s'effacent pas l'un l'autre. Upload OU médiathèque. */}
+                <div className="mb-5 grid gap-3">
+                  <span className="text-sm font-medium">Image du hero</span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <ContentImageUploader
+                      label="Hero"
+                      pathPrefix="hero"
+                      currentSrc={publicImageUrl(c.hero.heroPath) || undefined}
+                      save={saveHeroImage}
+                      remove={removeHeroImage}
+                      previewClassName="h-24 w-40"
+                      hint="Grande image plein écran en haut de l'accueil. Sans image, la première photo du portfolio est utilisée."
+                    />
+                    <CoverFromLibrary
+                      ownerId="hero"
+                      idField="scope"
+                      action={saveHeroImage}
+                      assets={assets}
+                      folders={folders}
+                    />
+                  </div>
+                </div>
+
                 <form action={saveHero} className="grid gap-4">
                   <Field label="Accroche (petit texte)">
                     <Input name="eyebrow" defaultValue={c.hero.eyebrow} />
@@ -142,6 +176,23 @@ export default async function ContenuPage() {
                     </Field>
                     <Field label="Ligne des catégories">
                       <Input name="categoriesLine" defaultValue={c.hero.categoriesLine} />
+                    </Field>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field
+                      label="Légende du hero — sujet"
+                      hint="Partie en italique. Affichée quand une image de hero est définie."
+                    >
+                      <Input name="heroCaption" defaultValue={c.hero.heroCaption} />
+                    </Field>
+                    <Field
+                      label="Légende du hero — lieu"
+                      hint="Partie en capitales (ex. Bruxelles)."
+                    >
+                      <Input
+                        name="heroCaptionLocation"
+                        defaultValue={c.hero.heroCaptionLocation}
+                      />
                     </Field>
                   </div>
                   <Field label="Indice de défilement">

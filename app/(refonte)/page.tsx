@@ -30,10 +30,29 @@ export const metadata: Metadata = {
 export default async function AccueilRefontePage() {
   const [cats, content] = await Promise.all([getCategories(), getSiteContent()]);
 
-  // Photo du hero : première photo de la première série publiée. Aucune image
-  // n'est codée en dur — si le portfolio est vide, le hero reste sur son fond.
+  // Photo du hero : l'image définie en admin (Contenu → Accueil) si elle
+  // existe, sinon la première photo de la première série publiée (comportement
+  // historique). Aucune image n'est codée en dur — si rien n'est disponible,
+  // le hero reste sur son fond.
   const allPhotos = cats.flatMap((c) => c.series.flatMap((s) => s.photos));
-  const heroPhoto = allPhotos[0];
+  const fallbackHero = allPhotos[0];
+  const hero = content.hero.heroPath
+    ? {
+        src: publicImageUrl(content.hero.heroPath),
+        alt: content.hero.heroCaption || content.brand.name,
+        blurDataURL: "",
+        subject: content.hero.heroCaption,
+        place: content.hero.heroCaptionLocation,
+      }
+    : fallbackHero
+      ? {
+          src: fallbackHero.src,
+          alt: fallbackHero.alt,
+          blurDataURL: fallbackHero.blurDataURL,
+          subject: fallbackHero.subject,
+          place: fallbackHero.place,
+        }
+      : null;
 
   // Portrait du studio : celui saisi en admin s'il existe, sinon une autre
   // photo du portfolio — jamais la même que le hero, pour ne pas la répéter.
@@ -71,16 +90,16 @@ export default async function AccueilRefontePage() {
           overflow: "hidden",
         }}
       >
-        {heroPhoto && (
+        {hero && (
           <Parallax>
             <Image
-              src={heroPhoto.src}
-              alt={heroPhoto.alt}
+              src={hero.src}
+              alt={hero.alt}
               fill
               sizes="100vw"
               priority
-              placeholder={heroPhoto.blurDataURL ? "blur" : "empty"}
-              blurDataURL={heroPhoto.blurDataURL || undefined}
+              placeholder={hero.blurDataURL ? "blur" : "empty"}
+              blurDataURL={hero.blurDataURL || undefined}
               style={{ objectFit: "cover" }}
             />
           </Parallax>
@@ -103,8 +122,8 @@ export default async function AccueilRefontePage() {
         >
           <Reveal>
             <Caption
-              subject={heroPhoto?.subject}
-              location={heroPhoto?.place}
+              subject={hero?.subject}
+              location={hero?.place}
               variant="hero"
               tone="onImage"
             />

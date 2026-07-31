@@ -130,59 +130,6 @@ function mapCategory(
   };
 }
 
-export interface HeroItem {
-  src: string;
-  href: string;
-  label: string;
-}
-
-/** Photos « à la une » pour les cartes flottantes de l'accueil (max 8). */
-export async function getHeroItems(): Promise<HeroItem[]> {
-  if (!isSupabaseConfigured()) return [];
-  try {
-    const sb = createPublicSupabase();
-    const { data, error } = await sb
-      .from("photos")
-      .select(
-        "storage_path, featured_position, project:projects(slug, published, categories(slug, title)), category:categories(slug, title)",
-      )
-      .eq("featured", true)
-      .order("featured_position")
-      .limit(24);
-    if (error) throw error;
-    const out: HeroItem[] = [];
-    for (const row of (data ?? []) as Record<string, unknown>[]) {
-      // Une ligne mal formée ne doit jamais faire tomber tout le hero sur la
-      // démo : on l'ignore et on passe à la suivante.
-      try {
-        const src = publicImageUrl(row.storage_path as string);
-        if (!src) continue;
-        const project = row.project as
-          | { slug: string; published: boolean; categories: { slug: string; title: string } | null }
-          | null;
-        const category = row.category as { slug: string; title: string } | null;
-        if (project && project.categories) {
-          if (!project.published) continue; // série en brouillon → on ignore
-          out.push({
-            src,
-            href: `/travaux/${project.categories.slug}/${project.slug}`,
-            label: project.categories.title,
-          });
-        } else if (category) {
-          out.push({ src, href: `/travaux/${category.slug}`, label: category.title });
-        }
-      } catch {
-        continue;
-      }
-      if (out.length >= 8) break;
-    }
-    return out;
-  } catch (err) {
-    console.error("[data] getHeroItems échoué:", err);
-    return [];
-  }
-}
-
 let warned = false;
 function fallback(): Category[] {
   return DEMO;

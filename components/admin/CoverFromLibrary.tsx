@@ -23,7 +23,10 @@ export function CoverFromLibrary({
   folders,
 }: {
   ownerId: string;
-  idField: "project_id" | "category_id";
+  // Nom du champ portant l'identifiant du destinataire. Série/catégorie
+  // utilisent "project_id"/"category_id" ; une cible site_content (ex. le hero)
+  // passe un champ ignoré par son action (qui ne lit que `storage_path`).
+  idField: string;
   action: (formData: FormData) => void | Promise<void>;
   assets: MediaAssetRow[];
   folders: MediaFolderRow[];
