@@ -9,6 +9,7 @@ import { HomeHorizontalTemplate } from "./horizontal";
 import { HomeMenu } from "./menu";
 import { HomeSpotlightTemplate } from "./spotlight";
 import { HomeMargauxGatti } from "./margauxgatti";
+import { HomeBuilder } from "./builder";
 import type { HomeTemplateEntry, HomeTemplateProps } from "./types";
 
 export type { HomeTemplateProps, HomeTemplateEntry } from "./types";
@@ -91,6 +92,13 @@ export const HOME_TEMPLATES: HomeTemplateEntry[] = [
     description:
       "D'après margauxgatti.fr : hero éditorial deux colonnes (services + portrait), courte présentation centrée, rangée « dernières histoires », puis chaque catégorie en grande section pleine largeur avec image et texte qui alternent de côté.",
     Component: HomeMargauxGatti,
+  },
+  {
+    key: "builder",
+    label: "Composer moi-même",
+    description:
+      "Page composée à la carte : choisis les sections affichées, leur ordre (glisser-déposer) et leurs options (hero plein écran, variantes) depuis Contenu → Accueil → « Composition de la page ».",
+    Component: HomeBuilder,
   },
 ];
 
