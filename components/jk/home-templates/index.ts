@@ -16,9 +16,9 @@ export type { HomeTemplateProps, HomeTemplateEntry } from "./types";
 export const HOME_TEMPLATES: HomeTemplateEntry[] = [
   {
     key: "classic",
-    label: "Hero & séquence",
+    label: "Classique — page d'origine",
     description:
-      "Hero plein écran, studio, sélection puis catégories. La mise en page actuelle.",
+      "La page d'accueil d'origine, avant les variantes : hero plein écran, studio, sélection puis catégories. À choisir ici pour revenir à la mise en page de base.",
     Component: HomeClassic,
   },
   {
