@@ -3,6 +3,11 @@ import { HomeEditorial } from "./editorial";
 import { HomeShowcase } from "./showcase";
 import { HomeSpread } from "./spread";
 import { HomePoster } from "./poster";
+import { HomeGalleryTemplate } from "./gallery";
+import { HomeSidebar } from "./sidebar";
+import { HomeHorizontalTemplate } from "./horizontal";
+import { HomeMenu } from "./menu";
+import { HomeSpotlightTemplate } from "./spotlight";
 import type { HomeTemplateEntry, HomeTemplateProps } from "./types";
 
 export type { HomeTemplateProps, HomeTemplateEntry } from "./types";
@@ -43,6 +48,41 @@ export const HOME_TEMPLATES: HomeTemplateEntry[] = [
     description:
       "Une seule grande image plein écran, nom et titre en surimpression, index de catégories minimal en pied.",
     Component: HomePoster,
+  },
+  {
+    key: "gallery",
+    label: "Galerie",
+    description:
+      "Navigation en galerie : grande image plein écran, catégories en surimpression ; survoler une catégorie change l'image, cliquer entre dedans.",
+    Component: HomeGalleryTemplate,
+  },
+  {
+    key: "sidebar",
+    label: "Barre latérale",
+    description:
+      "Navigation fixe à gauche (marque + catégories + liens), galerie de sélection qui défile à droite. Structure de site de portfolio.",
+    Component: HomeSidebar,
+  },
+  {
+    key: "horizontal",
+    label: "Défilement horizontal",
+    description:
+      "Les catégories en panneaux plein écran que l'on parcourt latéralement (trackpad, tactile, molette).",
+    Component: HomeHorizontalTemplate,
+  },
+  {
+    key: "menu",
+    label: "Menu",
+    description:
+      "Sommaire typographique : catégories en très grands noms, l'aperçu de la cover suit le curseur au survol.",
+    Component: HomeMenu,
+  },
+  {
+    key: "spotlight",
+    label: "Spotlight",
+    description:
+      "Une catégorie à la fois en plein écran, navigation numérotée (01/05) et flèches précédent/suivant.",
+    Component: HomeSpotlightTemplate,
   },
 ];
 
