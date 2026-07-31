@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Upload,
-  Images,
-  Trash2,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
+import { Upload, Images, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { STORAGE_BUCKET } from "@/lib/env";
 import { publicImageUrl } from "@/lib/supabase/storage";
@@ -16,12 +10,14 @@ import { Input } from "./ui";
 import { Button } from "@/components/ui/button";
 import { LibraryPicker } from "./LibraryPicker";
 
-/** Galerie média d'un article : liste ordonnée d'images + légende.
+/** Diaporama du hero de l'accueil : liste ordonnée d'images + un petit texte
+ *  (contexte) par image. Deux sources : téléversement direct (Storage, préfixe
+ *  hero/) ou choix dans la médiathèque (par référence — on ne stocke que la
+ *  clé). Réordonnable, supprimable, légende par image. Sérialisé en JSON dans un
+ *  champ caché « heroSlides » soumis avec le formulaire (action saveHeroSlides).
  *
- *  Deux sources : téléversement direct (Storage, préfixe journal/media) ou choix
- *  dans la médiathèque (par référence — on ne stocke que la clé). Réordonnable,
- *  supprimable, légende par image. La liste est sérialisée en JSON dans un champ
- *  caché « media » soumis avec le formulaire de l'article (action updatePost). */
+ *  Calqué sur PostMediaEditor : même mécanique, source de vérité unique côté
+ *  contenu (`site_content.hero.slides`). */
 
 const slugExt = (name: string) =>
   (name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") ||
@@ -29,7 +25,7 @@ const slugExt = (name: string) =>
 
 type Row = { path: string; caption: string; key: string };
 
-export function PostMediaEditor({
+export function HeroSlidesEditor({
   initial,
   assets,
   folders,
@@ -39,7 +35,11 @@ export function PostMediaEditor({
   folders: MediaFolderRow[];
 }) {
   const [rows, setRows] = useState<Row[]>(
-    initial.map((m, i) => ({ path: m.path, caption: m.caption ?? "", key: `i-${i}` })),
+    initial.map((m, i) => ({
+      path: m.path,
+      caption: m.caption ?? "",
+      key: `i-${i}`,
+    })),
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +47,9 @@ export function PostMediaEditor({
   const [seq, setSeq] = useState(0);
 
   const serialized = JSON.stringify(
-    rows.filter((r) => r.path).map((r) => ({ path: r.path, caption: r.caption.trim() })),
+    rows
+      .filter((r) => r.path)
+      .map((r) => ({ path: r.path, caption: r.caption.trim() })),
   );
 
   const addPaths = (paths: string[]) =>
@@ -57,7 +59,8 @@ export function PostMediaEditor({
     ]);
   const patch = (key: string, next: Partial<Row>) =>
     setRows((rs) => rs.map((r) => (r.key === key ? { ...r, ...next } : r)));
-  const remove = (key: string) => setRows((rs) => rs.filter((r) => r.key !== key));
+  const remove = (key: string) =>
+    setRows((rs) => rs.filter((r) => r.key !== key));
   const move = (key: string, dir: -1 | 1) =>
     setRows((rs) => {
       const i = rs.findIndex((r) => r.key === key);
@@ -76,16 +79,23 @@ export function PostMediaEditor({
       const sb = createClient();
       const uploaded: string[] = [];
       for (const file of Array.from(files)) {
-        const path = `journal/media/${crypto.randomUUID()}.${slugExt(file.name)}`;
+        const path = `hero/${crypto.randomUUID()}.${slugExt(file.name)}`;
         const { error: upErr } = await sb.storage
           .from(STORAGE_BUCKET)
-          .upload(path, file, { contentType: file.type || undefined, upsert: false });
+          .upload(path, file, {
+            contentType: file.type || undefined,
+            upsert: false,
+          });
         if (upErr) throw upErr;
         uploaded.push(path);
       }
       setRows((rs) => [
         ...rs,
-        ...uploaded.map((path, i) => ({ path, caption: "", key: `n-${seq + i}` })),
+        ...uploaded.map((path, i) => ({
+          path,
+          caption: "",
+          key: `n-${seq + i}`,
+        })),
       ]);
       setSeq((s) => s + uploaded.length);
     } catch (e) {
@@ -97,7 +107,7 @@ export function PostMediaEditor({
 
   return (
     <div className="grid gap-3">
-      <input type="hidden" name="media" value={serialized} />
+      <input type="hidden" name="heroSlides" value={serialized} />
 
       <div className="flex flex-wrap items-center gap-2">
         <label className="cursor-pointer">
@@ -113,7 +123,12 @@ export function PostMediaEditor({
             <Upload className="size-4" /> {busy ? "Envoi…" : "Uploader des images"}
           </span>
         </label>
-        <Button type="button" variant="outline" size="sm" onClick={() => setPicker(true)}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setPicker(true)}
+        >
           <Images className="size-4" /> Depuis la médiathèque
         </Button>
       </div>
@@ -122,7 +137,8 @@ export function PostMediaEditor({
 
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Aucune image dans la galerie. Ajoute-en via l&apos;upload ou la médiathèque.
+          Aucune image dans le diaporama. Ajoute-en via l&apos;upload ou la
+          médiathèque.
         </p>
       ) : (
         <div className="grid gap-2">
@@ -142,7 +158,7 @@ export function PostMediaEditor({
               <Input
                 value={r.caption}
                 onChange={(e) => patch(r.key, { caption: e.target.value })}
-                placeholder="Légende (optionnel)"
+                placeholder="Petit texte affiché sur l'image (optionnel)"
                 className="min-w-[160px] flex-1"
               />
               <div className="flex items-center gap-1">

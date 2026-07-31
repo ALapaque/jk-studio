@@ -494,8 +494,8 @@ export async function saveNav(formData: FormData) {
 
 export async function saveHero(formData: FormData) {
   await assertUser();
-  // `patchContent` (et non `upsertContent`) pour NE PAS écraser `heroPath`,
-  // enregistré à part par saveHeroImage. Les textes et l'image cohabitent ainsi
+  // `patchContent` (et non `upsertContent`) pour NE PAS écraser `slides`,
+  // enregistré à part par saveHeroSlides. Textes et diaporama cohabitent ainsi
   // sur la même clé `hero` sans se marcher dessus.
   await patchContent("hero", {
     eyebrow: s(formData, "eyebrow"),
@@ -503,22 +503,33 @@ export async function saveHero(formData: FormData) {
     coords: s(formData, "coords"),
     categoriesLine: s(formData, "categoriesLine"),
     scrollHint: s(formData, "scrollHint"),
-    heroCaption: s(formData, "heroCaption"),
-    heroCaptionLocation: s(formData, "heroCaptionLocation"),
   });
 }
 
-/** Image du hero de l'accueil : clé Storage stockée dans `site_content.hero`.
- *  Calqué sur saveAboutPortrait — upload direct ou choix médiathèque envoient
- *  tous deux `storage_path`. */
-export async function saveHeroImage(formData: FormData) {
+/** Diaporama du hero : liste ordonnée d'images + petit texte par image, reçue
+ *  en JSON dans le champ caché `heroSlides` (même patron que la galerie
+ *  d'article). Enregistre `slides` et efface l'image unique héritée `heroPath`
+ *  (le diaporama devient l'unique source). */
+export async function saveHeroSlides(formData: FormData) {
   await assertUser();
-  await patchContent("hero", { heroPath: s(formData, "storage_path") });
-}
-
-export async function removeHeroImage() {
-  await assertUser();
-  await patchContent("hero", { heroPath: "" });
+  const raw = s(formData, "heroSlides");
+  let slides: { path: string; caption: string }[] = [];
+  if (raw) {
+    try {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) {
+        slides = arr
+          .filter((m) => m && typeof m.path === "string" && m.path)
+          .map((m) => ({
+            path: String(m.path),
+            caption: typeof m.caption === "string" ? m.caption : "",
+          }));
+      }
+    } catch {
+      slides = [];
+    }
+  }
+  await patchContent("hero", { slides, heroPath: "" });
 }
 
 export async function saveHome(formData: FormData) {

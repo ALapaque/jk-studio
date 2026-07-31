@@ -40,12 +40,15 @@ export interface SiteContent {
     coords: string;
     categoriesLine: string;
     scrollHint: string;
-    /** Clé Storage de l'image du hero de l'accueil (ou URL). Vide = repli sur
-     *  la première photo du portfolio. */
+    /** Diaporama du hero : images (clés Storage ou URL) + petit texte par image.
+     *  Prioritaire sur `heroPath`. Vide = repli sur `heroPath` puis le portfolio. */
+    slides: { path: string; caption: string }[];
+    /** Image unique héritée (repli si `slides` est vide). Migrée en 1 slide au
+     *  premier enregistrement du diaporama. */
     heroPath: string;
-    /** Légende du hero — partie italique (sujet). Optionnelle. */
+    /** Légende de l'image unique héritée — partie italique (sujet). */
     heroCaption: string;
-    /** Légende du hero — partie en capitales (lieu). Optionnelle. */
+    /** Légende de l'image unique héritée — partie en capitales (lieu). */
     heroCaptionLocation: string;
   };
   home: {
@@ -155,6 +158,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     coords: "50.8467° N — 4.3499° E",
     categoriesLine: "Portrait · Mariage · Mode · Gaming · Vidéo",
     scrollHint: "((défiler))",
+    slides: [],
     heroPath: "",
     heroCaption: "",
     heroCaptionLocation: "",

@@ -8,6 +8,7 @@ import { Caption } from "@/components/jk/Caption";
 import { Reveal } from "@/components/jk/Reveal";
 import { ProofBand } from "@/components/jk/ProofBand";
 import { Parallax } from "@/components/jk/Parallax";
+import { HeroSlideshow } from "@/components/jk/HeroSlideshow";
 import { CategoryRow } from "@/components/jk/CategoryRow";
 
 export const revalidate = 60;
@@ -30,11 +31,16 @@ export const metadata: Metadata = {
 export default async function AccueilRefontePage() {
   const [cats, content] = await Promise.all([getCategories(), getSiteContent()]);
 
-  // Photo du hero : l'image définie en admin (Contenu → Accueil) si elle
-  // existe, sinon la première photo de la première série publiée (comportement
-  // historique). Aucune image n'est codée en dur — si rien n'est disponible,
-  // le hero reste sur son fond.
+  // Hero de l'accueil, par ordre de priorité :
+  //  1. le diaporama défini en admin (Contenu → Accueil) — plusieurs images ;
+  //  2. l'image unique héritée (heroPath) ;
+  //  3. la première photo de la première série publiée.
+  // Aucune image n'est codée en dur — si rien n'est disponible, le hero reste
+  // sur son fond.
   const allPhotos = cats.flatMap((c) => c.series.flatMap((s) => s.photos));
+  const heroSlides = (content.hero.slides ?? [])
+    .map((sl) => ({ src: publicImageUrl(sl.path), caption: sl.caption }))
+    .filter((sl) => sl.src);
   const fallbackHero = allPhotos[0];
   const hero = content.hero.heroPath
     ? {
@@ -90,45 +96,53 @@ export default async function AccueilRefontePage() {
           overflow: "hidden",
         }}
       >
-        {hero && (
-          <Parallax>
-            <Image
-              src={hero.src}
-              alt={hero.alt}
-              fill
-              sizes="100vw"
-              priority
-              placeholder={hero.blurDataURL ? "blur" : "empty"}
-              blurDataURL={hero.blurDataURL || undefined}
-              style={{ objectFit: "cover" }}
+        {heroSlides.length > 0 ? (
+          // Diaporama : gère lui-même les images, le dégradé et la légende
+          // active (fondu enchaîné, neutralisé sous prefers-reduced-motion).
+          <HeroSlideshow slides={heroSlides} />
+        ) : (
+          <>
+            {hero && (
+              <Parallax>
+                <Image
+                  src={hero.src}
+                  alt={hero.alt}
+                  fill
+                  sizes="100vw"
+                  priority
+                  placeholder={hero.blurDataURL ? "blur" : "empty"}
+                  blurDataURL={hero.blurDataURL || undefined}
+                  style={{ objectFit: "cover" }}
+                />
+              </Parallax>
+            )}
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(to bottom, rgba(14,12,10,.62) 0%, rgba(14,12,10,0) 34%, rgba(14,12,10,0) 58%, rgba(14,12,10,.72) 100%)",
+              }}
             />
-          </Parallax>
+            <div
+              style={{
+                position: "absolute",
+                left: "var(--jk-gap-page)",
+                bottom: 52,
+              }}
+            >
+              <Reveal>
+                <Caption
+                  subject={hero?.subject}
+                  location={hero?.place}
+                  variant="hero"
+                  tone="onImage"
+                />
+              </Reveal>
+            </div>
+          </>
         )}
-        <span
-          aria-hidden
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to bottom, rgba(14,12,10,.62) 0%, rgba(14,12,10,0) 34%, rgba(14,12,10,0) 58%, rgba(14,12,10,.72) 100%)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            left: "var(--jk-gap-page)",
-            bottom: 52,
-          }}
-        >
-          <Reveal>
-            <Caption
-              subject={hero?.subject}
-              location={hero?.place}
-              variant="hero"
-              tone="onImage"
-            />
-          </Reveal>
-        </div>
         <span
           style={{
             position: "absolute",
