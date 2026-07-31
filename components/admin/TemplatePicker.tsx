@@ -1,16 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Check, ExternalLink, RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-/** Sélecteur de template de page détail + aperçu live en iframe.
- *
- *  La valeur choisie est soumise via un `<input type="hidden" name="template">`
- *  au sein du `<form>` de l'éditeur (sauvée par updateProject / updatePost).
- *  L'iframe pointe vers `/preview/<kind>/<id>?tpl=<value>` : elle reflète le
- *  CONTENU DÉJÀ ENREGISTRÉ + le template sélectionné (même non sauvegardé).
- *  D'où le rappel « enregistre pour voir tes dernières modifs de contenu ». */
+import { TemplatePreviewPane } from "./TemplatePreviewPane";
 
 export interface TemplateOption {
   key: string;
@@ -18,6 +11,11 @@ export interface TemplateOption {
   description: string;
 }
 
+/** Sélecteur de template d'une page détail (série/article) + aperçu live.
+ *
+ *  La valeur choisie est soumise via un `<input type="hidden" name="template">`
+ *  du formulaire de l'éditeur. L'aperçu (desktop/mobile) est délégué à
+ *  `TemplatePreviewPane`, pointant sur `/preview/<kind>/<id>?tpl=<value>`. */
 export function TemplatePicker({
   kind,
   id,
@@ -29,16 +27,10 @@ export function TemplatePicker({
   options: TemplateOption[];
   initial: string;
 }) {
-  // Repli sur la 1re option si la valeur stockée n'existe plus dans le registre.
   const known = options.some((o) => o.key === initial);
   const [value, setValue] = useState(
     known ? initial : options[0]?.key ?? "classic",
   );
-  // `nonce` force le rechargement de l'iframe au clic « rafraîchir ».
-  const [nonce, setNonce] = useState(0);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const previewSrc = `/preview/${kind}/${id}?tpl=${encodeURIComponent(value)}&n=${nonce}`;
 
   return (
     <div className="grid gap-4">
@@ -72,44 +64,9 @@ export function TemplatePicker({
         })}
       </div>
 
-      <div className="grid gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground">
-            Aperçu — reflète le contenu <strong>enregistré</strong>. Enregistre
-            pour prévisualiser tes dernières modifications.
-          </span>
-          <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={() => setNonce((n) => n + 1)}
-              className="inline-flex items-center gap-1 rounded-md border border-input px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <RefreshCw className="size-3.5" /> Rafraîchir
-            </button>
-            <a
-              href={previewSrc}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 rounded-md border border-input px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <ExternalLink className="size-3.5" /> Onglet
-            </a>
-          </div>
-        </div>
-
-        {/* Ratio ~16/10, cadre sombre : donne une idée fidèle du plein écran.
-            L'iframe est same-origin → l'auth de l'admin passe (requireUser). */}
-        <div className="overflow-hidden rounded-lg border border-input bg-[#0e0c0a]">
-          <iframe
-            ref={iframeRef}
-            key={previewSrc}
-            src={previewSrc}
-            title="Aperçu du template"
-            loading="lazy"
-            className="block h-[62vh] w-full"
-          />
-        </div>
-      </div>
+      <TemplatePreviewPane
+        baseSrc={`/preview/${kind}/${id}?tpl=${encodeURIComponent(value)}`}
+      />
     </div>
   );
 }
