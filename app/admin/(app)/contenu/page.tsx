@@ -15,6 +15,7 @@ import {
   saveHero,
   saveHeroSlides,
   saveHome,
+  saveHomeLayout,
   saveNav,
   saveNotFound,
   saveProof,
@@ -27,6 +28,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
 import { HeroSlidesEditor } from "@/components/admin/HeroSlidesEditor";
+import { HomeLayoutEditor } from "@/components/admin/HomeLayoutEditor";
 import { SwitchField } from "@/components/admin/fields/SwitchField";
 import { ProofClientsEditor } from "@/components/admin/ProofClientsEditor";
 
@@ -206,6 +208,26 @@ export default async function ContenuPage() {
                       <Input name="categoriesLink" defaultValue={c.home.categoriesLink} />
                     </Field>
                   </div>
+                  <Save />
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-5">
+                <h3 className="mb-1 text-base font-semibold text-foreground">
+                  Composition de la page
+                </h3>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Choisis les sections affichées sur l&apos;accueil, leur ordre
+                  (glisser-déposer ou flèches) et leurs options (hero plein
+                  écran, variantes de mise en page). Pour appliquer cette
+                  composition, sélectionne le modèle «&nbsp;Composer
+                  moi-même&nbsp;» dans <strong>Apparence → Mise en page des
+                  pages → Accueil</strong>.
+                </p>
+                <form action={saveHomeLayout} className="grid gap-3">
+                  <HomeLayoutEditor initial={c.homeLayout} />
                   <Save />
                 </form>
               </CardContent>

@@ -6,6 +6,7 @@ import { createAdminSupabase, createServerSupabase } from "@/lib/supabase/server
 import { assertUser } from "@/lib/admin";
 import { STORAGE_BUCKET } from "@/lib/env";
 import { parseVideoUrl } from "@/lib/video";
+import { normalizeHomeLayout } from "@/lib/home-layout";
 
 function revalidateAll() {
   revalidatePath("/", "layout");
@@ -540,6 +541,21 @@ export async function saveHome(formData: FormData) {
     categoriesTitle: s(formData, "categoriesTitle"),
     categoriesLink: s(formData, "categoriesLink"),
   });
+}
+
+/** Composition de l'accueil (template « builder ») : sections ordonnées +
+ *  options, reçue en JSON dans le champ caché `homeLayout`. Assainie par
+ *  `normalizeHomeLayout` avant écriture. Clé de contenu dédiée. */
+export async function saveHomeLayout(formData: FormData) {
+  await assertUser();
+  const raw = s(formData, "homeLayout");
+  let parsed: unknown = null;
+  try {
+    parsed = raw ? JSON.parse(raw) : null;
+  } catch {
+    parsed = null;
+  }
+  await upsertContent("homeLayout", normalizeHomeLayout(parsed));
 }
 
 export async function saveWorks(formData: FormData) {
