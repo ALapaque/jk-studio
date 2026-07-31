@@ -260,6 +260,20 @@ a:hover .jk-zoom {
   transform: scale(var(--jk-zoom));
 }
 
+/* Vignette non-liée (médias directs d'une catégorie) : même zoom au survol de
+   la tuile, puisque `.jk-zoom` n'est autrement câblé que sous `a:hover`. */
+.jk-media-tile:hover .jk-zoom {
+  transform: scale(var(--jk-zoom));
+}
+
+/* Titre de catégorie cliquable (index /travaux) : la flèche glisse au survol. */
+.jk-cat-link__arrow {
+  transition: transform var(--jk-dur-hover) var(--jk-ease);
+}
+.jk-cat-link:hover .jk-cat-link__arrow {
+  transform: translateX(5px);
+}
+
 /* Ligne de catégorie : passage au laiton au survol, 400ms (maquette). */
 .jk-cat-row {
   transition: color var(--jk-dur-hover) ease;
@@ -328,11 +342,17 @@ a:hover .jk-zoom {
   }
 
   .jk-zoom,
-  .jk-cat-row {
+  .jk-cat-row,
+  .jk-cat-link__arrow {
     transition: none;
   }
 
-  a:hover .jk-zoom {
+  a:hover .jk-zoom,
+  .jk-media-tile:hover .jk-zoom {
+    transform: none;
+  }
+
+  .jk-cat-link:hover .jk-cat-link__arrow {
     transform: none;
   }
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getCategories } from "@/lib/data";
 import { getSiteContent } from "@/lib/content";
 import { IndexRow } from "@/components/jk/IndexRow";
@@ -59,18 +60,33 @@ export default async function SeriesIndexPage() {
           (c.directMedia?.filter((m) => m.kind === "photo").length ?? 0);
         return (
           <section key={c.slug} style={{ marginBottom: 44 }}>
-            <h2
-              style={{
-                margin: "0 0 18px",
-                fontSize: 10,
-                fontWeight: 500,
-                letterSpacing: "var(--jk-track-label)",
-                textTransform: "uppercase",
-                color: "var(--jk-brass)",
-              }}
-            >
-              {/* Compte calculé, jamais écrit en dur (§12). */}
-              {c.num} {c.title} — {n} {c.unit}
+            <h2 style={{ margin: "0 0 18px" }}>
+              {/* Le titre de catégorie ouvre sa page détail (séries + médias
+                  rattachés directement). `data-jk-label` nourrit le voile de
+                  transition avec le nom de la catégorie. */}
+              <Link
+                href={`/travaux/${c.slug}`}
+                data-jk-label={c.title}
+                className="jk-cat-link"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "baseline",
+                  gap: 8,
+                  fontSize: 10,
+                  fontWeight: 500,
+                  letterSpacing: "var(--jk-track-label)",
+                  textTransform: "uppercase",
+                  color: "var(--jk-brass)",
+                }}
+              >
+                {/* Compte calculé, jamais écrit en dur (§12). */}
+                <span>
+                  {c.num} {c.title} — {n} {c.unit}
+                </span>
+                <span aria-hidden className="jk-cat-link__arrow">
+                  →
+                </span>
+              </Link>
             </h2>
             <ul
               style={{
