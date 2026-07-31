@@ -1,6 +1,8 @@
 import { HomeClassic } from "./classic";
 import { HomeEditorial } from "./editorial";
 import { HomeShowcase } from "./showcase";
+import { HomeSpread } from "./spread";
+import { HomePoster } from "./poster";
 import type { HomeTemplateEntry, HomeTemplateProps } from "./types";
 
 export type { HomeTemplateProps, HomeTemplateEntry } from "./types";
@@ -27,6 +29,20 @@ export const HOME_TEMPLATES: HomeTemplateEntry[] = [
     description:
       "Hero plein écran puis une grande mosaïque « sélection » comme pièce maîtresse, studio et catégories ensuite. Le travail d'abord.",
     Component: HomeShowcase,
+  },
+  {
+    key: "spread",
+    label: "Double page",
+    description:
+      "Hero plein écran, puis la sélection en galerie double page (covers gauche/droite qui parallaxent), catégories en pied.",
+    Component: HomeSpread,
+  },
+  {
+    key: "poster",
+    label: "Affiche",
+    description:
+      "Une seule grande image plein écran, nom et titre en surimpression, index de catégories minimal en pied.",
+    Component: HomePoster,
   },
 ];
 

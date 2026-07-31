@@ -1,6 +1,8 @@
 import { WorksClassic } from "./classic";
 import { WorksList } from "./list";
 import { WorksContactSheet } from "./contactSheet";
+import { WorksSpread } from "./spread";
+import { WorksFeature } from "./feature";
 import type { WorksTemplateEntry, WorksTemplateProps } from "./types";
 
 export type { WorksTemplateProps, WorksTemplateEntry } from "./types";
@@ -27,6 +29,20 @@ export const WORKS_TEMPLATES: WorksTemplateEntry[] = [
     description:
       "Grille dense de toutes les séries (une vignette par série, toutes catégories). Vue d'ensemble.",
     Component: WorksContactSheet,
+  },
+  {
+    key: "spread",
+    label: "Double page",
+    description:
+      "Toutes les séries en galerie double page : covers gauche/droite qui parallaxent au défilement.",
+    Component: WorksSpread,
+  },
+  {
+    key: "feature",
+    label: "Une à la une",
+    description:
+      "La première catégorie en grande affiche plein cadre, les autres en index de lignes.",
+    Component: WorksFeature,
   },
 ];
 
