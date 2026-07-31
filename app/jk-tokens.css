@@ -274,6 +274,23 @@ a:hover .jk-zoom {
   transform: translateX(5px);
 }
 
+/* Diaporama du hero : légère entrée en fondu de la légende à chaque changement
+   de slide (le `key` la remonte). L'image, elle, croise en opacité en inline. */
+@keyframes jk-hero-cap-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.jk-hero-caption {
+  display: inline-block;
+  animation: jk-hero-cap-in 0.8s var(--jk-ease) both;
+}
+
 /* Ligne de catégorie : passage au laiton au survol, 400ms (maquette). */
 .jk-cat-row {
   transition: color var(--jk-dur-hover) ease;
@@ -354,6 +371,15 @@ a:hover .jk-zoom {
 
   .jk-cat-link:hover .jk-cat-link__arrow {
     transform: none;
+  }
+
+  /* Diaporama du hero : pas d'entrée animée de la légende ni de fondu d'image
+     (l'intervalle est déjà neutralisé côté JS — une seule slide reste visible). */
+  .jk-hero-caption {
+    animation: none;
+  }
+  .jk-hero-slide {
+    transition: none;
   }
 }
 

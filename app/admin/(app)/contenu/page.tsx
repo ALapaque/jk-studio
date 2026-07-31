@@ -13,8 +13,7 @@ import {
   saveContact,
   saveFooter,
   saveHero,
-  saveHeroImage,
-  removeHeroImage,
+  saveHeroSlides,
   saveHome,
   saveNav,
   saveNotFound,
@@ -27,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ContentImageUploader } from "@/components/admin/ContentImageUploader";
-import { CoverFromLibrary } from "@/components/admin/CoverFromLibrary";
+import { HeroSlidesEditor } from "@/components/admin/HeroSlidesEditor";
 import { SwitchField } from "@/components/admin/fields/SwitchField";
 import { ProofClientsEditor } from "@/components/admin/ProofClientsEditor";
 
@@ -138,29 +137,32 @@ export default async function ContenuPage() {
               <CardContent className="p-5">
                 <h3 className="mb-4 text-base font-semibold text-foreground">Hero</h3>
 
-                {/* Image du hero (plein écran de l'accueil). Hors du form des
-                    textes : l'image et les textes s'enregistrent séparément et
-                    ne s'effacent pas l'un l'autre. Upload OU médiathèque. */}
-                <div className="mb-5 grid gap-3">
-                  <span className="text-sm font-medium">Image du hero</span>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <ContentImageUploader
-                      label="Hero"
-                      pathPrefix="hero"
-                      currentSrc={publicImageUrl(c.hero.heroPath) || undefined}
-                      save={saveHeroImage}
-                      remove={removeHeroImage}
-                      previewClassName="h-24 w-40"
-                      hint="Grande image plein écran en haut de l'accueil. Sans image, la première photo du portfolio est utilisée."
-                    />
-                    <CoverFromLibrary
-                      ownerId="hero"
-                      idField="scope"
-                      action={saveHeroImage}
+                {/* Diaporama du hero (plein écran de l'accueil). Hors du form
+                    des textes : le diaporama et les textes s'enregistrent
+                    séparément et ne s'effacent pas l'un l'autre. Plusieurs
+                    images (upload OU médiathèque), réordonnables, un petit texte
+                    par image. */}
+                <div className="mb-6 grid gap-2">
+                  <span className="text-sm font-medium">Diaporama du hero</span>
+                  <span className="text-xs text-muted-foreground">
+                    Plusieurs images qui défilent en haut de l&apos;accueil, dans
+                    l&apos;ordre choisi, chacune avec son petit texte. Sans image,
+                    la première photo du portfolio est utilisée.
+                  </span>
+                  <form action={saveHeroSlides} className="grid gap-3">
+                    <HeroSlidesEditor
+                      initial={
+                        c.hero.slides?.length
+                          ? c.hero.slides
+                          : c.hero.heroPath
+                            ? [{ path: c.hero.heroPath, caption: c.hero.heroCaption }]
+                            : []
+                      }
                       assets={assets}
                       folders={folders}
                     />
-                  </div>
+                    <Save />
+                  </form>
                 </div>
 
                 <form action={saveHero} className="grid gap-4">
@@ -176,23 +178,6 @@ export default async function ContenuPage() {
                     </Field>
                     <Field label="Ligne des catégories">
                       <Input name="categoriesLine" defaultValue={c.hero.categoriesLine} />
-                    </Field>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Field
-                      label="Légende du hero — sujet"
-                      hint="Partie en italique. Affichée quand une image de hero est définie."
-                    >
-                      <Input name="heroCaption" defaultValue={c.hero.heroCaption} />
-                    </Field>
-                    <Field
-                      label="Légende du hero — lieu"
-                      hint="Partie en capitales (ex. Bruxelles)."
-                    >
-                      <Input
-                        name="heroCaptionLocation"
-                        defaultValue={c.hero.heroCaptionLocation}
-                      />
                     </Field>
                   </div>
                   <Field label="Indice de défilement">
