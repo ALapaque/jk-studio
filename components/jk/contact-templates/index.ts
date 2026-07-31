@@ -1,6 +1,8 @@
 import { ContactClassic } from "./classic";
 import { ContactSplitCover } from "./splitCover";
 import { ContactMinimal } from "./minimal";
+import { ContactAside } from "./aside";
+import { ContactCard } from "./card";
 import type { ContactTemplateEntry, ContactTemplateProps } from "./types";
 
 export type { ContactTemplateProps, ContactTemplateEntry } from "./types";
@@ -27,6 +29,20 @@ export const CONTACT_TEMPLATES: ContactTemplateEntry[] = [
     description:
       "Une colonne étroite et centrée : accroche, titre, lead puis formulaire. Très sobre.",
     Component: ContactMinimal,
+  },
+  {
+    key: "aside",
+    label: "Titre & barre latérale",
+    description:
+      "Grand titre + lead en pleine largeur, formulaire au centre, coordonnées en barre latérale.",
+    Component: ContactAside,
+  },
+  {
+    key: "card",
+    label: "Carte",
+    description:
+      "Titre centré, formulaire dans une carte encadrée sur fond surface. Net et posé.",
+    Component: ContactCard,
   },
 ];
 
