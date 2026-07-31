@@ -3,6 +3,7 @@ import { SeriesContactSheet } from "./contactSheet";
 import { SeriesCinema } from "./cinema";
 import { SeriesSplit } from "./split";
 import { SeriesFrames } from "./frames";
+import { SeriesSpread } from "./spread";
 import type { SeriesTemplateEntry, SeriesTemplateProps } from "./types";
 
 export type { SeriesTemplateProps, SeriesTemplateEntry } from "./types";
@@ -47,6 +48,13 @@ export const SERIES_TEMPLATES: SeriesTemplateEntry[] = [
     description:
       "Beaucoup de vide, images encadrées au laiton et cartels centrés. Accrochage d'exposition.",
     Component: SeriesFrames,
+  },
+  {
+    key: "spread",
+    label: "Double page",
+    description:
+      "Photos deux par deux (gauche/droite) qui parallaxent à des vitesses différentes au défilement. Façon double page de magazine.",
+    Component: SeriesSpread,
   },
 ];
 

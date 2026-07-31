@@ -250,6 +250,18 @@ a.jk-cat-row:focus-visible {
   }
 }
 
+/* Galerie « double page » (SpreadGallery) : les deux colonnes se réempilent en
+   une seule sous 760px, et le décalage vertical de la colonne droite est
+   annulé (l'écart de grille suffit). */
+@media (max-width: 760px) {
+  .jk-spread-row {
+    grid-template-columns: 1fr !important;
+  }
+  .jk-spread-row > div {
+    margin-top: 0 !important;
+  }
+}
+
 /* Vignette : zoom 1.04 de l'image dans son cadre, 900ms (maquette). Le cadre
    porte l'overflow, l'image porte la transformation. */
 .jk-zoom {
