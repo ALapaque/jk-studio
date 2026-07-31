@@ -1,4 +1,6 @@
 import { WorksClassic } from "./classic";
+import { WorksList } from "./list";
+import { WorksContactSheet } from "./contactSheet";
 import type { WorksTemplateEntry, WorksTemplateProps } from "./types";
 
 export type { WorksTemplateProps, WorksTemplateEntry } from "./types";
@@ -11,6 +13,20 @@ export const WORKS_TEMPLATES: WorksTemplateEntry[] = [
     description:
       "Chaque catégorie en grande affiche (cover plein cadre + titre). La mise en page actuelle.",
     Component: WorksClassic,
+  },
+  {
+    key: "list",
+    label: "Index typographique",
+    description:
+      "Catégories en titres, séries listées dessous avec aperçu de la cover au survol. Dense, éditorial.",
+    Component: WorksList,
+  },
+  {
+    key: "contactSheet",
+    label: "Planche contact",
+    description:
+      "Grille dense de toutes les séries (une vignette par série, toutes catégories). Vue d'ensemble.",
+    Component: WorksContactSheet,
   },
 ];
 
