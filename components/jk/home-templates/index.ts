@@ -1,4 +1,6 @@
 import { HomeClassic } from "./classic";
+import { HomeEditorial } from "./editorial";
+import { HomeShowcase } from "./showcase";
 import type { HomeTemplateEntry, HomeTemplateProps } from "./types";
 
 export type { HomeTemplateProps, HomeTemplateEntry } from "./types";
@@ -11,6 +13,20 @@ export const HOME_TEMPLATES: HomeTemplateEntry[] = [
     description:
       "Hero plein écran, studio, sélection puis catégories. La mise en page actuelle.",
     Component: HomeClassic,
+  },
+  {
+    key: "editorial",
+    label: "Éditorial",
+    description:
+      "Hero réduit à une bande titrée (accroche + grand titre), catégories mises en avant, puis studio et sélection. Entrée par le sommaire.",
+    Component: HomeEditorial,
+  },
+  {
+    key: "showcase",
+    label: "Vitrine",
+    description:
+      "Hero plein écran puis une grande mosaïque « sélection » comme pièce maîtresse, studio et catégories ensuite. Le travail d'abord.",
+    Component: HomeShowcase,
   },
 ];
 
