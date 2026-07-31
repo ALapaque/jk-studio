@@ -1,4 +1,6 @@
 import { AboutClassic } from "./classic";
+import { AboutFeature } from "./feature";
+import { AboutManifesto } from "./manifesto";
 import type { AboutTemplateEntry, AboutTemplateProps } from "./types";
 
 export type { AboutTemplateProps, AboutTemplateEntry } from "./types";
@@ -12,6 +14,20 @@ export const ABOUT_TEMPLATES: AboutTemplateEntry[] = [
     description:
       "Portrait en situation à gauche, texte à la première personne à droite. La mise en page actuelle.",
     Component: AboutClassic,
+  },
+  {
+    key: "feature",
+    label: "Grand portrait",
+    description:
+      "Portrait plein cadre en ouverture, titre en surimpression, récit en colonne. Cinématographique.",
+    Component: AboutFeature,
+  },
+  {
+    key: "manifesto",
+    label: "Manifeste",
+    description:
+      "Sans portrait : colonne étroite, récit puis principes en gros et faits en pied. Une déclaration.",
+    Component: AboutManifesto,
   },
 ];
 

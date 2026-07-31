@@ -1,4 +1,6 @@
 import { CategoryClassic } from "./classic";
+import { CategorySplit } from "./split";
+import { CategoryGallery } from "./gallery";
 import type { CategoryTemplateEntry, CategoryTemplateProps } from "./types";
 
 export type { CategoryTemplateProps, CategoryTemplateEntry } from "./types";
@@ -11,6 +13,20 @@ export const CATEGORY_TEMPLATES: CategoryTemplateEntry[] = [
     description:
       "En-tête en cover, liste des séries puis sélection de médias. La mise en page actuelle.",
     Component: CategoryClassic,
+  },
+  {
+    key: "split",
+    label: "Séries en cartes",
+    description:
+      "En-tête texte, séries en grille de cartes couverture (mini-affiches), puis sélection de médias.",
+    Component: CategorySplit,
+  },
+  {
+    key: "gallery",
+    label: "Médias d'abord",
+    description:
+      "Cover en bandeau, sélection de médias directs en tête, liste des séries en pied.",
+    Component: CategoryGallery,
   },
 ];
 
