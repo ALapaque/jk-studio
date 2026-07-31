@@ -342,31 +342,6 @@ export async function setCategoryCover(formData: FormData) {
   revalidateAll();
 }
 
-/** Marque/retire une photo « à la une » (cartes flottantes de l'accueil). */
-export async function toggleFeatured(formData: FormData) {
-  await assertUser();
-  const sb = createAdminSupabase();
-  const id = s(formData, "id");
-  const featured = formData.get("featured") === "true";
-  let featured_position = 0;
-  if (featured) {
-    const { data } = await sb
-      .from("photos")
-      .select("featured_position")
-      .eq("featured", true)
-      .order("featured_position", { ascending: false })
-      .limit(1);
-    featured_position =
-      ((data ?? [])[0]?.featured_position ?? -1) + 1;
-  }
-  const { error } = await sb
-    .from("photos")
-    .update({ featured, featured_position })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
-  revalidateAll();
-}
-
 // ============================================================ VIDEOS
 
 export async function addVideo(formData: FormData) {
@@ -519,13 +494,31 @@ export async function saveNav(formData: FormData) {
 
 export async function saveHero(formData: FormData) {
   await assertUser();
-  await upsertContent("hero", {
+  // `patchContent` (et non `upsertContent`) pour NE PAS écraser `heroPath`,
+  // enregistré à part par saveHeroImage. Les textes et l'image cohabitent ainsi
+  // sur la même clé `hero` sans se marcher dessus.
+  await patchContent("hero", {
     eyebrow: s(formData, "eyebrow"),
     titleLines: lines(formData, "titleLines"),
     coords: s(formData, "coords"),
     categoriesLine: s(formData, "categoriesLine"),
     scrollHint: s(formData, "scrollHint"),
+    heroCaption: s(formData, "heroCaption"),
+    heroCaptionLocation: s(formData, "heroCaptionLocation"),
   });
+}
+
+/** Image du hero de l'accueil : clé Storage stockée dans `site_content.hero`.
+ *  Calqué sur saveAboutPortrait — upload direct ou choix médiathèque envoient
+ *  tous deux `storage_path`. */
+export async function saveHeroImage(formData: FormData) {
+  await assertUser();
+  await patchContent("hero", { heroPath: s(formData, "storage_path") });
+}
+
+export async function removeHeroImage() {
+  await assertUser();
+  await patchContent("hero", { heroPath: "" });
 }
 
 export async function saveHome(formData: FormData) {
