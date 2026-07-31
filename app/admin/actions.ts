@@ -636,11 +636,28 @@ export async function saveFooter(formData: FormData) {
 export async function saveAppearance(formData: FormData) {
   await assertUser();
   const theme = s(formData, "defaultTheme");
-  await upsertContent("appearance", {
+  // `patchContent` : préserve `pageTemplates` (enregistré à part par
+  // savePageTemplates) sur la même clé `appearance`.
+  await patchContent("appearance", {
     defaultTheme: theme === "light" ? "light" : "dark",
     accent: s(formData, "accent") || "#d6bc8c",
     grain: formData.get("grain") === "on",
     glow: Number(formData.get("glow")) || 1,
+  });
+}
+
+/** Mise en page globale des pages singleton. Cinq champs `tpl_<page>`, repli
+ *  `classic`. `patchContent` pour ne pas écraser thème/accent/grain/halo. */
+export async function savePageTemplates(formData: FormData) {
+  await assertUser();
+  await patchContent("appearance", {
+    pageTemplates: {
+      home: s(formData, "tpl_home") || "classic",
+      works: s(formData, "tpl_works") || "classic",
+      category: s(formData, "tpl_category") || "classic",
+      about: s(formData, "tpl_about") || "classic",
+      contact: s(formData, "tpl_contact") || "classic",
+    },
   });
 }
 

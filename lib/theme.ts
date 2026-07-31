@@ -4,6 +4,25 @@
 
 export type Theme = "dark" | "light";
 
+/** Clés de mise en page choisies globalement pour les pages singleton
+ *  (accueil, portfolio, page catégorie, à-propos, contact). Chaque valeur est
+ *  la clé d'un template de son registre respectif ; repli `"classic"`. */
+export interface PageTemplates {
+  home: string;
+  works: string;
+  category: string;
+  about: string;
+  contact: string;
+}
+
+export const DEFAULT_PAGE_TEMPLATES: PageTemplates = {
+  home: "classic",
+  works: "classic",
+  category: "classic",
+  about: "classic",
+  contact: "classic",
+};
+
 export interface Appearance {
   /** Thème par défaut au premier chargement. */
   defaultTheme: Theme;
@@ -13,6 +32,8 @@ export interface Appearance {
   grain: boolean;
   /** Intensité du halo, 0–2 (1 = valeur maquette). */
   glow: number;
+  /** Mise en page choisie par page singleton (repli par clé côté lecture). */
+  pageTemplates: PageTemplates;
 }
 
 export const DEFAULT_APPEARANCE: Appearance = {
@@ -20,6 +41,7 @@ export const DEFAULT_APPEARANCE: Appearance = {
   accent: "#d6bc8c",
   grain: true,
   glow: 1,
+  pageTemplates: DEFAULT_PAGE_TEMPLATES,
 };
 
 interface Palette {
