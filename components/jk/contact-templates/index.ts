@@ -1,4 +1,6 @@
 import { ContactClassic } from "./classic";
+import { ContactSplitCover } from "./splitCover";
+import { ContactMinimal } from "./minimal";
 import type { ContactTemplateEntry, ContactTemplateProps } from "./types";
 
 export type { ContactTemplateProps, ContactTemplateEntry } from "./types";
@@ -11,6 +13,20 @@ export const CONTACT_TEMPLATES: ContactTemplateEntry[] = [
     description:
       "Accroche et coordonnées à gauche, formulaire à droite. La mise en page actuelle.",
     Component: ContactClassic,
+  },
+  {
+    key: "split-cover",
+    label: "Panneau & carte",
+    description:
+      "Panneau plein à gauche (accroche + coordonnées en grand), formulaire en carte à droite.",
+    Component: ContactSplitCover,
+  },
+  {
+    key: "minimal",
+    label: "Minimal centré",
+    description:
+      "Une colonne étroite et centrée : accroche, titre, lead puis formulaire. Très sobre.",
+    Component: ContactMinimal,
   },
 ];
 
