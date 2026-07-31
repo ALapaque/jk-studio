@@ -8,6 +8,7 @@ import { HomeSidebar } from "./sidebar";
 import { HomeHorizontalTemplate } from "./horizontal";
 import { HomeMenu } from "./menu";
 import { HomeSpotlightTemplate } from "./spotlight";
+import { HomeMargauxGatti } from "./margauxgatti";
 import type { HomeTemplateEntry, HomeTemplateProps } from "./types";
 
 export type { HomeTemplateProps, HomeTemplateEntry } from "./types";
@@ -83,6 +84,13 @@ export const HOME_TEMPLATES: HomeTemplateEntry[] = [
     description:
       "Une catégorie à la fois en plein écran, navigation numérotée (01/05) et flèches précédent/suivant.",
     Component: HomeSpotlightTemplate,
+  },
+  {
+    key: "margauxgatti",
+    label: "Margaux Gatti",
+    description:
+      "D'après margauxgatti.fr : hero éditorial deux colonnes (services + portrait), courte présentation centrée, rangée « dernières histoires », puis chaque catégorie en grande section pleine largeur avec image et texte qui alternent de côté.",
+    Component: HomeMargauxGatti,
   },
 ];
 
