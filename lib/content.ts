@@ -4,6 +4,11 @@
 
 import "server-only";
 import { Appearance, DEFAULT_APPEARANCE } from "./theme";
+import {
+  HomeLayout,
+  DEFAULT_HOME_LAYOUT,
+  normalizeHomeLayout,
+} from "./home-layout";
 import { isSupabaseConfigured } from "./env";
 import { createPublicSupabase } from "./supabase/server";
 
@@ -57,6 +62,10 @@ export interface SiteContent {
     categoriesTitle: string;
     categoriesLink: string;
   };
+  /** Composition de l'accueil pour le template « builder » : sections ordonnées,
+   *  activables, avec options (hero plein écran, variante). Réglée depuis
+   *  Contenu → Accueil. */
+  homeLayout: HomeLayout;
   studio: {
     lead: string;
     leadEm: string;
@@ -169,6 +178,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     categoriesTitle: "Catégories",
     categoriesLink: "Index complet →",
   },
+  homeLayout: DEFAULT_HOME_LAYOUT,
   studio: {
     lead: "Je photographie ce qui ne se rejoue pas — ",
     leadEm: "un regard, une main, la seconde juste avant.",
@@ -267,6 +277,7 @@ export const CONTENT_KEYS = [
   "nav",
   "hero",
   "home",
+  "homeLayout",
   "studio",
   "proof",
   "prints",
@@ -304,6 +315,7 @@ export async function getSiteContent(): Promise<SiteContent> {
     nav: merge(DEFAULT_CONTENT.nav, map.nav),
     hero: merge(DEFAULT_CONTENT.hero, map.hero),
     home: merge(DEFAULT_CONTENT.home, map.home),
+    homeLayout: normalizeHomeLayout(map.homeLayout),
     studio: merge(DEFAULT_CONTENT.studio, map.studio),
     proof: merge(DEFAULT_CONTENT.proof, map.proof),
     prints: merge(DEFAULT_CONTENT.prints, map.prints),
