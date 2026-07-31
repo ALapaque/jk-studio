@@ -31,7 +31,15 @@ const fieldStyle: React.CSSProperties = {
   outline: "none",
 };
 
-export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
+export function ContactForm({
+  projectTypes,
+  preview = false,
+}: {
+  projectTypes: string[];
+  /** En aperçu (iframe admin) : la soumission est neutralisée — on ne veut pas
+   *  déclencher un vrai envoi (rate-limit, insertion en base, email). */
+  preview?: boolean;
+}) {
   const [projType, setProjType] = useState(projectTypes[0] ?? "Autre");
   const [sent, setSent] = useState(false);
   const [pending, setPending] = useState(false);
@@ -39,7 +47,7 @@ export function ContactForm({ projectTypes }: { projectTypes: string[] }) {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (pending) return;
+    if (preview || pending) return;
     setError(null);
     setPending(true);
     const formData = new FormData(e.currentTarget);
