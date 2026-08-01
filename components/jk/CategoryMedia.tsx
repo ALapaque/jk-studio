@@ -21,17 +21,24 @@ export function CategoryMedia({ media }: { media: Media[] }) {
       {photos.length > 0 && (
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fill, minmax(min(100%, 240px), 1fr))",
-            gap: "clamp(20px, 2.4vw, 34px)",
-            // Aligne les vignettes en haut : chaque photo garde sa propre
-            // hauteur (portrait ou paysage) sans être étirée à la ligne.
-            alignItems: "start",
+            // Mosaïque « masonry » : des colonnes de largeur égale où les photos
+            // s'empilent selon leur hauteur réelle. Les paysages ne laissent
+            // plus de blanc sous eux (contrairement à une grille alignée) et
+            // chaque photo garde son orientation, sans recadrage.
+            columnWidth: "min(100%, 260px)",
+            columnGap: "clamp(20px, 2.4vw, 34px)",
           }}
         >
           {photos.map((p, i) => (
-            <Reveal as="div" key={p.id} delay={Math.min(i, 8) * 60}>
+            <Reveal
+              as="div"
+              key={p.id}
+              delay={Math.min(i, 8) * 60}
+              style={{
+                breakInside: "avoid",
+                marginBottom: "clamp(20px, 2.4vw, 34px)",
+              }}
+            >
               <figure
                 className="jk-media-tile"
                 style={{ margin: 0, display: "grid", gap: 12 }}
@@ -50,7 +57,7 @@ export function CategoryMedia({ media }: { media: Media[] }) {
                     src={p.src}
                     alt={p.alt}
                     fill
-                    sizes="(max-width: 760px) 50vw, 240px"
+                    sizes="(max-width: 760px) 100vw, 260px"
                     className="jk-zoom"
                     placeholder={p.blurDataURL ? "blur" : "empty"}
                     blurDataURL={p.blurDataURL || undefined}
