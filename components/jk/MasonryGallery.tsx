@@ -64,76 +64,89 @@ export function MasonryGallery({
   return (
     <>
       <div className="jk-masonry">
-        {photos.map((p, i) => (
-          <Reveal
-            as="div"
-            key={p.id}
-            delay={Math.min(i, 8) * 60}
-            style={{
-              breakInside: "avoid",
-              marginBottom: "clamp(20px, 2.4vw, 34px)",
-            }}
-          >
-            <figure
-              className="jk-media-tile"
-              style={{ margin: 0, display: "grid", gap: 12 }}
+        {photos.map((p, i) => {
+          const delay = Math.min(i, 8) * 70;
+          return (
+            <Reveal
+              as="div"
+              key={p.id}
+              className="jk-gallery-reveal"
+              delay={delay}
+              style={{
+                breakInside: "avoid",
+                marginBottom: "clamp(20px, 2.4vw, 34px)",
+              }}
             >
-              <button
-                type="button"
-                onClick={() => setOpen(i)}
-                aria-label={`Agrandir la photo${
-                  p.subject ? ` : ${p.subject}` : ""
-                }`}
-                className="jk-tile-btn"
-                style={{
-                  position: "relative",
-                  display: "block",
-                  width: "100%",
-                  padding: 0,
-                  border: 0,
-                  aspectRatio: p.ar.replace(" / ", "/"),
-                  overflow: "hidden",
-                  background: "var(--jk-surface)",
-                }}
+              <figure
+                className="jk-media-tile"
+                style={{ margin: 0, display: "grid", gap: 12 }}
               >
-                {numbered && (
+                <button
+                  type="button"
+                  onClick={() => setOpen(i)}
+                  aria-label={`Agrandir la photo${
+                    p.subject ? ` : ${p.subject}` : ""
+                  }`}
+                  className="jk-tile-btn"
+                  style={{
+                    position: "relative",
+                    display: "block",
+                    width: "100%",
+                    padding: 0,
+                    border: 0,
+                    aspectRatio: p.ar.replace(" / ", "/"),
+                    overflow: "hidden",
+                    background: "var(--jk-surface)",
+                  }}
+                >
+                  {numbered && (
+                    <span
+                      aria-hidden
+                      style={{
+                        position: "absolute",
+                        top: 10,
+                        left: 12,
+                        zIndex: 2,
+                        fontSize: 10,
+                        letterSpacing: "0.2em",
+                        color: "var(--jk-brass)",
+                        mixBlendMode: "difference",
+                      }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  )}
+                  {/* Couche « pose » : porte le dézoom de révélation, séparée de
+                      l'image pour ne pas entrer en conflit avec le zoom au
+                      survol (qui reste sur .jk-zoom). Le délai suit celui du
+                      cadre pour un enchaînement cohérent. */}
                   <span
-                    aria-hidden
-                    style={{
-                      position: "absolute",
-                      top: 10,
-                      left: 12,
-                      zIndex: 2,
-                      fontSize: 10,
-                      letterSpacing: "0.2em",
-                      color: "var(--jk-brass)",
-                      mixBlendMode: "difference",
-                    }}
+                    className="jk-reveal-media"
+                    style={{ transitionDelay: `${delay}ms` }}
                   >
-                    {String(i + 1).padStart(2, "0")}
+                    <Image
+                      src={p.src}
+                      alt={p.alt}
+                      fill
+                      sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      className="jk-zoom"
+                      placeholder={p.blurDataURL ? "blur" : "empty"}
+                      blurDataURL={p.blurDataURL || undefined}
+                      style={{ objectFit: "cover" }}
+                    />
                   </span>
-                )}
-                <Image
-                  src={p.src}
-                  alt={p.alt}
-                  fill
-                  sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                  className="jk-zoom"
-                  placeholder={p.blurDataURL ? "blur" : "empty"}
-                  blurDataURL={p.blurDataURL || undefined}
-                  style={{ objectFit: "cover" }}
-                />
-              </button>
-              <figcaption>
-                <Caption
-                  subject={p.subject}
-                  location={p.place}
-                  variant="thumbnail"
-                />
-              </figcaption>
-            </figure>
-          </Reveal>
-        ))}
+                </button>
+                <figcaption>
+                  <Caption
+                    subject={p.subject}
+                    location={p.place}
+                    variant="thumbnail"
+                  />
+                </figcaption>
+              </figure>
+            </Reveal>
+          );
+        })}
       </div>
 
       {active && (

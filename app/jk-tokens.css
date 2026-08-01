@@ -311,6 +311,38 @@ a:hover .jk-zoom {
   transform: scale(var(--jk-zoom));
 }
 
+/* Révélation de galerie — deux couches qui donnent un effet « respiration ».
+   1) Le cadre monte en fondu, un peu plus ample que la révélation par défaut. */
+.jk-reveal.jk-gallery-reveal {
+  transform: translateY(34px);
+  transition:
+    opacity 700ms var(--jk-ease),
+    transform 900ms var(--jk-ease);
+}
+.jk-reveal.jk-gallery-reveal[data-visible="true"] {
+  transform: none;
+}
+/* 2) L'image se pose en douceur (léger dézoom depuis 1.12), plus lentement que
+   le fondu du cadre — d'où l'impression de « pose » à l'entrée. Le cadre porte
+   déjà overflow:hidden, donc le sur-cadrage ne déborde jamais. */
+.jk-reveal-media {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.12);
+  transition: transform 1200ms var(--jk-ease);
+  will-change: transform;
+}
+.jk-reveal.jk-gallery-reveal[data-visible="true"] .jk-reveal-media {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .jk-reveal.jk-gallery-reveal,
+  .jk-reveal-media {
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Visionneuse plein écran (lightbox) : voile sombre, image contenue, boutons
    discrets. Neutralisée par le thème (toujours sombre pour mettre la photo en
    valeur). */
