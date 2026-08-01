@@ -332,6 +332,17 @@ a:hover .jk-zoom {
   transition: transform 1200ms var(--jk-ease);
   will-change: transform;
 }
+/* Calque flou (aperçu LQIP) derrière l'image de galerie. Flou réel + léger
+   sur-cadrage pour masquer les bords, afin qu'il soit nettement visible tant
+   que l'image nette n'a pas fondu par-dessus. */
+.jk-blur-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(14px);
+  transform: scale(1.1);
+}
 .jk-reveal.jk-gallery-reveal[data-visible="true"] .jk-reveal-media {
   transform: none;
 }
