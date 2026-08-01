@@ -38,6 +38,9 @@ export function SeriesContactSheet({
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 240px), 1fr))",
           gap: "clamp(20px, 2.4vw, 34px)",
+          // Vignettes alignées en haut : chaque image garde son orientation
+          // (portrait/paysage) au lieu d'être recadrée à un format unique.
+          alignItems: "start",
         }}
       >
         {photos.map((p, i) => (
@@ -46,7 +49,7 @@ export function SeriesContactSheet({
               <div
                 style={{
                   position: "relative",
-                  aspectRatio: "4 / 5",
+                  aspectRatio: p.ar.replace(" / ", "/"),
                   overflow: "hidden",
                   background: "var(--jk-surface)",
                 }}
