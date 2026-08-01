@@ -35,16 +35,24 @@ export function SeriesContactSheet({
       <section
         style={{
           padding: "clamp(48px, 7vw, 88px) var(--jk-gap-page) 0",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 240px), 1fr))",
-          gap: "clamp(20px, 2.4vw, 34px)",
-          // Vignettes alignées en haut : chaque image garde son orientation
-          // (portrait/paysage) au lieu d'être recadrée à un format unique.
-          alignItems: "start",
+          // Mosaïque « masonry » : colonnes de largeur égale, images empilées
+          // selon leur hauteur réelle. Chaque image garde son orientation
+          // (portrait/paysage) sans recadrage, et les paysages ne laissent plus
+          // de blanc sous eux.
+          columnWidth: "min(100%, 260px)",
+          columnGap: "clamp(20px, 2.4vw, 34px)",
         }}
       >
         {photos.map((p, i) => (
-          <Reveal as="div" key={p.id} delay={Math.min(i, 8) * 60}>
+          <Reveal
+            as="div"
+            key={p.id}
+            delay={Math.min(i, 8) * 60}
+            style={{
+              breakInside: "avoid",
+              marginBottom: "clamp(20px, 2.4vw, 34px)",
+            }}
+          >
             <figure style={{ margin: 0, display: "grid", gap: 12 }}>
               <div
                 style={{
@@ -73,7 +81,7 @@ export function SeriesContactSheet({
                   src={p.src}
                   alt={p.alt}
                   fill
-                  sizes="(max-width: 760px) 50vw, 240px"
+                  sizes="(max-width: 760px) 100vw, 260px"
                   className="jk-zoom"
                   placeholder={p.blurDataURL ? "blur" : "empty"}
                   blurDataURL={p.blurDataURL || undefined}
