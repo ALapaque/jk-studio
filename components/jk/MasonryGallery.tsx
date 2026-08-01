@@ -99,18 +99,20 @@ function GalleryTile({
               {String(index + 1).padStart(2, "0")}
             </span>
           )}
-          {/* Couche « pose » : porte l'aperçu flou en fond + le dézoom de
-              révélation, séparée de l'image pour ne pas entrer en conflit avec
-              le zoom au survol (qui reste sur .jk-zoom). */}
+          {/* Couche « pose » : porte le dézoom de révélation, séparée de l'image
+              pour ne pas entrer en conflit avec le zoom au survol (.jk-zoom). */}
           <span
             className="jk-reveal-media"
-            style={{
-              transitionDelay: `${delay}ms`,
-              backgroundImage: `url("${blur}")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
+            style={{ transitionDelay: `${delay}ms` }}
           >
+            {/* Calque flou dédié, DERRIÈRE l'image : l'aperçu (LQIP par photo,
+                sinon repli) est réellement flouté (filter) pour être bien
+                visible tant que l'image nette n'est pas apparue. */}
+            <span
+              aria-hidden
+              className="jk-blur-layer"
+              style={{ backgroundImage: `url("${blur}")` }}
+            />
             <Image
               ref={ref}
               src={photo.src}
