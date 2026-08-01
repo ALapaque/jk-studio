@@ -25,7 +25,14 @@ export function CategoryMedia({ media }: { media: Media[] }) {
             // s'empilent selon leur hauteur réelle. Les paysages ne laissent
             // plus de blanc sous eux (contrairement à une grille alignée) et
             // chaque photo garde son orientation, sans recadrage.
-            columnWidth: "min(100%, 260px)",
+            //
+            // Largeur de colonne en px SIMPLE (pas de min()/clamp) : certains
+            // navigateurs (Safari) ignorent les fonctions mathématiques dans
+            // `column-width` et retombent alors sur une seule colonne pleine
+            // largeur — d'où des photos étirées et pixelisées. Sur mobile, une
+            // colonne de 300px plus large que l'écran donne naturellement une
+            // seule colonne pleine largeur.
+            columnWidth: "300px",
             columnGap: "clamp(20px, 2.4vw, 34px)",
           }}
         >
@@ -57,7 +64,7 @@ export function CategoryMedia({ media }: { media: Media[] }) {
                     src={p.src}
                     alt={p.alt}
                     fill
-                    sizes="(max-width: 760px) 100vw, 260px"
+                    sizes="(max-width: 760px) 100vw, 400px"
                     className="jk-zoom"
                     placeholder={p.blurDataURL ? "blur" : "empty"}
                     blurDataURL={p.blurDataURL || undefined}

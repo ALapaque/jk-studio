@@ -38,8 +38,10 @@ export function SeriesContactSheet({
           // Mosaïque « masonry » : colonnes de largeur égale, images empilées
           // selon leur hauteur réelle. Chaque image garde son orientation
           // (portrait/paysage) sans recadrage, et les paysages ne laissent plus
-          // de blanc sous eux.
-          columnWidth: "min(100%, 260px)",
+          // de blanc sous eux. Largeur en px simple : les fonctions math dans
+          // `column-width` sont ignorées par Safari (→ une seule colonne pleine
+          // largeur, photos étirées/pixelisées).
+          columnWidth: "300px",
           columnGap: "clamp(20px, 2.4vw, 34px)",
         }}
       >
@@ -81,7 +83,7 @@ export function SeriesContactSheet({
                   src={p.src}
                   alt={p.alt}
                   fill
-                  sizes="(max-width: 760px) 100vw, 260px"
+                  sizes="(max-width: 760px) 100vw, 400px"
                   className="jk-zoom"
                   placeholder={p.blurDataURL ? "blur" : "empty"}
                   blurDataURL={p.blurDataURL || undefined}
