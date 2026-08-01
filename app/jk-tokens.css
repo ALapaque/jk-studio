@@ -278,6 +278,86 @@ a:hover .jk-zoom {
   transform: scale(var(--jk-zoom));
 }
 
+/* Mosaïque « masonry » : colonnes plafonnées par paliers (jamais plus de 4,
+   même sur très grand écran). `column-count` (entier simple) est fiable partout
+   — contrairement aux fonctions math dans `column-width`, ignorées par Safari.
+   Chaque vignette porte `break-inside: avoid` pour ne pas être coupée. */
+.jk-masonry {
+  column-count: 1;
+  column-gap: clamp(20px, 2.4vw, 34px);
+}
+@media (min-width: 560px) {
+  .jk-masonry {
+    column-count: 2;
+  }
+}
+@media (min-width: 900px) {
+  .jk-masonry {
+    column-count: 3;
+  }
+}
+@media (min-width: 1280px) {
+  .jk-masonry {
+    column-count: 4;
+  }
+}
+
+/* Vignette cliquable de galerie : curseur loupe, et même zoom au survol que les
+   tuiles liées. */
+.jk-tile-btn {
+  cursor: zoom-in;
+}
+.jk-tile-btn:hover .jk-zoom {
+  transform: scale(var(--jk-zoom));
+}
+
+/* Visionneuse plein écran (lightbox) : voile sombre, image contenue, boutons
+   discrets. Neutralisée par le thème (toujours sombre pour mettre la photo en
+   valeur). */
+.jk-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 7, 6, 0.94);
+  animation: jk-lb-in 200ms var(--jk-ease);
+}
+@keyframes jk-lb-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.jk-lightbox__btn {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(239, 233, 225, 0.28);
+  border-radius: 999px;
+  background: rgba(20, 17, 14, 0.5);
+  color: #efe9e1;
+  cursor: pointer;
+  transition:
+    border-color var(--jk-dur-hover) var(--jk-ease),
+    background var(--jk-dur-hover) var(--jk-ease);
+}
+.jk-lightbox__btn:hover {
+  border-color: var(--jk-brass);
+  background: rgba(20, 17, 14, 0.8);
+}
+@media (prefers-reduced-motion: reduce) {
+  .jk-lightbox {
+    animation: none;
+  }
+}
+
 /* Titre de catégorie cliquable (index /travaux) : la flèche glisse au survol. */
 .jk-cat-link__arrow {
   transition: transform var(--jk-dur-hover) var(--jk-ease);
