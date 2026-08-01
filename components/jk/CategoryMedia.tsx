@@ -25,6 +25,9 @@ export function CategoryMedia({ media }: { media: Media[] }) {
             gridTemplateColumns:
               "repeat(auto-fill, minmax(min(100%, 240px), 1fr))",
             gap: "clamp(20px, 2.4vw, 34px)",
+            // Aligne les vignettes en haut : chaque photo garde sa propre
+            // hauteur (portrait ou paysage) sans être étirée à la ligne.
+            alignItems: "start",
           }}
         >
           {photos.map((p, i) => (
@@ -36,7 +39,9 @@ export function CategoryMedia({ media }: { media: Media[] }) {
                 <div
                   style={{
                     position: "relative",
-                    aspectRatio: "4 / 5",
+                    // Ratio réel de la photo : les portraits restent verticaux,
+                    // les paysages horizontaux — on ne recadre plus en 4/5.
+                    aspectRatio: p.ar.replace(" / ", "/"),
                     overflow: "hidden",
                     background: "var(--jk-surface)",
                   }}
