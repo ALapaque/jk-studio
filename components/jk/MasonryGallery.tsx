@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { blurProps } from "@/lib/blur";
 import { Caption } from "./Caption";
 import { Reveal } from "./Reveal";
 
@@ -130,8 +131,7 @@ export function MasonryGallery({
                       fill
                       sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, (max-width: 1280px) 33vw, 25vw"
                       className="jk-zoom"
-                      placeholder={p.blurDataURL ? "blur" : "empty"}
-                      blurDataURL={p.blurDataURL || undefined}
+                      {...blurProps(p.blurDataURL)}
                       style={{ objectFit: "cover" }}
                     />
                   </span>
@@ -219,6 +219,7 @@ export function MasonryGallery({
                 fill
                 sizes="92vw"
                 priority
+                {...blurProps(active.blurDataURL)}
                 style={{ objectFit: "contain" }}
               />
             </div>
