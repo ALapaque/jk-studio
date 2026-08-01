@@ -337,7 +337,8 @@ a:hover .jk-zoom {
 }
 @media (prefers-reduced-motion: reduce) {
   .jk-reveal.jk-gallery-reveal,
-  .jk-reveal-media {
+  .jk-reveal-media,
+  .jk-fade-img {
     transform: none;
     transition: none;
   }

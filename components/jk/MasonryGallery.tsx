@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { blurProps } from "@/lib/blur";
+import { BLUR_FALLBACK, blurProps } from "@/lib/blur";
 import { Caption } from "./Caption";
 import { Reveal } from "./Reveal";
 
@@ -17,6 +17,127 @@ export interface GalleryPhoto {
   blurDataURL?: string;
   /** Ratio « L / H », ex. « 900 / 1200 ». */
   ar: string;
+}
+
+/** Une vignette de la mosaïque. L'aperçu flou (LQIP par photo, sinon repli) est
+ *  posé en FOND de la tuile et reste visible tant que l'image n'a pas fini de
+ *  charger ; l'image nette apparaît ensuite en fondu par-dessus. C'est ce fondu
+ *  qui rend le flou perceptible, même quand le chargement est très rapide —
+ *  contrairement au placeholder natif de next/image, retiré d'un coup. */
+function GalleryTile({
+  photo,
+  index,
+  numbered,
+  onOpen,
+}: {
+  photo: GalleryPhoto;
+  index: number;
+  numbered: boolean;
+  onOpen: () => void;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const ref = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    // Image déjà en cache : `onLoad` peut ne pas se déclencher après
+    // l'hydratation — on lit alors `complete` directement.
+    if (ref.current?.complete) setLoaded(true);
+    // Filet de sécurité : jamais d'image bloquée invisible si `onLoad` rate.
+    const t = setTimeout(() => setLoaded(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const delay = Math.min(index, 8) * 70;
+  const blur = photo.blurDataURL || BLUR_FALLBACK;
+
+  return (
+    <Reveal
+      as="div"
+      className="jk-gallery-reveal"
+      delay={delay}
+      style={{
+        breakInside: "avoid",
+        marginBottom: "clamp(20px, 2.4vw, 34px)",
+      }}
+    >
+      <figure
+        className="jk-media-tile"
+        style={{ margin: 0, display: "grid", gap: 12 }}
+      >
+        <button
+          type="button"
+          onClick={onOpen}
+          aria-label={`Agrandir la photo${
+            photo.subject ? ` : ${photo.subject}` : ""
+          }`}
+          className="jk-tile-btn"
+          style={{
+            position: "relative",
+            display: "block",
+            width: "100%",
+            padding: 0,
+            border: 0,
+            aspectRatio: photo.ar.replace(" / ", "/"),
+            overflow: "hidden",
+            background: "var(--jk-surface)",
+          }}
+        >
+          {numbered && (
+            <span
+              aria-hidden
+              style={{
+                position: "absolute",
+                top: 10,
+                left: 12,
+                zIndex: 2,
+                fontSize: 10,
+                letterSpacing: "0.2em",
+                color: "var(--jk-brass)",
+                mixBlendMode: "difference",
+              }}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          )}
+          {/* Couche « pose » : porte l'aperçu flou en fond + le dézoom de
+              révélation, séparée de l'image pour ne pas entrer en conflit avec
+              le zoom au survol (qui reste sur .jk-zoom). */}
+          <span
+            className="jk-reveal-media"
+            style={{
+              transitionDelay: `${delay}ms`,
+              backgroundImage: `url("${blur}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <Image
+              ref={ref}
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, (max-width: 1280px) 33vw, 25vw"
+              className="jk-zoom jk-fade-img"
+              onLoad={() => setLoaded(true)}
+              onError={() => setLoaded(true)}
+              style={{
+                objectFit: "cover",
+                opacity: loaded ? 1 : 0,
+                transition: "opacity var(--jk-dur-zoom) var(--jk-ease)",
+              }}
+            />
+          </span>
+        </button>
+        <figcaption>
+          <Caption
+            subject={photo.subject}
+            location={photo.place}
+            variant="thumbnail"
+          />
+        </figcaption>
+      </figure>
+    </Reveal>
+  );
 }
 
 /** Galerie mosaïque cliquable : mise en page « masonry » (colonnes plafonnées à
@@ -64,89 +185,20 @@ export function MasonryGallery({
 
   return (
     <>
+      <noscript>
+        {/* Sans JS, `onLoad` ne s'exécute pas : on force l'image visible. */}
+        <style>{`.jk-fade-img{opacity:1 !important}`}</style>
+      </noscript>
       <div className="jk-masonry">
-        {photos.map((p, i) => {
-          const delay = Math.min(i, 8) * 70;
-          return (
-            <Reveal
-              as="div"
-              key={p.id}
-              className="jk-gallery-reveal"
-              delay={delay}
-              style={{
-                breakInside: "avoid",
-                marginBottom: "clamp(20px, 2.4vw, 34px)",
-              }}
-            >
-              <figure
-                className="jk-media-tile"
-                style={{ margin: 0, display: "grid", gap: 12 }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpen(i)}
-                  aria-label={`Agrandir la photo${
-                    p.subject ? ` : ${p.subject}` : ""
-                  }`}
-                  className="jk-tile-btn"
-                  style={{
-                    position: "relative",
-                    display: "block",
-                    width: "100%",
-                    padding: 0,
-                    border: 0,
-                    aspectRatio: p.ar.replace(" / ", "/"),
-                    overflow: "hidden",
-                    background: "var(--jk-surface)",
-                  }}
-                >
-                  {numbered && (
-                    <span
-                      aria-hidden
-                      style={{
-                        position: "absolute",
-                        top: 10,
-                        left: 12,
-                        zIndex: 2,
-                        fontSize: 10,
-                        letterSpacing: "0.2em",
-                        color: "var(--jk-brass)",
-                        mixBlendMode: "difference",
-                      }}
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  )}
-                  {/* Couche « pose » : porte le dézoom de révélation, séparée de
-                      l'image pour ne pas entrer en conflit avec le zoom au
-                      survol (qui reste sur .jk-zoom). Le délai suit celui du
-                      cadre pour un enchaînement cohérent. */}
-                  <span
-                    className="jk-reveal-media"
-                    style={{ transitionDelay: `${delay}ms` }}
-                  >
-                    <Image
-                      src={p.src}
-                      alt={p.alt}
-                      fill
-                      sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                      className="jk-zoom"
-                      {...blurProps(p.blurDataURL)}
-                      style={{ objectFit: "cover" }}
-                    />
-                  </span>
-                </button>
-                <figcaption>
-                  <Caption
-                    subject={p.subject}
-                    location={p.place}
-                    variant="thumbnail"
-                  />
-                </figcaption>
-              </figure>
-            </Reveal>
-          );
-        })}
+        {photos.map((p, i) => (
+          <GalleryTile
+            key={p.id}
+            photo={p}
+            index={i}
+            numbered={numbered}
+            onOpen={() => setOpen(i)}
+          />
+        ))}
       </div>
 
       {active && (
