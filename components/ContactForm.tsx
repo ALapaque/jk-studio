@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { submitContact } from "@/app/(refonte)/contact/actions";
 
 /* Formulaire de contact de la refonte.
@@ -44,6 +44,12 @@ export function ContactForm({
   const [sent, setSent] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Horodatage d'affichage du formulaire : sert au serveur à repérer une
+  // soumission trop rapide pour un humain (bot). Posé au montage côté client.
+  const shownAt = useRef(0);
+  useEffect(() => {
+    shownAt.current = Date.now();
+  }, []);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,6 +57,10 @@ export function ContactForm({
     setError(null);
     setPending(true);
     const formData = new FormData(e.currentTarget);
+    formData.set(
+      "elapsed",
+      String(shownAt.current ? Date.now() - shownAt.current : 0),
+    );
     const res = await submitContact(formData);
     setPending(false);
     if (res.ok) setSent(true);

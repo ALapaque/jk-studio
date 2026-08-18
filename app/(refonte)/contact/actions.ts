@@ -48,6 +48,63 @@ function rateLimited(ip: string): boolean {
   return false;
 }
 
+/* Détection de spam par signaux, sans CAPTCHA (§9). Chaque signal vaut 1 point ;
+ * on ne rejette qu'à partir de 2 pour ne JAMAIS bloquer un vrai client (un seul
+ * signal isolé — un nom d'un seul mot, un email avec un point — reste accepté).
+ *
+ * Les spams reçus ont une signature nette : nom et message en charabia aléatoire
+ * (casse alternée, sans espace) et adresse Gmail bourrée de points (même boîte
+ * réutilisée, Gmail ignorant les points). */
+
+/** Chaîne « aléatoire » : un seul bloc (sans espace), assez long, non
+ *  prononçable (peu de voyelles, casse qui alterne, ou longue suite de
+ *  consonnes). Un vrai nom ou un vrai message contient des espaces. */
+function looksRandom(input: string): boolean {
+  const t = input.trim();
+  if (t.length < 10 || /\s/.test(t)) return false;
+  const letters = t.replace(/[^a-zA-Z]/g, "");
+  if (letters.length < 8) return false;
+  const vowels = (letters.match(/[aeiouy]/gi) ?? []).length;
+  const vowelRatio = vowels / letters.length;
+  let caseSwitches = 0;
+  for (let i = 1; i < letters.length; i++) {
+    const prevLower = letters[i - 1] >= "a" && letters[i - 1] <= "z";
+    const curLower = letters[i] >= "a" && letters[i] <= "z";
+    if (prevLower !== curLower) caseSwitches++;
+  }
+  const longConsonantRun = /[bcdfghjklmnpqrstvwxz]{5,}/i.test(letters);
+  return vowelRatio < 0.28 || caseSwitches >= 5 || longConsonantRun;
+}
+
+function spamSignals(opts: {
+  name: string;
+  email: string;
+  body: string;
+  elapsedMs: number;
+}): number {
+  const { name, email, body, elapsedMs } = opts;
+  let score = 0;
+
+  // 1) Adresse avec abus de points dans la partie locale (astuce Gmail).
+  const local = email.split("@")[0] ?? "";
+  if ((local.match(/\./g) ?? []).length >= 4) score++;
+
+  // 2) Nom en charabia.
+  if (looksRandom(name)) score++;
+
+  // 3) Message en charabia (un vrai message a des espaces).
+  if (looksRandom(body)) score++;
+
+  // 4) Lien dans le message (les vrais briefs en contiennent rarement).
+  if (/\b(?:https?:\/\/|www\.)/i.test(body)) score++;
+
+  // 5) Formulaire rempli trop vite pour un humain (bot JS). `elapsedMs <= 0`
+  //    signifie « inconnu » (repli) — on ne compte pas ce signal.
+  if (elapsedMs > 0 && elapsedMs < 2500) score++;
+
+  return score;
+}
+
 export async function submitContact(formData: FormData): Promise<ContactResult> {
   // Honeypot : champ invisible pour un humain, rempli par la plupart des bots.
   // On répond `ok` sans rien enregistrer — signaler le rejet apprendrait au
@@ -79,6 +136,18 @@ export async function submitContact(formData: FormData): Promise<ContactResult> 
   }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return { ok: false, error: "Adresse email invalide." };
+  }
+
+  // Score de spam : à partir de 2 signaux, on rejette silencieusement (comme le
+  // honeypot — on répond `ok` sans rien enregistrer ni notifier, pour ne pas
+  // apprendre au bot ce qui l'a trahi). Le seuil de 2 protège les vrais clients.
+  const elapsedMs = Number(formData.get("elapsed")) || 0;
+  const score = spamSignals({ name, email, body, elapsedMs });
+  if (score >= 2) {
+    console.warn(
+      `[contact] message rejeté (spam, score ${score}) de ${email} — ignoré.`,
+    );
+    return { ok: true };
   }
 
   // 1) Persistance en base (si Supabase configuré).
